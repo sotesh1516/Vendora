@@ -33,6 +33,21 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.pre('save', async function(next) {
+    //this is necessary because you dont want to hash the password when you everytime update the user 
+    //For example last login update, in general anything other than password change
+    if (!this.isModified('password')) return next();
+
+    try {
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(err);
+    }
+})
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
