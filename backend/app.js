@@ -1,10 +1,12 @@
-import express from "express"
-import cors from "cors"
-import dotenv from "dotenv"
-import authRoutes from "./routes/auth.routes.js"
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/auth.routes.js");
+const connectDB = require("./models/db.js");
 
-const express = require('express')
 const app = express()
+
+connectDB();
 
 app.use(cors());
 app.use(express.json())
