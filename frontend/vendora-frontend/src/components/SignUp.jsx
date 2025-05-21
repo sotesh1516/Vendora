@@ -1,6 +1,10 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
+import { signUpUser } from "../api/user";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+    //const navigate = useNavigate();
+
     const [user, setUser] = useState({
       name: "",
       username: "",
@@ -22,6 +26,7 @@ export default function SignUp() {
     }
 
     const handleSubmit = async () => {
+        event.preventDefault(); // prevent the form from reloading the page
         if (!user.name || !user.username || !user.email || !user.password) {
           setMessage("All fields are required!");
           return;
@@ -41,8 +46,18 @@ export default function SignUp() {
           setMessage("Username is too short!");
           return;
         }
+    try {
+      const response = await signUpUser(user);
 
-    //handle submission
+      if (response && response.user) {
+        //possibly set message
+        //navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error during sign up", error);
+      setMessage("Error signing up. PLease try again.");
+    };
+    
 
         
 
@@ -53,10 +68,10 @@ export default function SignUp() {
 
     return (
         <>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen pt-25">
         <div className="flex flex-col items-center w-full max-w-lg">
         <div className="mb-6">
-          <div className="w-24 h-24 bg-indigo-600 text-white    rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
+          <div className="w-24 h-24 bg-indigo-600 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg">
             VENDORA
           </div>
         </div>
