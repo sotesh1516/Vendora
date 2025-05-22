@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 // const connectDB = require("../models/db");
 const User = require("../models/user.model");
 
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   try {
     const isValidEmail = (email) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,3 +49,5 @@ export const signup = async (req, res) => {
     console.log(error)
   }
 };
+
+module.exports = {signup};
