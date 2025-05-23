@@ -3,7 +3,7 @@ import { signUpUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState({
       name: "",
@@ -86,7 +86,7 @@ export default function SignUp() {
 
       if (response && response.user) {
         //possibly set message
-        //navigate("/dashboard");
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error("Error during sign up", error);
