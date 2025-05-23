@@ -38,7 +38,7 @@ const signup = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ error: "Email already in use" });
     }
-
+    console.log("It has finished validation")
     //add the user to the database
     //password hashing has been handled by a hook in the schema file
     const userToSave = new User({name: newUser.name, username: newUser.username, email: newUser.email, password: newUser.password});
