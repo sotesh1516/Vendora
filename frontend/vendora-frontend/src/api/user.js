@@ -25,13 +25,11 @@ export const signUpUser = async (newUser) => {
     
 };
 
-export const signInUser = async (incomingUser) => {
+export const signInUser = async (inComingUser) => {
     try {
         const result = await axios.post('http://127.0.0.1:8000/api/auth/signin', {
-                name: newUser.name,
-                username: newUser.username,
-                email: newUser.email,
-                password: newUser.password
+                email: inComingUser.email,
+                password: inComingUser.password
             });
     
         if (result.status == 200)
