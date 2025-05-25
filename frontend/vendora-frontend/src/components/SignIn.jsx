@@ -1,20 +1,16 @@
 import React, { useState } from "react";
-import { signUpUser } from "../api/user";
+import { signInUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState({
-      name: "",
-      username: "",
       email: "",
       password: ""
     })
 
     const [errors, setErrors] = useState({
-      name: "",
-      username: "",
       email: "",
       password: "",
       all: false
@@ -70,15 +66,15 @@ export default function SignIn() {
         }
         
     try {
-      const response = await signUpUser(user);
+      const response = await signInUser(user);
 
       if (response && response.user) {
         //possibly set message
-        //navigate("/dashboard");
+        navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Error during sign up", error);
-      setMessage("Error signing up. PLease try again.");
+      console.error("Error during sign in", error);
+      setMessage("Error signing in. PLease try again.");
     };
     }
 
