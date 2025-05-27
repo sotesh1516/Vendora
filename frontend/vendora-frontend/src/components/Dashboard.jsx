@@ -6,6 +6,7 @@ import PaymentInfo from "./DashboardSections/PaymentInfo";
 import Reviews from "./DashboardSections/Reviews";
 import Favorites from "./DashboardSections/Favorites";
 
+
 export default function Dashboard() {
 
     const [subSection, setSubSection] = useState("myListings");
@@ -43,7 +44,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Right (main) block */}
-                <div className="flex-1 bg-blue-100 p-6">
+                <div className="flex-1  p-4">
                     {sectionComponents[subSection]}
                 </div>
             </div>
