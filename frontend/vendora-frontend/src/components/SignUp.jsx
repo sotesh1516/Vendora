@@ -105,7 +105,7 @@ export default function SignUp() {
             VENDORA
           </div>
         </div>
-        <form className="bg-white p-6 sm:p-10 rounded shadow-md w-full max-w-2xl">
+        <form className="bg-white p-6 sm:p-10 rounded shadow-md w-full max-w-sm">
         {errors.all && <p className="text-red-500 text-sm">All fields are required</p>}
             <div className="flex flex-col gap-4">
             <label htmlFor="name" className="fieldset-legend">What is your full name?</label>
