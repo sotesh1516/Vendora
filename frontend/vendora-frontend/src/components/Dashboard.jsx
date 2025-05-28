@@ -3,7 +3,6 @@ import Navbar from "./Navbar";
 import MyBookings from "./DashboardSections/MyBookings";
 import MyListings from "./DashboardSections/MyListings";
 import PaymentInfo from "./DashboardSections/PaymentInfo";
-import Reviews from "./DashboardSections/Reviews";
 import Favorites from "./DashboardSections/Favorites";
 
 
@@ -19,7 +18,6 @@ export default function Dashboard() {
         "myListings": <MyListings/>,
         "myBookings": <MyBookings/>,
         "paymentInfo": <PaymentInfo/>,
-        "reviews": <Reviews/>,
         "favorites": <Favorites/>,
     };
 
@@ -35,8 +33,6 @@ export default function Dashboard() {
                         <span className="pl-2">My Bookings</span></button>
                     <button className="w-full hover:bg-gray-100 cursor-pointer transition p-4 text-left" onClick={() => handleSection("paymentInfo")}>
                         <span className="pl-2">Payment Info</span></button>
-                    <button className="w-full hover:bg-gray-100 cursor-pointer transition p-4 text-left" onClick={() => handleSection("reviews")}>
-                        <span className="pl-2">Reviews & Rating</span></button>
                     <button className="w-full hover:bg-gray-100 cursor-pointer transition p-4 text-left" onClick={() => handleSection("favorites")}>
                         <span className="pl-2">Favorites/Saved</span></button>
                     <button className="w-full hover:bg-gray-100 cursor-pointer transition p-4 text-left">

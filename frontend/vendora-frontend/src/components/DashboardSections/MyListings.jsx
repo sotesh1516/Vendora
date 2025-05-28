@@ -9,10 +9,10 @@ function MyListings() {
       <div>
         <ul className="list bg-base-100 rounded-box shadow-md">
 
-          <li className="p-4 pb-2 text-l opacity-60 tracking-wide">My Listings</li>
+          <li className="p-4 pb-2 text-xl opacity-60 tracking-wide">My Listings</li>
 
           <li className="list-row">
-            <div className="size-10 rounded-box flex items-center justify-center bg-gray-100 text-gray-500">
+            <div className="w-full h-10 rounded-box flex items-center justify-center text-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-plus-icon lucide-copy-plus"><line x1="15" x2="15" y1="12" y2="18" /><line x1="12" x2="18" y1="15" y2="15" /><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></svg>
             </div>
           </li>
@@ -31,6 +31,8 @@ function MyListings() {
             <div>
               <div className="font-semibold text-sm">Amina Yusuf</div>
               <div className="text-xs uppercase font-semibold opacity-60">Math Tutoring</div>
+              <span>4.8</span>
+              <span className="text-gray-400 ml-1">(32)</span>
             </div>
 
             {/* Short description */}
