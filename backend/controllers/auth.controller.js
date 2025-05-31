@@ -9,7 +9,6 @@ const isValidEmail = (email) => {
 
 const signUp = async (req, res) => {
   try {
-
     const newUser = req.body;
 
     if (
@@ -39,16 +38,25 @@ const signUp = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ error: "Email already in use" });
     }
-    console.log("It has finished validation")
+    console.log("It has finished validation");
     //add the user to the database
     //password hashing has been handled by a hook in the schema file
-    const userToSave = new User({name: newUser.name, username: newUser.username, email: newUser.email, password: newUser.password});
+    const userToSave = new User({
+      name: newUser.name,
+      username: newUser.username,
+      email: newUser.email,
+      password: newUser.password,
+    });
     const savedUser = await userToSave.save();
-    return res.status(200).json({"user": savedUser, "message": "User has been successfully registered"});
-
+    return res
+      .status(200)
+      .json({
+        user: savedUser,
+        message: "User has been successfully registered",
+      });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: "Internal server error" }); 
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -56,10 +64,7 @@ const signIn = async (req, res) => {
   try {
     let inComingUser = req.body;
 
-    if (
-      !inComingUser.email ||
-      !inComingUser.password
-    ) {
+    if (!inComingUser.email || !inComingUser.password) {
       return res.status(400).json({ error: "One or more fields are missing" });
     }
 
@@ -74,27 +79,31 @@ const signIn = async (req, res) => {
     const userFound = await User.findOne({ email: inComingUser.email }).exec();
 
     if (!userFound) {
-      return res.status(401).json({error: "Invalid username or password"});
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const isMatch = await bcrypt.compare(inComingUser.password, userFound.password);
+    const isMatch = await bcrypt.compare(
+      inComingUser.password,
+      userFound.password
+    );
 
     if (!isMatch) {
-      return res.status(401).json({"user": "Invalid username or password"});
+      return res.status(401).json({ user: "Invalid username or password" });
     }
 
     const userWithOutPassword = {
       name: userFound.name,
       username: userFound.username,
-      email: userFound.email
+      email: userFound.email,
     };
-    
-    return res.status(200).json({user: userWithOutPassword, "message": "Signed in successfully"});
 
+    return res
+      .status(200)
+      .json({ user: userWithOutPassword, message: "Signed in successfully" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error" }); 
+    return res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
-module.exports = {signUp, signIn};
+module.exports = { signUp, signIn };
