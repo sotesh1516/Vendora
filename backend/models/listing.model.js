@@ -13,6 +13,11 @@ const listingSchema = new mongoose.Schema({
         minlength: 3,
     },
 
+    ratePerHr: {
+        type: Number,
+        required: true
+    },
+
     ratings: {
         type: Array,
         required: true,

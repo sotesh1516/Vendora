@@ -8,6 +8,7 @@ const createLisiting = async (req, res) => {
     if (
       !newListing.serviceProvider ||
       !newListing.serviceName ||
+      !newListing.ratePerHr ||
       !newListing.rating ||
       !newListing.description
     ) {
@@ -26,17 +27,42 @@ const createLisiting = async (req, res) => {
 
     const listingToSave = new Listing(newListing);
     const savedListing = listingToSave.save();
-    return (
-      res,
-      status(200).json({
-        listing: savedListing,
-        message: "Listing has been successfully created",
-      })
-    );
+    return res.status(200).json({
+      listing: savedListing,
+      message: "Listing has been successfully created",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-module.exports = { createLisiting };
+const editListing = async (req, res) => {
+  try {
+    const incomingListing = req.body;
+
+    if (
+      !incomingListing.serviceProvider ||
+      !incomingListing.serviceName ||
+      !incomingListing.ratePerHr ||
+      !incomingListing.rating ||
+      !incomingListing.description
+    ) {
+      return res.status(400).json({ error: "One or more fields are missing" });
+    }
+
+    const updatedListing = await Listing.replaceOne(
+      { _id: incomingListing.id },
+      incomingListing
+    );
+    return res.status(200).json({
+      listing: updatedListing,
+      message: "Listing has been successfully updated",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = { createLisiting, editListing };
