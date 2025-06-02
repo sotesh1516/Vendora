@@ -1,7 +1,7 @@
 const express = require("express");
 const Listing = require("../models/listing.model");
 
-const createLisiting = async (req, res) => {
+const createListing = async (req, res) => {
   try {
     const newListing = req.body;
 
@@ -65,4 +65,4 @@ const editListing = async (req, res) => {
   }
 };
 
-module.exports = { createLisiting, editListing };
+module.exports = { createListing, editListing };
