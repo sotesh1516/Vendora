@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import "../../index.css"
+import { registerListing } from "../../api/listing"
 
 function MyListings() {
   //this should be replaced by database query or an array of listings
@@ -259,21 +260,28 @@ function MyListings() {
       </div>
 
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
 
           const newListing = {
-            id: Date.now(), // Simple unique id generator
             name: e.target.name.value,
-            title: e.target.title.value,
+            service: e.target.service.value,
             price: parseFloat(e.target.price.value),
             description: e.target.description.value,
-            rating: 0,
-            reviewsCount: 0,
+            rating: [],
             avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
-            reviews: []
           };
 
+          try {
+            const listing = await registerListing(newListing);
+
+            if (listing && listing.data)
+            {
+                console.log("listing added to database");
+            }
+          } catch (error) {
+            console.log({"error": error});
+          }
           setListings((prev) => [...prev, newListing]);
           setAddListing(false);
         }}
@@ -286,7 +294,7 @@ function MyListings() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Service</label>
-          <input name="title" type="text" required className="input input-bordered w-full" />
+          <input name="service" type="text" required className="input input-bordered w-full" />
         </div>
 
         <div>

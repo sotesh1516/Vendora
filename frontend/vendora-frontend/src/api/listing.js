@@ -1,9 +1,12 @@
-const axios = require("axios");
+import axios from "axios"
 
-const registerListing = async (newListing) => {
+export const registerListing = async (newListing) => {
   const result = await axios.post("http://127.0.0.1:8000/listing/create", {
-    serviceProvide: newListing.
-    serviceName: 
+    serviceProvide: newListing.name,
+    serviceName: newListing.service,
+    ratePerHr: newListing.price,
+    ratings: newListing.rating,
+    description: newListing.description,
   });
 
   if (result.status == 200) {

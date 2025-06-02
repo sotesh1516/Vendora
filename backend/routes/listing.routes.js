@@ -3,6 +3,6 @@ const { createListing } = require("../controllers/listing.controller");
 const router = express.Router();
 
 
-router.post("listing/create", createListing);
+router.post("/create", createListing);
 
 module.exports = router;
