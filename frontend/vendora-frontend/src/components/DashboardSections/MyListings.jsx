@@ -40,6 +40,9 @@ function MyListings() {
   //state for activating a modal for deleting listing
   const [deleteListing, setDeleteListing] = useState(false);
 
+  //state for activating a modal that shows listing success
+  const [showListingSuccess, setShowListingSuccess] = useState(false);
+
 
   return (
     <>
@@ -99,7 +102,7 @@ function MyListings() {
               <button className="btn btn-square btn-ghost" title="Edit Listing" onClick={(e) => {
                 e.stopPropagation();
                 setEditListing(true);
-                }}>
+              }}>
                 <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 20h9" />
@@ -173,148 +176,165 @@ function MyListings() {
           </div>
         )}
 
-{editListing && (
-  <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
-    <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Edit Listing</h2>
-        <button onClick={() => setEditListing(false)} className="text-gray-400 hover:text-black text-xl">&times;</button>
-      </div>
+        {editListing && (
+          <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
+            <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg shadow-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Edit Listing</h2>
+                <button onClick={() => setEditListing(false)} className="text-gray-400 hover:text-black text-xl">&times;</button>
+              </div>
 
-      {/* Form */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          // handle saving here
-          setEditListing(false);
-        }}
-        className="space-y-4"
-      >
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input type="text" defaultValue={listing.name} className="input input-bordered w-full" />
-        </div>
+              {/* Form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // handle saving here
+                  setEditListing(false);
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <input type="text" defaultValue={listing.name} className="input input-bordered w-full" />
+                </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
-          <input type="text" defaultValue={listing.title} className="input input-bordered w-full" />
-        </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <input type="text" defaultValue={listing.title} className="input input-bordered w-full" />
+                </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Price ($/hr)</label>
-          <input type="number" defaultValue={listing.price} className="input input-bordered w-full" />
-        </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Price ($/hr)</label>
+                  <input type="number" defaultValue={listing.price} className="input input-bordered w-full" />
+                </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea defaultValue={listing.description} className="textarea textarea-bordered w-full" />
-        </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea defaultValue={listing.description} className="textarea textarea-bordered w-full" />
+                </div>
 
-        <div className="flex justify-end gap-2">
-          <button type="button" onClick={() => setEditListing(false)} className="btn btn-ghost">Cancel</button>
-          <button type="submit" className="btn btn-primary">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
+                <div className="flex justify-end gap-2">
+                  <button type="button" onClick={() => setEditListing(false)} className="btn btn-ghost">Cancel</button>
+                  <button type="submit" className="btn btn-primary">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
-{deleteListing && (
-  <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
-    <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
-      <h2 className="text-lg font-semibold mb-4">Are you sure you want to delete this listing?</h2>
-      <div className="flex justify-end gap-3">
-        <button
-          className="btn btn-ghost"
-          onClick={() => setDeleteListing(false)}
-        >
-          Cancel
-        </button>
-        <button
-          className="btn btn-error"
-          onClick={() => {
-            // Perform delete logic here
-            console.log("Listing deleted");
+        {deleteListing && (
+          <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
+            <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
+              <h2 className="text-lg font-semibold mb-4">Are you sure you want to delete this listing?</h2>
+              <div className="flex justify-end gap-3">
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setDeleteListing(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-error"
+                  onClick={() => {
+                    // Perform delete logic here
+                    console.log("Listing deleted");
 
-            // Optionally remove the listing from state
-            setListings((prev) =>
-              prev.filter((l) => l.id !== listing.id)
-            );
+                    // Optionally remove the listing from state
+                    setListings((prev) =>
+                      prev.filter((l) => l.id !== listing.id)
+                    );
 
-            setDeleteListing(false);
-          }}
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                    setDeleteListing(false);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
-{addListing && (
-  <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
-    <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Add New Listing</h2>
-        <button onClick={() => setAddListing(false)} className="text-gray-400 hover:text-black text-xl">&times;</button>
-      </div>
+        {addListing && (
+          <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
+            <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg shadow-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Add New Listing</h2>
+                <button onClick={() => setAddListing(false)} className="text-gray-400 hover:text-black text-xl">&times;</button>
+              </div>
 
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
 
-          const newListing = {
-            name: e.target.name.value,
-            service: e.target.service.value,
-            price: parseFloat(e.target.price.value),
-            description: e.target.description.value,
-            rating: [],
-            avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
-          };
+                  const newListing = {
+                    name: e.target.name.value,
+                    service: e.target.service.value,
+                    price: parseFloat(e.target.price.value),
+                    description: e.target.description.value,
+                    rating: [],
+                    avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+                  };
 
-          try {
-            const listing = await registerListing(newListing);
+                  try {
+                    const response = await registerListing(newListing);
 
-            if (listing && listing.data)
-            {
-                console.log("listing added to database");
-            }
-          } catch (error) {
-            console.log({"error": error});
-          }
-          setListings((prev) => [...prev, newListing]);
-          setAddListing(false);
-        }}
-        className="space-y-4"
-      >
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input name="name" type="text" required className="input input-bordered w-full" />
-        </div>
+                    console.log("Full response:", response);
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Service</label>
-          <input name="service" type="text" required className="input input-bordered w-full" />
-        </div>
+                    if (response && response.listing) {
+                      setShowListingSuccess(true);
+                      console.log("listing added to database");
+                    }
+                  } catch (error) {
+                    console.log({ "error": error });
+                  }
+                  setListings((prev) => [...prev, newListing]);
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Price ($/hr)</label>
-          <input name="price" type="number" required className="input input-bordered w-full" />
-        </div>
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <input name="name" type="text" required className="input input-bordered w-full" />
+                </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea name="description" required className="textarea textarea-bordered w-full" />
-        </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Service</label>
+                  <input name="service" type="text" required className="input input-bordered w-full" />
+                </div>
 
-        <div className="flex justify-end gap-2">
-          <button type="button" onClick={() => setAddListing(false)} className="btn btn-ghost">Cancel</button>
-          <button type="submit" className="btn btn-primary">Add</button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Price ($/hr)</label>
+                  <input name="price" type="number" required className="input input-bordered w-full" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea name="description" required className="textarea textarea-bordered w-full" />
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <button type="button" onClick={() => setAddListing(false)} className="btn btn-ghost">Cancel</button>
+                  <button type="submit" className="btn btn-primary">Add</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showListingSuccess && (<div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-60">
+        <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
+            <h3 className="font-bold text-lg text-green-600">Success!</h3>
+            <p className="py-4">Your listing has been added successfully.</p>
+            <div className="modal-action">
+              <button className="btn btn-success" onClick={() => {
+                setShowListingSuccess(false);
+                setAddListing(false);
+              }}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>)}
 
 
       </div>

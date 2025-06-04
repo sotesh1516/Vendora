@@ -9,7 +9,6 @@ const createListing = async (req, res) => {
       !newListing.serviceProvider ||
       !newListing.serviceName ||
       !newListing.ratePerHr ||
-      !newListing.rating ||
       !newListing.description
     ) {
       return res.status(400).json({ error: "One or more fields are missing" });
