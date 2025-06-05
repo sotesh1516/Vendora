@@ -32,7 +32,7 @@ const createListing = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error during listing creation" });
   }
 };
 
@@ -60,8 +60,30 @@ const editListing = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error during listing update" });
   }
 };
 
-module.exports = { createListing, editListing };
+const fetchListings = async (req, res) => {
+  try {
+    let fetchedListings = await Listing.find().limit(10);
+
+    // console.log(fetchedListings);
+
+    if (!fetchedListings) {
+      return res.status(404).json({error: "Listing fetch returned null"});
+    }
+
+    if (fetchedListings.length == 0)
+    {
+      return res.status(200).json({listings: fetchedListings, message: "No listings found"})
+    }
+
+    return res.status(200).json({listings: fetchedListings, message: "Listings have been successfully fetched"})
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error during listing fetch" });
+  }
+}
+
+module.exports = { createListing, editListing, fetchListings };
