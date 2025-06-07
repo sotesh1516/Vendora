@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
+import ListingCard from "./DashboardSubComponents/ListingCard";
 import { retrieveListings } from "../api/listing";
+
 
 export default function Dashboard() {
 
@@ -17,11 +19,14 @@ export default function Dashboard() {
                 if (response && response.listings)
                 {
                     setListings(response.listings);
+                    console.log("success in fetching");
                 }
             } catch (error) {
                 console.log({"error": error});
             }
         }
+
+        getListings();
     }, [])
 
     return (
@@ -47,11 +52,14 @@ export default function Dashboard() {
             </div>
 
             {/* dashboard content goes here */}
-            <div className="p-4">
+            <div className="px-4 pt-8">
                 <h2 className="text-xl font-bold">Showing: {activeCategory}</h2>
                 {/* Tailored content based on activeCategory */}
-                {}
-
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {listings.map((listing) => (
+                    <ListingCard key={listing._id} name={listing.serviceProvider} service={listing.serviceName} rate={listing.ratePerHr} rating={0} reviewers={0} description={listing.description}/>
+                ))}
+                </div>
             </div>
         </>
     );

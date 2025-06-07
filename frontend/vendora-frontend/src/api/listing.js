@@ -28,7 +28,7 @@ export const registerListing = async (newListing) => {
 
 export const retrieveListings = async () => {
   try {
-    const response = axios.get("http://127.0.0.1:8000/api/listing/fetch");
+    const response = await axios.get("http://127.0.0.1:8000/api/listing/fetch");
 
     if (response.status == 200) {
       console.log("Listings have been successfully retrieved:", response.data);
