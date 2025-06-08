@@ -1,6 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function ListingCard(props) {
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="bg-white rounded-xl p-5 text-center shadow hover:shadow-md transition w-full">
@@ -22,7 +25,9 @@ function ListingCard(props) {
         </p>
 
         <div className="mt-4 flex justify-center gap-2">
-          <button className="btn btn-xs btn-outline">View</button>
+          <button className="btn btn-xs btn-outline" onClick={() => {
+            navigate("/listing");
+          }}>View</button>
           <button className="btn btn-xs btn-ghost">
             <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
