@@ -43,6 +43,9 @@ function MyListings() {
   //state for activating a modal that shows listing success
   const [showListingSuccess, setShowListingSuccess] = useState(false);
 
+  //state to keep track of service option for a single listing
+  const [serviceOptions, setServiceOptions] = useState([""]);
+
 
   return (
     <>
@@ -256,120 +259,140 @@ function MyListings() {
 
         {addListing && (
           <div className="fixed inset-0 z-50 bg-transparent bg-opacity-40 overflow-y-auto">
-          <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="bg-white w-[90%] max-w-2xl p-6 rounded-xl shadow-xl">
+            <div className="min-h-screen flex items-center justify-center p-4">
+              <div className="bg-white w-[90%] max-w-2xl p-6 rounded-xl shadow-xl">
 
-              {/* Header */}
-              <div className="flex justify-between items-center border-b pb-3 mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Create New Service Listing</h2>
-                <button onClick={() => setAddListing(false)} className="text-gray-400 hover:text-gray-800 text-2xl">
-                  &times;
-                </button>
-              </div>
+                {/* Header */}
+                <div className="flex justify-between items-center border-b pb-3 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-800">Create New Service Listing</h2>
+                  <button onClick={() => setAddListing(false)} className="text-gray-400 hover:text-gray-800 text-2xl">
+                    &times;
+                  </button>
+                </div>
 
-              {/* Form */}
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
+                {/* Form */}
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
 
-                  const newListing = {
-                    name: e.target.name.value,
-                    service: e.target.service.value,
-                    price: parseFloat(e.target.price.value),
-                    description: e.target.description.value,
-                    rating: [],
-                    avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
-                  };
+                    const newListing = {
+                      name: e.target.name.value,
+                      service: e.target.service.value,
+                      price: parseFloat(e.target.price.value),
+                      description: e.target.description.value,
+                      rating: [],
+                      avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+                    };
 
-                  try {
-                    const response = await registerListing(newListing);
-                    if (response && response.listing) {
-                      setShowListingSuccess(true);
-                      console.log("listing added to database");
+                    try {
+                      const response = await registerListing(newListing);
+                      if (response && response.listing) {
+                        setShowListingSuccess(true);
+                        console.log("listing added to database");
+                      }
+                    } catch (error) {
+                      console.log({ "error": error });
                     }
-                  } catch (error) {
-                    console.log({ "error": error });
-                  }
 
-                  setListings((prev) => [...prev, newListing]);
-                }}
-                className="space-y-5"
-              >
+                    setListings((prev) => [...prev, newListing]);
+                  }}
+                  className="space-y-5"
+                >
 
-                {/* Section: Basic Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="label-text font-medium">Your Name</label>
-                    <input name="name" type="text" required className="input input-bordered w-full" />
-                  </div>
-
-                  <div>
-                    <label className="label-text font-medium">Service Title</label>
-                    <input name="service" type="text" required className="input input-bordered w-full" />
-                  </div>
-                </div>
-
-                {/* Section: Price */}
-                <div>
-                  <label className="label-text font-medium">Rate per Hour ($)</label>
-                  <input name="price" type="number" min="1" required className="input input-bordered w-full" />
-                </div>
-
-                {/* Section: Description */}
-                <div>
-                  <label className="label-text font-medium">Service Description</label>
-                  <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Service Images</label>
-
-                  <input
-                    type="file"
-                    name="images"
-                    accept="image/*"
-                    multiple
-                    className="file-input file-input-bordered w-full"
-                  />
-
-                  {/* Preview grid (replace src with dynamic preview later) */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-                    <div className="w-full aspect-square overflow-hidden rounded-lg border">
-                      <img
-                        src="https://via.placeholder.com/150"
-                        alt="preview"
-                        className="object-cover w-full h-full"
-                      />
+                  {/* Section: Basic Info */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="label-text font-medium">Your Name</label>
+                      <input name="name" type="text" required className="input input-bordered w-full" />
                     </div>
-                    <div className="w-full aspect-square overflow-hidden rounded-lg border">
-                      <img
-                        src="https://via.placeholder.com/150"
-                        alt="preview"
-                        className="object-cover w-full h-full"
-                      />
+
+                    <div>
+                      <label className="label-text font-medium">Service Title</label>
+                      <input name="service" type="text" required className="input input-bordered w-full" />
                     </div>
-                    {/* Add more <div>s dynamically once you hook up state */}
                   </div>
-                </div>
+
+                  {/* Section: Price */}
+                  <div>
+                    <label className="label-text font-medium">Rate per Hour ($)</label>
+                    <input name="price" type="number" min="1" required className="input input-bordered w-full" />
+                  </div>
+
+                  {/* Section: Description */}
+                  <div>
+                    <label className="label-text font-medium">Service Description</label>
+                    <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Service Images</label>
+
+                    <input
+                      type="file"
+                      name="images"
+                      accept="image/*"
+                      multiple
+                      className="file-input file-input-bordered w-full"
+                    />
+
+                    <div>
+                      <label className="label-text font-medium">Service Options</label>
+                      <div className="space-y-2">
+                        {/* You’ll loop over the services array here later */}
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            name="serviceOptions[]"
+                            placeholder="e.g., Calculus"
+                            className="input input-bordered w-full"
+                          />
+                          {serviceOptions.map((service)=> {
+                              
+                          })}
+                          <button type="button" className="btn btn-ghost">+</button>
+                        </div>
+                      </div>
+                    </div>
 
 
-                {/* Section: Preview Avatar (Static for now) */}
-                <div className="flex items-center gap-4">
-                  <img src="https://img.daisyui.com/images/profile/demo/5@94.webp" className="w-16 h-16 rounded-full object-cover" alt="Avatar" />
-                  <p className="text-sm text-gray-600">Default avatar shown — customize later in profile settings</p>
-                </div>
+                    {/* Preview grid (replace src with dynamic preview later) */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                      <div className="w-full aspect-square overflow-hidden rounded-lg border">
+                        <img
+                          src="https://via.placeholder.com/150"
+                          alt="preview"
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                      <div className="w-full aspect-square overflow-hidden rounded-lg border">
+                        <img
+                          src="https://via.placeholder.com/150"
+                          alt="preview"
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                      {/* Add more <div>s dynamically once you hook up state */}
+                    </div>
+                  </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-3 pt-4 border-t">
-                  <button type="button" onClick={() => setAddListing(false)} className="btn btn-ghost">
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Publish Listing
-                  </button>
-                </div>
-              </form>
-            </div>
+
+                  {/* Section: Preview Avatar (Static for now) */}
+                  <div className="flex items-center gap-4">
+                    <img src="https://img.daisyui.com/images/profile/demo/5@94.webp" className="w-16 h-16 rounded-full object-cover" alt="Avatar" />
+                    <p className="text-sm text-gray-600">Default avatar shown — customize later in profile settings</p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onClick={() => setAddListing(false)} className="btn btn-ghost">
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Publish Listing
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         )}
