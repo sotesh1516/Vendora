@@ -1,8 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function ListingCard(props) {
-  const navigate = useNavigate();
+function ListingCard({ listing }) {
 
   return (
     <div>
@@ -13,20 +12,20 @@ function ListingCard(props) {
           alt="Service Avatar"
         />
 
-        <h3 className="font-semibold text-md">{props.name}</h3>
-        <p className="text-xs text-gray-500">{props.service}</p>
+        <h3 className="font-semibold text-md">{listing.serviceName}</h3>
+        <p className="text-xs text-gray-500">{listing.serviceProvider}</p>
 
         <div className="mt-2 text-sm text-gray-600">
-          <span>{props.rate}/hr</span> · <span>⭐ {props.rating} ({props.reviewers})</span>
+          <span>{listing.ratePerHr}/hr</span> · <span>⭐ {listing.rating} ({listing.reviewers})</span>
         </div>
 
         <p className="text-xs text-gray-500 mt-2 line-clamp-2">
-          {props.description}
+          {listing.description}
         </p>
 
         <div className="mt-4 flex justify-center gap-2">
           <button className="btn btn-xs btn-outline" onClick={() => {
-            navigate("/listing");
+            navigate(`/listing/${listing.id}`, {state: { listing }});
           }}>View</button>
           <button className="btn btn-xs btn-ghost">
             <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"

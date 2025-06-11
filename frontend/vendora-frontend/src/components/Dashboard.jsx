@@ -57,7 +57,7 @@ export default function Dashboard() {
                 {/* Tailored content based on activeCategory */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {listings.map((listing) => (
-                    <ListingCard key={listing._id} name={listing.serviceProvider} service={listing.serviceName} rate={listing.ratePerHr} rating={0} reviewers={0} description={listing.description}/>
+                    <ListingCard key={listing._id} listing={listing}/>
                 ))}
                 </div>
             </div>

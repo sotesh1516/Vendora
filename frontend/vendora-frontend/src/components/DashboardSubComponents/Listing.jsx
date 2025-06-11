@@ -1,7 +1,10 @@
 import React from 'react'
 import Navbar from '../Navbar';
+import { useLocation } from 'react-router-dom';
 
 function Listing() {
+  const location = useLocation();
+  const listing = location.state?.listing;
   return (
     <div>
       <Navbar />
@@ -9,9 +12,12 @@ function Listing() {
 <div className="max-w-6xl mx-auto px-4 py-6">
   {/* Title and Rating */}
   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-    <h1 className="text-2xl font-bold">Math Tutoring by Amina Yusuf</h1>
+  <div className="flex flex-col md:flex-row md:items-baseline gap-1">
+    <h1 className="text-2xl font-bold">{listing.service}</h1>
+    <span className="text-sm text-gray-500 md:ml-2">{listing.name}</span>
+  </div>
     <div className="mt-2 md:mt-0 text-sm text-gray-600">
-      ⭐ 4.8 (32 reviews)
+      ⭐ {listing.rating} ({listing.reviewers})
     </div>
   </div>
 
@@ -29,7 +35,7 @@ function Listing() {
       <section>
         <h2 className="text-lg font-semibold mb-2">Service Overview</h2>
         <p className="text-sm text-gray-700">
-          Covers calculus, statistics, and linear algebra for undergraduates and test prep.
+          {listing.description}
         </p>
       </section>
 
@@ -44,7 +50,8 @@ function Listing() {
       </section>
 
       {/* Reviews */}
-      <section>
+      {/* You should use js map function as reviews is an array in the database */}
+      <section> 
         <h2 className="text-lg font-semibold mb-2">Reviews</h2>
         <div className="space-y-3">
           <div className="border rounded p-3">
