@@ -44,13 +44,13 @@ function MyListings() {
   const [showListingSuccess, setShowListingSuccess] = useState(false);
 
   //state to keep track of service option for a single listing
-  const [serviceOptions, setServiceOptions] = useState([""]);
+  const [serviceOptions, setServiceOptions] = useState(["e.g., Calculus"]);
 
 
   return (
     <>
 
-      <div className="bg-base-100 rounded-box shadow-md p-4 space-y-4">
+      <div className="p-4 space-y-4">
         {/* Title + Add Button */}
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold tracking-wide">My Listings</h2>
@@ -76,8 +76,8 @@ function MyListings() {
         </div>
 
         {/* Listing card */}
-        <div onClick={() => setSelectedListing(listing)} className="rounded-lg border p-4 flex flex-col gap-4">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-gray-50 transition cursor-pointer px-4 py-3 rounded-lg gap-4">
+        <div onClick={() => setSelectedListing(listing)} className="rounded-lg border p-4 flex flex-col gap-4 hover:bg-gray-100 hover:shadow-md">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between  transition cursor-pointer px- py-3 rounded-lg gap-4">
             {/* Avatar */}
             <div className="flex-shrink-0">
               <img
@@ -138,46 +138,115 @@ function MyListings() {
 
         {/* this is where the modal for a listing activates */}
         {selectedListing && (
-          <div className="fixed inset-0 z-50 bg-transparent flex items-center justify-center">
-            <div className="bg-white w-[90%] max-w-6xl min-h-[70vh] p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">{selectedListing.title}</h2>
-                <button onClick={() => setSelectedListing(null)} className="text-gray-400 hover:text-black text-xl">&times;</button>
+          <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center overflow-auto">
+            <div className="bg-white w-[90%] max-w-6xl rounded-xl shadow-lg p-6">
+              {/* Header */}
+              <div className="flex justify-between items-center mb-6 border-b pb-3">
+                <h2 className="text-2xl font-bold text-gray-800">{selectedListing.title || "Service Title"}</h2>
+                <button
+                  onClick={() => setSelectedListing(null)}
+                  className="text-gray-400 hover:text-black text-2xl font-bold"
+                >
+                  &times;
+                </button>
               </div>
 
-              {/* Tabs */}
-              <div className="border-b mb-4">
-                <nav className="flex space-x-6 text-sm font-medium text-gray-600">
-                  <button className={activeTab === "reviews" ? "text-black border-b-2 border-black pb-2" : "pb-2"} onClick={() => setActiveTab("reviews")}>Reviews</button>
-                  <button className={activeTab === "details" ? "text-black border-b-2 border-black pb-2" : "pb-2"} onClick={() => setActiveTab("details")}>Details</button>
-                </nav>
-              </div>
+              {/* Main Content */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left: Info */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Image Banner */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <img
+                      src="https://via.placeholder.com/400x250"
+                      alt="Preview"
+                      className="rounded-lg object-cover w-full h-56"
+                    />
+                    <img
+                      src="https://via.placeholder.com/400x250"
+                      alt="Preview"
+                      className="rounded-lg object-cover w-full h-56"
+                    />
+                  </div>
 
-              {/* Tab Content */}
-              {activeTab === "reviews" && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-500 mb-2">User Reviews</h3>
-                  <ul className="space-y-1">
-                    {selectedListing.reviews.map((review, i) => (
-                      <li key={i} className="text-sm text-gray-700">• {review}</li>
-                    ))}
-                  </ul>
+                  {/* Description */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-2">Service Overview</h3>
+                    <p className="text-sm text-gray-700">
+                      {selectedListing.description || "No description provided."}
+                    </p>
+                  </section>
+
+                  {/* Service Options */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-2">Service Options</h3>
+                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                      {(selectedListing.options || ["No options listed"]).map((opt, i) => (
+                        <li key={i}>{opt}</li>
+                      ))}
+                    </ul>
+                  </section>
+
+                  {/* Reviews */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-2">Client Reviews</h3>
+                    <div className="space-y-3">
+                      <div className="border rounded p-3 bg-gray-50">
+                        <p className="text-sm font-medium">Jane Doe</p>
+                        <p className="text-xs text-gray-500">⭐⭐⭐⭐⭐ “Amazing tutor, explains clearly.”</p>
+                      </div>
+                      <div className="border rounded p-3 bg-gray-50">
+                        <p className="text-sm font-medium">John Smith</p>
+                        <p className="text-xs text-gray-500">⭐⭐⭐⭐ “Very helpful for my exam prep.”</p>
+                      </div>
+                    </div>
+                  </section>
                 </div>
-              )}
 
-              {activeTab === "details" && (
-                <div>
-                  <p className="text-gray-600 text-sm mb-2">{selectedListing.description}</p>
-                  <div className="text-sm text-gray-700">
-                    <div><span className="font-semibold">Tutor:</span> {selectedListing.name}</div>
-                    <div><span className="font-semibold">Rating:</span> ⭐ {selectedListing.rating} ({selectedListing.reviewsCount} reviews)</div>
-                    <div><span className="font-semibold">Rate:</span> ${selectedListing.price}/hr</div>
+                {/* Right: Owner Controls */}
+                <div className="space-y-6">
+                  {/* Provider Info */}
+                  <div className="border p-4 rounded-lg shadow-sm bg-white">
+                    <div className="flex items-center gap-4 mb-3">
+                      <img
+                        src={selectedListing.avatar}
+                        className="w-14 h-14 rounded-full object-cover"
+                        alt="Avatar"
+                      />
+                      <div>
+                        <p className="font-semibold text-sm">{selectedListing.name}</p>
+                        <p className="text-xs text-gray-500">⭐ {selectedListing.rating} ({selectedListing.reviewsCount} reviews)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="space-y-3">
+                    <button
+                      className="btn btn-outline w-full"
+                      onClick={() => {
+                        setEditListing(true);
+                        setSelectedListing(null); // hide this modal first
+                      }}
+                    >
+                      Edit Listing
+                    </button>
+                    <button
+                      className="btn btn-error btn-outline w-full"
+                      onClick={() => {
+                        setDeleteListing(true);
+                        setSelectedListing(null);
+                      }}
+                    >
+                      Delete Listing
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}
+
 
         {editListing && (
           <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
@@ -338,20 +407,45 @@ function MyListings() {
                     <div>
                       <label className="label-text font-medium">Service Options</label>
                       <div className="space-y-2">
-                        {/* You’ll loop over the services array here later */}
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            name="serviceOptions[]"
-                            placeholder="e.g., Calculus"
-                            className="input input-bordered w-full"
-                          />
-                          {serviceOptions.map((service)=> {
-                              
-                          })}
-                          <button type="button" className="btn btn-ghost">+</button>
-                        </div>
+                        {/* Map each input on its own row */}
+                        {serviceOptions.map((service, index) => (
+                          <div key={index} className="flex gap-2">
+                            <input
+                              type="text"
+                              name="serviceOptions[]"
+                              placeholder="e.g., Algebra, Calculus..."
+                              value={service}
+                              onChange={(e) => {
+                                const newOptions = [...serviceOptions];
+                                newOptions[index] = e.target.value;
+                                setServiceOptions(newOptions);
+                              }}
+                              className="input input-bordered w-full"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newOptions = [...serviceOptions];
+                                newOptions.splice(index, 1); // remove this item
+                                setServiceOptions(newOptions);
+                              }}
+                              className="btn btn-error btn-sm"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+
+                        {/* Add new input */}
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline mt-1"
+                          onClick={() => setServiceOptions([...serviceOptions, ""])}
+                        >
+                          + Add
+                        </button>
                       </div>
+
                     </div>
 
 
