@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../Navbar';
 import { useLocation } from 'react-router-dom';
 
 function Listing() {
   const location = useLocation();
   const listing = location.state?.listing;
+
+  const [booking, setBooking] = useState(false);
   return (
     <div>
       <Navbar />
@@ -13,8 +15,8 @@ function Listing() {
   {/* Title and Rating */}
   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
   <div className="flex flex-col md:flex-row md:items-baseline gap-1">
-    <h1 className="text-2xl font-bold">{listing.service}</h1>
-    <span className="text-sm text-gray-500 md:ml-2">{listing.name}</span>
+    <h1 className="text-2xl font-bold">{listing.serviceName}</h1>
+    <span className="text-sm text-gray-500 md:ml-2">{listing.serviceProvider}</span>
   </div>
     <div className="mt-2 md:mt-0 text-sm text-gray-600">
       ⭐ {listing.rating} ({listing.reviewers})
@@ -71,7 +73,11 @@ function Listing() {
       {/* Booking Card */}
       <div className="p-4 border rounded-lg shadow-sm bg-white">
         <h3 className="font-semibold mb-2">Book This Service</h3>
-        <button className="btn btn-primary w-full">Book Now</button>
+        <button onClick={
+          () => {
+            setBooking(true);
+          }
+        } className="btn btn-primary w-full">Book Now</button>
       </div>
 
       {/* Provider Info */}
@@ -84,6 +90,51 @@ function Listing() {
     </div>
   </div>
 </div>
+
+{booking && (<div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-50">
+  <div className="bg-white w-[90%] max-w-md p-6 rounded-xl shadow-xl space-y-4">
+    
+    {/* Modal Header */}
+    <div className="flex justify-between items-center">
+      <h2 className="text-xl font-semibold">Book a Session</h2>
+      <button onClick={
+        () => {
+          setBooking(false);
+        }
+      } className="text-xl text-gray-500 hover:text-black">&times;</button>
+    </div>
+
+    {/* Time Selection */}
+    <div>
+      <label className="block text-sm font-medium mb-1">Select a Time</label>
+      <select className="select select-bordered w-full">
+        <option value="">-- Choose a time --</option>
+        <option>Monday 2:00 PM</option>
+        <option>Tuesday 10:00 AM</option>
+        <option>Wednesday 4:30 PM</option>
+        <option>Friday 1:00 PM</option>
+      </select>
+    </div>
+
+    {/* Service Summary */}
+    <div>
+      <label className="block text-sm font-medium mb-1">Brief Summary</label>
+      <textarea
+        className="textarea textarea-bordered w-full"
+        rows="3"
+        placeholder="Describe what you're hoping to get help with..."
+      ></textarea>
+    </div>
+
+    {/* Actions */}
+    <div className="flex justify-end gap-2 pt-2 border-t">
+      <button className="btn btn-ghost">Cancel</button>
+      <button className="btn btn-primary">Confirm Booking</button>
+    </div>
+    
+  </div>
+</div>)}
+
     </div>
   )
 }

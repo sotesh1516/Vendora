@@ -37,6 +37,9 @@ function MyListings() {
   //state for activating a modal for editing listing
   const [editListing, setEditListing] = useState(false);
 
+  //state for changing the heart/favorite icon 
+  const [favorite, setFavorite] = useState(false);
+
   //state for activating a modal for deleting listing
   const [deleteListing, setDeleteListing] = useState(false);
 
@@ -45,6 +48,7 @@ function MyListings() {
 
   //state to keep track of service option for a single listing
   const [serviceOptions, setServiceOptions] = useState(["e.g., Calculus"]);
+
 
 
   return (
@@ -76,8 +80,9 @@ function MyListings() {
         </div>
 
         {/* Listing card */}
-        <div onClick={() => setSelectedListing(listing)} className="rounded-lg border p-4 flex flex-col gap-4 hover:bg-gray-100 hover:shadow-md">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between  transition cursor-pointer px- py-3 rounded-lg gap-4">
+        <div onClick={() => setSelectedListing(listing)} className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition"
+        >
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between  transition px-1 py-3 rounded-lg gap-4">
             {/* Avatar */}
             <div className="flex-shrink-0">
               <img
@@ -126,8 +131,12 @@ function MyListings() {
                 </svg>
               </button>
 
-              <button className="btn btn-square btn-ghost" title="Favorite">
-                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              <button className="btn btn-square btn-ghost" title="Favorite" onClick={(e) => {
+                e.stopPropagation();
+                setFavorite(!favorite);
+                //work on change the classnames
+              }}>
+                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favorite ? "grey": "none"}
                   stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 14c1.5-1.5 3-3.25 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2C10.5 3.5 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5C2 10.75 3.5 12.5 5 14l7 7z" />
                 </svg>
