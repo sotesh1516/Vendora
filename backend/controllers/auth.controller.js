@@ -2,10 +2,29 @@ const bcrypt = require("bcrypt");
 // const connectDB = require("../models/db");
 const User = require("../models/user.model");
 
+/** 
+ * * validates whether the email has a correct format using regex
+* @param {String} email - the email to be verified
+* @returns {bool} returns a boolean 
+*/
+
 const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
+
+/**
+ * Registers user 
+ * 
+ * - There are different validations that occur before the actual registration happen. These include
+ *      - length of user's name
+ *      - length of user's username
+ *      - email format
+ *      - the length of suggested password
+ * @param {*} req = Express request object
+ * @param {*} res - Express response object
+ * @returns 
+ */
 
 const signUp = async (req, res) => {
   try {
