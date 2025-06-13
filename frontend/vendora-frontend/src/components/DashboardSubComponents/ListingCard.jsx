@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function ListingCard({ listing }) {
-
+  const navigate = useNavigate();
   return (
     <div>
       <div className="bg-white rounded-xl p-5 text-center shadow hover:shadow-md transition w-full">
@@ -25,7 +25,7 @@ function ListingCard({ listing }) {
 
         <div className="mt-4 flex justify-center gap-2">
           <button className="btn btn-xs btn-outline" onClick={() => {
-            navigate(`/listing/${listing.id}`, {state: { listing }});
+            navigate(`/listing/${listing._id}`, {state: { listing }});
           }}>View</button>
           <button className="btn btn-xs btn-ghost">
             <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"

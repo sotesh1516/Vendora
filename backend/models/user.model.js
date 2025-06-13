@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
         minlength: 8
     },
 
+    myBookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Listing",
+
+    }],
+
     createdAt: {
         type: Date,
         default: Date.now

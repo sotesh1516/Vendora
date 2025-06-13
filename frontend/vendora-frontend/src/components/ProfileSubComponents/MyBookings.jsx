@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 
 function MyBookings() {
+  const navigate = useNavigate();
+
+  const [reschedule, setReschedule] = useState();
   return (
     <div>
       <div>
@@ -9,9 +14,12 @@ function MyBookings() {
   <div>
     <h2 className="text-lg font-bold mb-2">Upcoming</h2>
 
-    <div className="rounded-lg border p-4 flex flex-col gap-4">
+    <div className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition" onClick={() => {
+      navigate("/dashboard");
+    }
+    }>
       {/* Booking card */}
-      <div className="flex items-start justify-between hover:bg-gray-50 transition rounded-lg p-3">
+      <div className="flex items-start justify-between transition rounded-lg p-3">
         {/* Avatar */}
         <div className="flex-shrink-0">
           <img
@@ -45,8 +53,8 @@ function MyBookings() {
   <div>
     <h2 className="text-lg font-bold mb-2">Completed</h2>
 
-    <div className="rounded-lg border p-4 flex flex-col gap-4">
-      <div className="flex items-start justify-between hover:bg-gray-50 transition rounded-lg p-3">
+    <div className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition">
+      <div className="flex items-start justify-between transition rounded-lg p-3">
         <div className="flex-shrink-0">
           <img
             className="w-10 h-10 rounded-full object-cover"

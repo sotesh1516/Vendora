@@ -86,4 +86,12 @@ const fetchListings = async (req, res) => {
   }
 }
 
+const fetchListing = async (req, res) => {
+  try {
+    const listing = await Listing.findById();
+  } catch (error) {
+    
+  }
+}
+
 module.exports = { createListing, editListing, fetchListings };
