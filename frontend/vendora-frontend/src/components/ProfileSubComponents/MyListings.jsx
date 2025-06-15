@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
 
 function MyListings() {
+
   //this should be replaced by database query or an array of listings
   const [listings, setListings] = useState([
     {
@@ -29,6 +30,7 @@ function MyListings() {
   //state for setting the listing to be displayed using a modal
   const [selectedListing, setSelectedListing] = useState();
 
+  //ste for activating the list adding feature
   const [addListing, setAddListing] = useState();
 
   //state for activating a modal for navigating listing 
@@ -49,7 +51,15 @@ function MyListings() {
   //state to keep track of service option for a single listing
   const [serviceOptions, setServiceOptions] = useState(["e.g., Calculus"]);
 
+  //state for keeping track of time slots
+  const [timeslots, setTimeSlots] = useState([]);
 
+  //state for controlling single timeslot pick
+  const [timeSlot, setTimeSlot] = useState("");
+
+  const parseTime = (isoTime) => {
+
+  };
 
   return (
     <>
@@ -380,30 +390,64 @@ function MyListings() {
                   {/* Section: Basic Info */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="label-text font-medium">Your Name</label>
+                      <label className="block text-lg font-medium text-gray-700">Your Name</label>
                       <input name="name" type="text" required className="input input-bordered w-full" />
                     </div>
 
                     <div>
-                      <label className="label-text font-medium">Service Title</label>
+                      <label className="block text-lg font-medium text-gray-700">Service Title</label>
                       <input name="service" type="text" required className="input input-bordered w-full" />
                     </div>
                   </div>
 
                   {/* Section: Price */}
                   <div>
-                    <label className="label-text font-medium">Rate per Hour ($)</label>
+                    <label className="block text-m font-medium text-gray-700">Rate per Hour ($)</label>
                     <input name="price" type="number" min="1" required className="input input-bordered w-full" />
                   </div>
 
                   {/* Section: Description */}
                   <div>
-                    <label className="label-text font-medium">Service Description</label>
+                    <label className="block text-m font-medium text-gray-700">Service Description</label>
                     <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Service Images</label>
+  <label className="block text-m font-medium text-gray-700">Available Time Slots</label>
+  <div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-700">Add Available Time Slots</label>
+
+  <div className="flex gap-2">
+    <input
+      type="datetime-local"
+      className="input input-bordered w-full"
+      placeholder="Select a date and time"
+      onChange={(event) => {
+        setTimeSlot(event.target.value);
+        console.log(timeSlot);
+      }}
+    />
+    <button type="button" className="btn btn-primary" onClick={() => {
+      setTimeSlots([...timeslots, timeSlot]);
+    }}>
+      Add
+    </button>
+  </div>
+
+  {/* Display of added time slots — can later be connected to state */}
+  <div className="flex flex-col gap-2 mt-2">
+    {timeslots.map((slot) => (
+      <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">{slot}</div>
+    ))}
+    <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">Monday, 2:00 PM</div>
+    <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">Tuesday, 10:00 AM</div>
+  </div>
+</div>
+
+</div>
+
+                  <div className="space-y-2">
+                    <label className="block text-m font-medium text-gray-700">Service Images</label>
 
                     <input
                       type="file"
@@ -414,7 +458,7 @@ function MyListings() {
                     />
 
                     <div>
-                      <label className="label-text font-medium">Service Options</label>
+                      <label className="block text-m font-medium text-gray-700 pb-2">Service Options</label>
                       <div className="space-y-2">
                         {/* Map each input on its own row */}
                         {serviceOptions.map((service, index) => (
