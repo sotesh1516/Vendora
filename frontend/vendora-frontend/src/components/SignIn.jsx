@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState, userContext } from "react";
 import { signInUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "./contexts/UserContext";  //defined using createContext in UserContext.js
 
 export default function SignIn() {
     const navigate = useNavigate();
+
+    const {user: userFromContext, setUser: setUserfromContext} = useContext(UserContext);
 
     const [user, setUser] = useState({
       email: "",
@@ -69,7 +72,11 @@ export default function SignIn() {
       const response = await signInUser(user);
 
       if (response && response.user) {
-        //possibly set message
+        //added the signed in user to the context so that it can be accessed from anywhere in the application
+        //also we are experimenting with localStorage to save state unconditionally
+        //we use JSON.stringify for visibility
+        window.localStorage.setItem("logged_in_user", JSON.stringify(response.user));
+        setUserfromContext(response.user);
         navigate("/dashboard");
       }
     } catch (error) {

@@ -18,6 +18,10 @@ const listingSchema = new mongoose.Schema({
         required: true,
     },
 
+    timeSlot: [{
+        type: String,
+    }],
+
     ratePerHr: {
         type: Number,
         required: true

@@ -7,6 +7,17 @@ function Listing() {
   const listing = location.state?.listing;
 
   const [booking, setBooking] = useState(false);
+
+  //might need to get the timeslots
+
+  const [bookingInfo, setBookingInfo] = useState({
+    timeslot: "",
+    description: "",
+  });
+
+  const handleBooking = () => {
+
+  }
   return (
     <div>
       <Navbar />

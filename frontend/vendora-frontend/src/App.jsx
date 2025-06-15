@@ -5,6 +5,7 @@ import SignIn from './components/SignIn';
 import Dashboard from './components/Dashboard'
 import Profile from './components/Profile';
 import Listing from './components/DashboardSubComponents/Listing';
+import { UserProvider } from './components/contexts/UserContext';
 
 
 
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <>
+    <UserProvider>
     <Routes>
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/signin" element={<SignIn/>}/>
@@ -19,6 +21,7 @@ function App() {
       <Route path='/profile' element={<Profile/>}/>
       <Route path='/listing/:id' element={<Listing/>}/>
     </Routes>
+    </UserProvider>
     </>
   )
 }
