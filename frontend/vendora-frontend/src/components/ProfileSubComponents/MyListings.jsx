@@ -52,12 +52,13 @@ function MyListings() {
   const [serviceOptions, setServiceOptions] = useState(["e.g., Calculus"]);
 
   //state for keeping track of time slots
-  const [timeslots, setTimeSlots] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
 
   //state for controlling single timeslot pick
   const [timeSlot, setTimeSlot] = useState("");
 
   const parseTime = (isoTime) => {
+    return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
 
   };
 
@@ -146,7 +147,7 @@ function MyListings() {
                 setFavorite(!favorite);
                 //work on change the classnames
               }}>
-                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favorite ? "grey": "none"}
+                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favorite ? "grey" : "none"}
                   stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 14c1.5-1.5 3-3.25 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2C10.5 3.5 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5C2 10.75 3.5 12.5 5 14l7 7z" />
                 </svg>
@@ -366,6 +367,8 @@ function MyListings() {
                     const newListing = {
                       name: e.target.name.value,
                       service: e.target.service.value,
+                      serviceOpts: serviceOptions,
+                      timeSlotsAv: timeSlots,
                       price: parseFloat(e.target.price.value),
                       description: e.target.description.value,
                       rating: [],
@@ -413,38 +416,36 @@ function MyListings() {
                   </div>
 
                   <div className="space-y-2">
-  <label className="block text-m font-medium text-gray-700">Available Time Slots</label>
-  <div className="space-y-2">
-  <label className="block text-sm font-medium text-gray-700">Add Available Time Slots</label>
+                    <label className="block text-m font-medium text-gray-700">Available Time Slots</label>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Add Available Time Slots</label>
 
-  <div className="flex gap-2">
-    <input
-      type="datetime-local"
-      className="input input-bordered w-full"
-      placeholder="Select a date and time"
-      onChange={(event) => {
-        setTimeSlot(event.target.value);
-        console.log(timeSlot);
-      }}
-    />
-    <button type="button" className="btn btn-primary" onClick={() => {
-      setTimeSlots([...timeslots, timeSlot]);
-    }}>
-      Add
-    </button>
-  </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="datetime-local"
+                          className="input input-bordered w-full"
+                          placeholder="Select a date and time"
+                          onChange={(event) => {
+                            setTimeSlot(event.target.value);
+                            console.log(timeSlot);
+                          }}
+                        />
+                        <button type="button" className="btn btn-primary" onClick={(event) => {
+                          setTimeSlots([...timeSlots, timeSlot]);
+                        }}>
+                          Add
+                        </button>
+                      </div>
 
-  {/* Display of added time slots — can later be connected to state */}
-  <div className="flex flex-col gap-2 mt-2">
-    {timeslots.map((slot) => (
-      <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">{slot}</div>
-    ))}
-    <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">Monday, 2:00 PM</div>
-    <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">Tuesday, 10:00 AM</div>
-  </div>
-</div>
+                      {/* Display of added time slots — can later be connected to state */}
+                      <div className="flex flex-col gap-2 mt-2">
+                        {timeSlots.map((slot) => (
+                          <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">{parseTime(slot)}</div>
+                        ))}
+                      </div>
+                    </div>
 
-</div>
+                  </div>
 
                   <div className="space-y-2">
                     <label className="block text-m font-medium text-gray-700">Service Images</label>
