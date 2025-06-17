@@ -18,7 +18,7 @@ const listingSchema = new mongoose.Schema({
         required: true,
     },
 
-    timeSlot: [{
+    timeSlots: [{
         type: String,
     }],
 

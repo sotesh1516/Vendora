@@ -8,6 +8,8 @@ const createListing = async (req, res) => {
     if (
       !newListing.serviceProvider ||
       !newListing.serviceName ||
+      !newListing.serviceOptions ||
+      !newListing.timeSlots ||
       !newListing.ratePerHr ||
       !newListing.description
     ) {
