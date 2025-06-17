@@ -7,6 +7,8 @@ export const registerListing = async (newListing) => {
       {
         serviceProvider: newListing.name,
         serviceName: newListing.service,
+        serviceOptions: newListing.serviceOpts,
+        timeSlots: newListing.timeSlotsAv, 
         ratePerHr: newListing.price,
         ratings: [],
         description: newListing.description,

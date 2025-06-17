@@ -24,6 +24,8 @@ function MyListings() {
     }
   ]);
 
+  const [shouldSubmit, setShouldSubmit] = useState(false);
+
   //this is temp, used for selecting one listing out of the listings array usestate
   const listing = listings[0]
 
@@ -425,12 +427,17 @@ function MyListings() {
                           type="datetime-local"
                           className="input input-bordered w-full"
                           placeholder="Select a date and time"
+                          id="date-time-input"
+                          value={timeSlot}
                           onChange={(event) => {
                             setTimeSlot(event.target.value);
                             console.log(timeSlot);
                           }}
                         />
-                        <button type="button" className="btn btn-primary" onClick={(event) => {
+
+                      
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                          //const value = document.getElementById("date-time-input").value;
                           setTimeSlots([...timeSlots, timeSlot]);
                         }}>
                           Add
@@ -472,7 +479,7 @@ function MyListings() {
                               onChange={(e) => {
                                 const newOptions = [...serviceOptions];
                                 newOptions[index] = e.target.value;
-                                setServiceOptions(newOptions);
+                                setServiceOptions(newOptions);  // even if i come back to change one input, the entire state array gets updated
                               }}
                               className="input input-bordered w-full"
                             />
