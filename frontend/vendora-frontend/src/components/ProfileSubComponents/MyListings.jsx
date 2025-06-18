@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
 
@@ -377,6 +377,8 @@ function MyListings() {
                       avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
                     };
 
+                    //console.log(newListing.timeSlotsAv)
+
                     try {
                       const response = await registerListing(newListing);
                       if (response && response.listing) {
@@ -431,7 +433,6 @@ function MyListings() {
                           value={timeSlot}
                           onChange={(event) => {
                             setTimeSlot(event.target.value);
-                            console.log(timeSlot);
                           }}
                         />
 
@@ -439,6 +440,7 @@ function MyListings() {
                         <button type="button" className="btn btn-primary" onClick={() => {
                           //const value = document.getElementById("date-time-input").value;
                           setTimeSlots([...timeSlots, timeSlot]);
+                          console.log(timeSlots);
                         }}>
                           Add
                         </button>
