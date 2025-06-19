@@ -64,9 +64,50 @@ function MyListings() {
 
   };
 
+  const [newListingToRegister, setNewListingToRegister] = useState({
+    name: "",
+    service: "",
+    serviceOpts: serviceOptions,
+    timeSlotsAv: timeSlots,
+    price: "",
+    description: "",
+    rating: [],
+    avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+  });
+
+
+  useEffect(() => {
+    const handleSubmission = async () => {
+      
+  
+      try {
+        const response = await registerListing(newListingToRegister);
+        if (response && response.listing) {
+          setShowListingSuccess(true);
+          console.log("listing added to database");
+        }
+      } catch (error) {
+        console.log({ "error": error });
+      }
+  
+      setListings((prev) => [...prev, newListingToRegister]);
+    };
+
+    if (shouldSubmit) {
+      handleSubmission();
+      setShouldSubmit(false); 
+    }
+
+  }, [shouldSubmit]);
+
+
+  const handleChange = (event) => {
+    const {name, value} = event.target;
+      setNewListingToRegister({...newListingToRegister, [name]: value});
+  }
+
   return (
     <>
-
       <div className="p-4 space-y-4">
         {/* Title + Add Button */}
         <div className="flex items-center justify-between">
@@ -363,34 +404,6 @@ function MyListings() {
 
                 {/* Form */}
                 <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-
-                    const newListing = {
-                      name: e.target.name.value,
-                      service: e.target.service.value,
-                      serviceOpts: serviceOptions,
-                      timeSlotsAv: timeSlots,
-                      price: parseFloat(e.target.price.value),
-                      description: e.target.description.value,
-                      rating: [],
-                      avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
-                    };
-
-                    //console.log(newListing.timeSlotsAv)
-
-                    try {
-                      const response = await registerListing(newListing);
-                      if (response && response.listing) {
-                        setShowListingSuccess(true);
-                        console.log("listing added to database");
-                      }
-                    } catch (error) {
-                      console.log({ "error": error });
-                    }
-
-                    setListings((prev) => [...prev, newListing]);
-                  }}
                   className="space-y-5"
                 >
 
@@ -398,25 +411,25 @@ function MyListings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-lg font-medium text-gray-700">Your Name</label>
-                      <input name="name" type="text" required className="input input-bordered w-full" />
+                      <input name="name" type="text" required className="input input-bordered w-full" value={newListingToRegister.name} onChange={handleChange}/>
                     </div>
 
                     <div>
                       <label className="block text-lg font-medium text-gray-700">Service Title</label>
-                      <input name="service" type="text" required className="input input-bordered w-full" />
+                      <input name="service" type="text" required className="input input-bordered w-full" value={newListingToRegister.service} onChange={handleChange}/>
                     </div>
                   </div>
 
                   {/* Section: Price */}
                   <div>
                     <label className="block text-m font-medium text-gray-700">Rate per Hour ($)</label>
-                    <input name="price" type="number" min="1" required className="input input-bordered w-full" />
+                    <input name="price" type="number" min="1" required className="input input-bordered w-full" value={newListingToRegister.price} onChange={handleChange}/>
                   </div>
 
                   {/* Section: Description */}
                   <div>
                     <label className="block text-m font-medium text-gray-700">Service Description</label>
-                    <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" />
+                    <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" value={newListingToRegister.description} onChange={handleChange}/>
                   </div>
 
                   <div className="space-y-2">
@@ -436,11 +449,17 @@ function MyListings() {
                           }}
                         />
 
-                      
+
                         <button type="button" className="btn btn-primary" onClick={() => {
                           //const value = document.getElementById("date-time-input").value;
-                          setTimeSlots([...timeSlots, timeSlot]);
-                          console.log(timeSlots);
+                          const updatedTimeSlots = [...timeSlots, timeSlot]
+                          setTimeSlots(updatedTimeSlots);
+                          setNewListingToRegister(prev => ({
+                            ...prev,
+                            timeSlotsAv: updatedTimeSlots
+                          }));
+                          console.log("Time Slot", timeSlot)
+                          console.log("Time Slots", timeSlots);
                         }}>
                           Add
                         </button>
@@ -448,8 +467,8 @@ function MyListings() {
 
                       {/* Display of added time slots — can later be connected to state */}
                       <div className="flex flex-col gap-2 mt-2">
-                        {timeSlots.map((slot) => (
-                          <div className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">{parseTime(slot)}</div>
+                        {timeSlots.map((slot, index) => (
+                          <div key={index} className="p-2 rounded-lg border bg-gray-50 text-sm text-gray-700">{parseTime(slot)}</div>
                         ))}
                       </div>
                     </div>
@@ -544,7 +563,9 @@ function MyListings() {
                     <button type="button" onClick={() => setAddListing(false)} className="btn btn-ghost">
                       Cancel
                     </button>
-                    <button type="submit" className="btn btn-primary">
+                    <button className="btn btn-primary" onClick={(e) => {
+                      e.preventDefault();
+                      setShouldSubmit(true)}}>
                       Publish Listing
                     </button>
                   </div>
