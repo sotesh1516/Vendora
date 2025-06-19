@@ -14,13 +14,13 @@ const listingSchema = new mongoose.Schema({
     },
 
     serviceOptions: {
-        type: Array,
+        type: [String],
         required: true,
     },
 
-    timeSlots: [{
-        type: String,
-    }],
+    timeSlots: {
+        type: [String],
+    },
 
     ratePerHr: {
         type: Number,
