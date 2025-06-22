@@ -26,7 +26,7 @@ export default function Navbar() {
         tabIndex={0}
         className="menu menu-m dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
         <li><Link to="/profile">Profile</Link></li>
-        <li><Link>Settings</Link></li>
+        <li><Link to="/settings">Settings</Link></li>
         <li><Link>Logout</Link></li>
       </ul>
     </div>
