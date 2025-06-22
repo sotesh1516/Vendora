@@ -6,6 +6,11 @@ function MyBookings() {
   const navigate = useNavigate();
 
   const [reschedule, setReschedule] = useState();
+
+  const handleClick = () => {
+    
+  };
+
   return (
     <div>
       <div>
@@ -45,7 +50,7 @@ function MyBookings() {
         </div>
       </div>
 
-      {/* Repeat this block for each booking */}
+      {/* Repeat this bldow for each booking */}
     </div>
   </div>
 
