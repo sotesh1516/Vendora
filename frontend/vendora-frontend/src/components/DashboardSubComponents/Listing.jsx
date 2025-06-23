@@ -1,17 +1,39 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Navbar from '../Navbar';
 import { useLocation } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
 
 function Listing() {
   const location = useLocation();
   const listing = location.state?.listing;
 
+  //this will be used to access a user transferred through useContext when signed in.
+  const signedInUser = useContext(UserContext);
+
+  const localCopyOfSignedInUser = signedInUser.user;
+  //i dont think i did the useState setter, but i will keep it for now
+  const localCopyOfSetSignedInUser = signedInUser.setUser;
+
   const [booking, setBooking] = useState(false);
+
+  const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
+    listingId: listing._id,
+    customerId: localCopyOfSignedInUser._id,
+    customerSummary: "",
+    timeSlot: selectedTimeSlot,
+    status: "pending",
+  });
+
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
 
   };
+
+  const handleBookingSubmission = () => {
+
+  }
 
   return (
     <div className="bg-white min-h-screen">
@@ -108,10 +130,10 @@ function Listing() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Select a Time</label>
-              <select className="select select-bordered w-full">
-                <option value="">-- Choose a time --</option>
+              <select className="select select-bordered w-full" >
+                <option onChange={(e) => {setSelectedTimeSlot(e.target.value)}}>-- Choose a time --</option>
                 {(listing.timeSlots || []).map((slot, i) => (
-                  <option key={i}>{parseTime(slot)}</option>
+                  <option key={i} value={slot}>{parseTime(slot)}</option>
                 ))}
               </select>
             </div>
@@ -122,12 +144,16 @@ function Listing() {
                 className="textarea textarea-bordered w-full"
                 rows="3"
                 placeholder="Describe your issue or goal..."
+                value={newBookingToBeRegistered.customerSummary}
+                onChange={(event) => {
+                  setNewBookingToBeRegistered(event.target.value);
+                }}
               ></textarea>
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t">
               <button className="btn btn-ghost">Cancel</button>
-              <button className="btn btn-primary text-white">Confirm Booking</button>
+              <button className="btn btn-primary text-white" onClick={handleBookingSubmission}>Confirm Booking</button>
             </div>
           </div>
         </div>
