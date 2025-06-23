@@ -5,7 +5,7 @@ import { UserContext } from "./contexts/UserContext";  //defined using createCon
 
 export default function SignIn() {
     const navigate = useNavigate();
-
+    //this could be a problem
     const {user: userFromContext, setUser: setUserfromContext} = useContext(UserContext);
 
     const [user, setUser] = useState({

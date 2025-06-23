@@ -6,6 +6,11 @@ const listingSchema = new mongoose.Schema({
         required: true,
         minlength: 3,
     },
+
+    serviceProviderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
     
     serviceName: {
         type: String,
