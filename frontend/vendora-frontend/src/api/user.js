@@ -34,7 +34,7 @@ export const signInUser = async (inComingUser) => {
     
         if (result.status == 200)
         {
-            console.log("User registered successfully:", result.data);
+            console.log("User signed in successfully:", result.data);
             return result.data;
         }
         else {

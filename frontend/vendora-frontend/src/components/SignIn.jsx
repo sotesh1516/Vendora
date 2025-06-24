@@ -77,6 +77,7 @@ export default function SignIn() {
         //we use JSON.stringify for visibility
         window.localStorage.setItem("logged_in_user", JSON.stringify(response.user));
         setUserfromContext(response.user);
+        console.log(response.user);
         navigate("/dashboard");
       }
     } catch (error) {

@@ -114,6 +114,7 @@ const signIn = async (req, res) => {
       name: userFound.name,
       username: userFound.username,
       email: userFound.email,
+      id: userFound._id,
     };
 
     return res

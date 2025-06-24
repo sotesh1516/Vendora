@@ -23,7 +23,7 @@ const bookingSchema = new mongoose.Schema({
     },
 
     status: {
-        type: string,
+        type: String,
         enum: ["pending", "accepted", "completed", "not approved"],
         required: true,
     }
@@ -34,4 +34,4 @@ const bookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model("Booking", bookingSchema);
 
-module.exports = { Booking }
+module.exports = Booking 
