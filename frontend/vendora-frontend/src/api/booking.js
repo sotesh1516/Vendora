@@ -3,7 +3,7 @@ import axios from "axios";
 export const bookListing = async (newBooking) => {
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/listing/create",
+      "http://127.0.0.1:8000/api/booking/create",
       {
         listingId: newBooking.listingId,
         customerId: newBooking.customerId,
@@ -17,5 +17,7 @@ export const bookListing = async (newBooking) => {
         console.log("You have successfully booked the listing", response.data);
       return response.data;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };

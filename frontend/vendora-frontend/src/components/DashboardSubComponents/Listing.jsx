@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import Navbar from '../Navbar';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
+import { bookListing } from '../../api/booking';
 
 function Listing() {
   const location = useLocation();
@@ -16,6 +17,8 @@ function Listing() {
 
   const [booking, setBooking] = useState(false);
 
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
     listingId: listing._id,
     customerId: localCopyOfSignedInUser._id,
@@ -24,15 +27,24 @@ function Listing() {
     status: "pending",
   });
 
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
 
   };
 
-  const handleBookingSubmission = () => {
+  const handleBookingSubmission = async () => {
+    try {
+      const registeredBooking = await bookListing(newBookingToBeRegistered);
 
+    if (registeredBooking && registeredBooking.booking)
+    {
+
+    }
+    } catch (error) {
+      console.error("Error during booking", error);
+    }
+    
   }
 
   return (
