@@ -17,11 +17,13 @@ function Listing() {
 
   const [booking, setBooking] = useState(false);
 
+  const [showBookingSuccess, setShowBookingSuccess] = useState(false);
+
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
     listingId: listing._id,
-    customerId: localCopyOfSignedInUser._id,
+    customerId: localCopyOfSignedInUser.id,
     customerSummary: "",
     timeSlot: selectedTimeSlot,
     status: "pending",
@@ -35,16 +37,16 @@ function Listing() {
 
   const handleBookingSubmission = async () => {
     try {
+      console.log("Selected time slot:", newBookingToBeRegistered);
       const registeredBooking = await bookListing(newBookingToBeRegistered);
 
-    if (registeredBooking && registeredBooking.booking)
-    {
-
-    }
+      if (registeredBooking && registeredBooking.booking) {
+        setShowBookingSuccess(true);
+      }
     } catch (error) {
       console.error("Error during booking", error);
     }
-    
+
   }
 
   return (
@@ -142,8 +144,13 @@ function Listing() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Select a Time</label>
-              <select className="select select-bordered w-full" >
-                <option onChange={(e) => {setSelectedTimeSlot(e.target.value)}}>-- Choose a time --</option>
+              <select className="select select-bordered w-full" value={selectedTimeSlot} onChange={
+                (e) => {
+                  //i dont think we need the selectedTimeSlot state but we will keep since since it might affect the UI
+                  setSelectedTimeSlot(e.target.value);
+                  setNewBookingToBeRegistered({ ...newBookingToBeRegistered, timeSlot: e.target.value });
+                }}>
+                <option>-- Choose a time --</option>
                 {(listing.timeSlots || []).map((slot, i) => (
                   <option key={i} value={slot}>{parseTime(slot)}</option>
                 ))}
@@ -158,7 +165,7 @@ function Listing() {
                 placeholder="Describe your issue or goal..."
                 value={newBookingToBeRegistered.customerSummary}
                 onChange={(event) => {
-                  setNewBookingToBeRegistered(event.target.value);
+                  setNewBookingToBeRegistered({ ...newBookingToBeRegistered, customerSummary: event.target.value });
                 }}
               ></textarea>
             </div>
@@ -170,6 +177,21 @@ function Listing() {
           </div>
         </div>
       )}
+      {showBookingSuccess && (<div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-60">
+          <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
+            <h3 className="font-bold text-lg text-green-600">Success!</h3>
+            <p className="py-4">Your booking has been added successfully.</p>
+            <div className="modal-action">
+              <button className="btn btn-success" onClick={() => {
+                setShowBookingSuccess(false);
+                setBooking(false);
+                //setAddListing(false);
+              }}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>)}
     </div>
   );
 }

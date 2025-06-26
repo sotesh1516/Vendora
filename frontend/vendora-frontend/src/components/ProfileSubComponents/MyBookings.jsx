@@ -8,7 +8,7 @@ function MyBookings() {
   const [reschedule, setReschedule] = useState();
 
   const handleClick = () => {
-    
+
   };
 
   return (

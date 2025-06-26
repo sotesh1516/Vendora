@@ -28,14 +28,14 @@ const userSchema = new mongoose.Schema({
         minlength: 8
     },
 
-    myListing: {
+    myListings: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Booking",
-    },
+        ref: "Listing",
+    }],
 
     myBookings: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Listing",
+        ref: "Booking",
 
     }],
 
