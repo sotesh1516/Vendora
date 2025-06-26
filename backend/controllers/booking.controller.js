@@ -2,7 +2,8 @@ const express = require("express");
 const Booking = require("../models/booking.model");
 
 const createBooking = async (req, res) => {
-    //parse the req body
+    try {
+        //parse the req body
     //make sure the necessary attributes are not empty
     //
     const newBooking = req.body;
@@ -15,6 +16,19 @@ const createBooking = async (req, res) => {
         booking: savedBooking,
         message: "Booking has been successfully created",
       });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal server error during listing creation" }); 
+    }
+    
+}
+
+const fetchBookings = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
 }
 
 module.exports = {createBooking};
