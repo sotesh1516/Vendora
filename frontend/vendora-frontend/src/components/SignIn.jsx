@@ -1,5 +1,5 @@
 import React, { useContext, useState, userContext } from "react";
-import { signInUser } from "../api/user";
+import { signInUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";  //defined using createContext in UserContext.js
 
