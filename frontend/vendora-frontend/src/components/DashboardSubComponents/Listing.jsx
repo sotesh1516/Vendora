@@ -3,6 +3,7 @@ import Navbar from '../Navbar';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
+import { updateMyBooking } from '../../api/user';
 
 function Listing() {
   const location = useLocation();
@@ -42,6 +43,16 @@ function Listing() {
 
       if (registeredBooking && registeredBooking.booking) {
         setShowBookingSuccess(true);
+        const infoToBeUpdated = {
+          userId: signedInUser._id,
+          bookingId: registeredBooking.booking._id,
+        };
+
+        const check = await updateMyBooking(infoToBeUpdated);//-> this might be a problem
+        
+        if (check.status == 200) {
+          return check.updatedUser;
+        }
       }
     } catch (error) {
       console.error("Error during booking", error);
