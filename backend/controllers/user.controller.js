@@ -11,7 +11,7 @@ const updateUserBookingList = async (req, res) => {
       { new: true }
     ).exec();
 
-    if (!existingUser) {
+    if (!existingUserQuery) {
       return res.status(401).json({ error: "User not found" });
     }
 
@@ -26,6 +26,28 @@ const updateUserBookingList = async (req, res) => {
     return res.status(500).json({ error: "Internal server error during mybooking update" });
   }
 };
+
+//finds a user document by the provided id
+//populates the "myBookings" attribute by using the stored objectid into an actual object/document
+const fetchUserBookingList = async (req, res) => {
+  try {
+    const fetchInformation = req.body;
+    const userWithBooking = await User.findById({_id: fetchInformation.userId}).populate('listingId').populate('myBookings').exec();
+
+    if (!userWithBooking)
+    {
+      res.status(401).json({error: "User not found"});
+    }
+
+    res.status(200).json({
+      user: userWithBooking,
+      message: "User with the booking list has been successfully fetched",
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error during mybooking update" });
+  }
+}
 
 const updateUserListingList = async (req, res) => {
   try {
@@ -49,4 +71,4 @@ const updateUserListingList = async (req, res) => {
   }
 };
 
-module.exports = { updateUserBookingList, updateUserListingList };
+module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList };
