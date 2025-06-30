@@ -3,7 +3,7 @@ import Navbar from '../Navbar';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
-import { updateMyBooking } from '../../api/user';
+import { updateUserBooking } from '../../api/user';
 
 function Listing() {
   const location = useLocation();
@@ -27,7 +27,7 @@ function Listing() {
     customerId: localCopyOfSignedInUser.id,
     customerSummary: "",
     timeSlot: selectedTimeSlot,
-    status: "pending",
+    status: "booked",  //start with a simple case of two enums for now
   });
 
 
@@ -44,15 +44,23 @@ function Listing() {
       if (registeredBooking && registeredBooking.booking) {
         setShowBookingSuccess(true);
         const infoToBeUpdated = {
-          userId: signedInUser._id,
+          userId: localCopyOfSignedInUser.id,
           bookingId: registeredBooking.booking._id,
         };
 
-        const check = await updateMyBooking(infoToBeUpdated);//-> this might be a problem
+        const check = await updateUserBooking(infoToBeUpdated);//-> this might be a problem
         
-        if (check.status == 200) {
+        if (check && check.updatedUser) {
           return check.updatedUser;
         }
+        else {
+          console.log({error: "error during user booking update"});
+        }
+
+
+      }
+      else {
+        console.log({error: "error during booking fetch"});
       }
     } catch (error) {
       console.error("Error during booking", error);
