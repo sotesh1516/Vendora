@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { fetchUserBookings } from '../../api/user';
@@ -13,11 +13,12 @@ function MyBookings() {
 
   };
 
-  const signedInUser = useEffect(UserContext);
+  const signedInUser = useContext(UserContext);
 
   //this is to get access to the signed in user from useContext
-  const localCopyOfSignedInUser = signedInUser.user;
-  const setLocalCopyOfSignedUser = signedInUser.setUser;
+  // const localCopyOfSignedInUser = signedInUser.user;
+  //const setLocalCopyOfSignedUser = signedInUser.setUser;
+  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 
   //this is to expand the scope of fetched user in the useEffect and keep a copy of myBooking array
   const [fetchedUserBookings, setFetchedUserBookings] = useState([]);
@@ -27,20 +28,26 @@ function MyBookings() {
   };
 
   useEffect(() => {
-    const fetch = async (info) => {
+    const fetchUser = async (info) => {
       const response = await fetchUserBookings(info);
 
-      if (response && response.data)
+      if (response && response.user)
       {
-        return response.data;
+        setFetchedUserBookings(response.user.myBookings);
       }
 
       return {};
     };
 
-    const fetchedUser = fetch(userInfo);
-    setFetchedUserBookings(fetchedUser.myBookings);
+    fetchUser(userInfo);
+    
   }, []);
+
+  const parseTime = (isoTime) => {
+    return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
+
+  };
+
 
   return (
     <div>
@@ -49,8 +56,8 @@ function MyBookings() {
   {/* Example: Upcoming Bookings */}
   <div>
     <h2 className="text-lg font-bold mb-2">Upcoming</h2>
-    {fetchedUserBookings.map((booking)=> (
-      <div className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition" onClick={() => {
+    {fetchedUserBookings.map((booking, index)=> (
+      <div key={index} className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition" onClick={() => {
         navigate("/dashboard");
       }
       }>
@@ -70,7 +77,7 @@ function MyBookings() {
             <div className="font-semibold text-sm">{booking.listingId.serviceProvider}</div>
             <div className="text-xs uppercase font-semibold text-gray-500">{booking.listingId.serviceName}</div>
             <p className="text-xs text-gray-600 mt-1">
-              Monday, May 27 at 3:00 PM • 1 hour session • $15/hr
+             {`${parseTime(booking.timeslot)} • 1 hour session • $${booking.listingId.ratePerHr}`}
             </p>
           </div>
   
@@ -83,7 +90,7 @@ function MyBookings() {
   
         {/* Repeat this bldow for each booking */}
       </div>
-    ))};
+    ))}
     
   </div>
 
