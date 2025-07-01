@@ -1,3 +1,4 @@
+const Booking = require("../models/booking.model");
 const User = require("../models/user.model");
 
 const updateUserBookingList = async (req, res) => {
@@ -32,14 +33,18 @@ const updateUserBookingList = async (req, res) => {
 const fetchUserBookingList = async (req, res) => {
   try {
     const fetchInformation = req.body;
-    const userWithBooking = await User.findById({_id: fetchInformation.userId}).populate('listingId').populate('myBookings').exec();
+    const userWithBooking = await User.findById(fetchInformation.userId).populate('myBookings').exec();
 
     if (!userWithBooking)
     {
-      res.status(401).json({error: "User not found"});
+      return res.status(401).json({error: "User not found"});
     }
 
-    res.status(200).json({
+    const userBookings = userWithBooking.myBookings;
+
+    await Booking.populate(userBookings, {path: "listingId"});
+
+    return res.status(200).json({
       user: userWithBooking,
       message: "User with the booking list has been successfully fetched",
     })
