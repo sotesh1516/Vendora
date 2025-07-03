@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
+import { updateUserListing } from '../../api/user';
 
 function MyListings() {
 
@@ -75,6 +76,7 @@ function MyListings() {
     avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
   });
 
+  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 
   useEffect(() => {
     const handleSubmission = async () => {
@@ -82,8 +84,15 @@ function MyListings() {
   
       try {
         const response = await registerListing(newListingToRegister);
+        //add the listingId to the user's array
         if (response && response.listing) {
           setShowListingSuccess(true);
+          updateUserListing(
+            {
+              userId: localCopyOfSignedInUser.id,
+              listingId: response.listing.id,
+            }
+          );
           console.log("listing added to database");
         }
       } catch (error) {
@@ -99,6 +108,11 @@ function MyListings() {
     }
 
   }, [shouldSubmit]);
+
+
+  useEffect(() => {
+    
+  }, []);
 
 
   const handleChange = (event) => {

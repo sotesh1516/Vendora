@@ -35,8 +35,6 @@ function MyBookings() {
       {
         setFetchedUserBookings(response.user.myBookings);
       }
-
-      return {};
     };
 
     fetchUser(userInfo);
