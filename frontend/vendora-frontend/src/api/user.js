@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const updateUserBooking = async (bookingInfo) => {
+export const updateUserBooking = async (bookingUpdateInfo) => {
     try {
         const response = await axios.post('http://127.0.0.1:8000/api/user/mybooking/update', {
-            userId: bookingInfo.userId,
-            bookingId: bookingInfo.bookingId,
+            userId: bookingUpdateInfo.userId,
+            bookingId: bookingUpdateInfo.bookingId,
         });
     
         if (response.status == 200) {
@@ -14,7 +14,7 @@ export const updateUserBooking = async (bookingInfo) => {
         return {error: "an error has occured during my booking update"};
     } catch (error) {
         console.error("Error during my booking update");
-        return {error: "My bookinh update failed. Please try again"};
+        return {error: "My booking update failed. Please try again"};
     }
    
 };
@@ -27,7 +27,7 @@ export const fetchUserBookings = async (userInfo) => {
 
         if (response.status == 200)
         {
-            console.log("My booking successfully fetched", response.data);
+            //console.log("My booking successfully fetched", response.status);
             return response.data;
         }
 
@@ -38,4 +38,21 @@ export const fetchUserBookings = async (userInfo) => {
         return {error: "My booking fetch failed. Please try again"};
     }
 }
+
+export const updateUserListing = async (listingUpdateInfo) => {
+    try {
+        const response = axios.post('', {
+            userId: listingUpdateInfo.userId,
+            listingId: listingUpdateInfo.listingId
+        });
+
+        if (response && response.data)
+        {
+            return response.data;
+        }
+    } catch (error) {
+        console.error("Error during my listing update");
+        return {error: "My listing update failed. Please try again"};
+    }
+};
 
