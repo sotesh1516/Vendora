@@ -27,7 +27,7 @@ const createListing = async (req, res) => {
     }
 
     const listingToSave = new Listing(newListing);
-    const savedListing = listingToSave.save();
+    const savedListing = await listingToSave.save();
     return res.status(200).json({
       listing: savedListing,
       message: "Listing has been successfully created",

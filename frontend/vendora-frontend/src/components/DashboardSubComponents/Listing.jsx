@@ -45,7 +45,7 @@ function Listing() {
         setShowBookingSuccess(true);
         const infoToBeUpdated = {
           userId: localCopyOfSignedInUser.id,
-          bookingId: registeredBooking.booking._id,
+          bookingId: registeredBooking.booking.id,
         };
 
         const check = await updateUserBooking(infoToBeUpdated);//-> this might be a problem

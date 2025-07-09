@@ -41,15 +41,16 @@ export const fetchUserBookings = async (userInfo) => {
 
 export const updateUserListing = async (listingUpdateInfo) => {
     try {
-        const response = axios.post('', {
+        const response = await axios.post('http://127.0.0.1:8000/api/user/mylisting/update', {
             userId: listingUpdateInfo.userId,
             listingId: listingUpdateInfo.listingId
         });
 
-        if (response && response.data)
-        {
+        if (response.status == 200) {
             return response.data;
         }
+        console.error("An error has occured during my listing update", response.status);
+        return {error: "an error has occured during my listing update"};
     } catch (error) {
         console.error("Error during my listing update");
         return {error: "My listing update failed. Please try again"};

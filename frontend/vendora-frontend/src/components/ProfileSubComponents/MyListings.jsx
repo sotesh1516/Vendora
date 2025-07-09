@@ -80,44 +80,51 @@ function MyListings() {
 
   useEffect(() => {
     const handleSubmission = async () => {
-      
-  
+
+
       try {
         const response = await registerListing(newListingToRegister);
         //add the listingId to the user's array
         if (response && response.listing) {
+          console.log(response.listing);
           setShowListingSuccess(true);
-          updateUserListing(
-            {
-              userId: localCopyOfSignedInUser.id,
-              listingId: response.listing.id,
-            }
-          );
+          const infoToBeUpdated = {
+            userId: localCopyOfSignedInUser.id,
+            listingId: response.listing._id,  //when doing the same exact thing on booking i did id and it worked but here i have to use _id which makes sense since i am not modifying the database response
+          };
+
+          console.log(infoToBeUpdated);
+          const updateResponse = await updateUserListing(infoToBeUpdated);
+
           console.log("listing added to database");
+          if (updateResponse && updateResponse.updatedUser) {
+            return check.updatedUser;
+          }
+
         }
       } catch (error) {
         console.log({ "error": error });
       }
-  
+
       setListings((prev) => [...prev, newListingToRegister]);
     };
 
     if (shouldSubmit) {
       handleSubmission();
-      setShouldSubmit(false); 
+      setShouldSubmit(false);
     }
 
   }, [shouldSubmit]);
 
 
   useEffect(() => {
-    
+
   }, []);
 
 
   const handleChange = (event) => {
-    const {name, value} = event.target;
-      setNewListingToRegister({...newListingToRegister, [name]: value});
+    const { name, value } = event.target;
+    setNewListingToRegister({ ...newListingToRegister, [name]: value });
   }
 
   return (
@@ -425,25 +432,25 @@ function MyListings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-lg font-medium text-gray-700">Your Name</label>
-                      <input name="name" type="text" required className="input input-bordered w-full" value={newListingToRegister.name} onChange={handleChange}/>
+                      <input name="name" type="text" required className="input input-bordered w-full" value={newListingToRegister.name} onChange={handleChange} />
                     </div>
 
                     <div>
                       <label className="block text-lg font-medium text-gray-700">Service Title</label>
-                      <input name="service" type="text" required className="input input-bordered w-full" value={newListingToRegister.service} onChange={handleChange}/>
+                      <input name="service" type="text" required className="input input-bordered w-full" value={newListingToRegister.service} onChange={handleChange} />
                     </div>
                   </div>
 
                   {/* Section: Price */}
                   <div>
                     <label className="block text-m font-medium text-gray-700">Rate per Hour ($)</label>
-                    <input name="price" type="number" min="1" required className="input input-bordered w-full" value={newListingToRegister.price} onChange={handleChange}/>
+                    <input name="price" type="number" min="1" required className="input input-bordered w-full" value={newListingToRegister.price} onChange={handleChange} />
                   </div>
 
                   {/* Section: Description */}
                   <div>
                     <label className="block text-m font-medium text-gray-700">Service Description</label>
-                    <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" value={newListingToRegister.description} onChange={handleChange}/>
+                    <textarea name="description" rows="4" required className="textarea textarea-bordered w-full" placeholder="What do you offer, and who is it for?" value={newListingToRegister.description} onChange={handleChange} />
                   </div>
 
                   <div className="space-y-2">
@@ -579,7 +586,8 @@ function MyListings() {
                     </button>
                     <button className="btn btn-primary" onClick={(e) => {
                       e.preventDefault();
-                      setShouldSubmit(true)}}>
+                      setShouldSubmit(true)
+                    }}>
                       Publish Listing
                     </button>
                   </div>
