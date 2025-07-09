@@ -57,7 +57,7 @@ const fetchUserBookingList = async (req, res) => {
 const updateUserListingList = async (req, res) => {
   try {
     const updatedInformation = req.body;
-    const existingUserQuery = User.findByIdAndUpdate(
+    const existingUserQuery = await User.findByIdAndUpdate(
       updatedInformation.userId,
       {
         $push: { myListings: updatedInformation.listingId }
