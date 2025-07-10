@@ -52,7 +52,7 @@ const fetchUserBookingList = async (req, res) => {
     console.log(error);
     return res.status(500).json({ error: "Internal server error during mybooking update" });
   }
-}
+};
 
 const updateUserListingList = async (req, res) => {
   try {
@@ -76,4 +76,27 @@ const updateUserListingList = async (req, res) => {
   }
 };
 
-module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList };
+const fetchUserListingList = async (req, res) => {
+  try {
+    const fetchInformation = req.body;
+    const userWithListing = await User.findById(fetchInformation.userId).populate('myListings').exec();
+
+    if (!userWithListing)
+    {
+      return res.status(401).json({error: "User not found"});
+    }
+
+    //const userListings = userWithListings.myListings;
+    //await Booking.populate(userBookings, {path: "listingId"});
+
+    return res.status(200).json({
+      user: userWithListing,
+      message: "User with the listing list has been successfully fetched",
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error during mybooking update" });
+  }
+};
+
+module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList };

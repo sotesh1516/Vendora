@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
-import { updateUserListing } from '../../api/user';
+import { fetchUserListings, updateUserListing } from '../../api/user';
 
 function MyListings() {
 
@@ -118,7 +118,20 @@ function MyListings() {
 
 
   useEffect(() => {
+    const fetchCompleteUser = async (fetchParams) => {
+        const check = await fetchUserListings(fetchParams);
 
+        if (check && check.user)
+        {
+            setListings(check.user.myListings);
+        }
+    };
+
+    const userInfo = {
+      userId: localCopyOfSignedInUser.id,
+    };
+
+    fetchCompleteUser(userInfo);
   }, []);
 
 
@@ -153,10 +166,11 @@ function MyListings() {
             </svg>
           </button>
         </div>
-
-        {/* Listing card */}
+        {listings.map((listing)=> (
+          
         <div onClick={() => setSelectedListing(listing)} className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition"
         >
+          {/* Listing card */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between  transition px-1 py-3 rounded-lg gap-4">
             {/* Avatar */}
             <div className="flex-shrink-0">
@@ -169,14 +183,14 @@ function MyListings() {
 
             {/* Info */}
             <div className="flex-grow">
-              <div className="font-semibold text-sm">Amina Yusuf</div>
-              <div className="text-xs uppercase font-semibold opacity-60">Math Tutoring</div>
+              <div className="font-semibold text-sm">{listing.serviceProvider}</div>
+              <div className="text-xs uppercase font-semibold opacity-60">{listing.serivceName}</div>
               <div className="text-sm mt-1">
                 <span>⭐ 4.8</span>
                 <span className="text-gray-400 ml-1">(32)</span>
               </div>
               <p className="text-xs text-gray-600 mt-1 max-w-md">
-                Offering help with calculus, linear algebra, and statistics. Ideal for undergrads or test prep. Sessions start at $15/hr.
+                {listing.description}
               </p>
             </div>
 
@@ -219,6 +233,8 @@ function MyListings() {
             </div>
           </div>
         </div>
+        ))}
+        
 
         {/* this is where the modal for a listing activates */}
         {selectedListing && (
