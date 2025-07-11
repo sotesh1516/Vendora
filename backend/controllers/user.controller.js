@@ -3,11 +3,11 @@ const User = require("../models/user.model");
 
 const updateUserBookingList = async (req, res) => {
   try {
-    const updatedInformation = req.body;
+    const updateInformation = req.body;
     const existingUserQuery = await User.findByIdAndUpdate(
-      updatedInformation.userId,
+      updateInformation.userId,
       {
-        $push: { myBookings: updatedInformation.bookingId },
+        $push: { myBookings: updateInformation.bookingId },
       },
       { new: true }
     ).exec();
@@ -56,11 +56,11 @@ const fetchUserBookingList = async (req, res) => {
 
 const updateUserListingList = async (req, res) => {
   try {
-    const updatedInformation = req.body;
+    const updateInformation = req.body;
     const existingUserQuery = await User.findByIdAndUpdate(
       updatedInformation.userId,
       {
-        $push: { myListings: updatedInformation.listingId }
+        $push: { myListings: updateInformation.listingId }
       }, {new: true}
     ).exec();
 
@@ -99,4 +99,26 @@ const fetchUserListingList = async (req, res) => {
   }
 };
 
-module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList };
+
+const updateUserFavoriteList = async (req, res) => {
+  try {
+    const updateInformation = req.body;
+    const existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$push: {myFavorites: updateInformation.listingId}}, {new:true});
+
+    if (!existingUserQuery) {
+      return res.status(401).json({error: "User not found"});
+    }
+    res.status(200).json({
+      updatedUser: existingUserQuery,
+      message: "My favorite list has been updated successfully",
+    })
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error during myfavorite update" });
+  }
+  
+
+};
+
+module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList, updateUserFavoriteList };
