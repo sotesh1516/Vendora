@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
 
     }],
 
+    myFavorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Listing",
+    }],
+
     createdAt: {
         type: Date,
         default: Date.now
