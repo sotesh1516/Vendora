@@ -121,4 +121,24 @@ const updateUserFavoriteList = async (req, res) => {
 
 };
 
-module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList, updateUserFavoriteList };
+const fetchUserFavoriteList = async (req, res) => {
+  try {
+    const fetchInformation = req.body;
+    const userWithFavorite = User.findById(fetchInformation).populate('myFavorite').exec();
+
+    if (!userWithFavorite)
+    {
+      res.status(401).json({error: "User not found"});
+    }
+
+    res.status(200).json({
+      user: userWithListing,
+      message: "User with the favorite list has been successfully fetched",
+    });
+
+  } catch (error) {
+    
+  }
+}
+
+module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList, updateUserFavoriteList, fetchUserFavoriteList };

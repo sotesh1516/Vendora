@@ -78,3 +78,26 @@ export const fetchUserListings = async (userInfo) => {
     }
 };
 
+export const fetchUserFavorites = async () => {
+
+};
+
+export const updateUserFavorites = async (favoriteUpdateInfo) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:8000/api/user/mylistings/fetch", {
+            userId: favoriteUpdateInfo.userId,
+            listingId: favoriteUpdateInfo.listingId,
+        });
+
+        if (response.status == 200)
+        {
+            return response.data;
+        }
+        console.error("An error has occured during my favorite update", response.status);
+        return {error: "an error has occured during my favorite update"};
+    } catch (error) {
+        console.error("Error during my favorite update");
+        return {error: "My favorite update failed. Please try again"};
+    }
+};
+
