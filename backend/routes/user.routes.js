@@ -7,7 +7,7 @@ router.post("/mybooking/update", updateUserBookingList);
 router.post("/mylisting/update", updateUserListingList);
 router.post("/mybookings/fetch", fetchUserBookingList);
 router.post("/mylistings/fetch", fetchUserListingList);
-router.post("/myFavorites/fetch", fetchUserFavoriteList);
-router.post("/myFavorite/update", updateUserFavoriteList);
+router.post("/myfavorites/fetch", fetchUserFavoriteList);
+router.post("/myfavorite/update", updateUserFavoriteList);
 
 module.exports = router;
