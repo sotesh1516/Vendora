@@ -84,7 +84,7 @@ export const fetchUserFavorites = async () => {
 
 export const updateUserFavorites = async (favoriteUpdateInfo) => {
     try {
-        const response = await axios.post("http://127.0.0.1:8000/api/user/mylistings/fetch", {
+        const response = await axios.post("http://127.0.0.1:8000/api/user/myfavorite/update", {
             userId: favoriteUpdateInfo.userId,
             listingId: favoriteUpdateInfo.listingId,
         });
