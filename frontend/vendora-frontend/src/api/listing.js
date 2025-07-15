@@ -28,9 +28,11 @@ export const registerListing = async (newListing) => {
   }
 };
 
-export const retrieveListings = async () => {
+export const retrieveListings = async (userInfo) => {
   try {
-    const response = await axios.get("http://127.0.0.1:8000/api/listing/fetch");
+    const response = await axios.post("http://127.0.0.1:8000/api/listing/fetch", {
+      userId: userInfo.userId,
+    });
 
     if (response.status == 200) {
       console.log("Listings have been successfully retrieved:", response.data);
