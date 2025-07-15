@@ -5,7 +5,7 @@ import { updateUserFavorites } from '../../api/user';
 function ListingCard({ listing }) {
   const navigate = useNavigate();
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(listing.isFavorite);
 
   const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 

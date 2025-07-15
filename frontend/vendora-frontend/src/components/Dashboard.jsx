@@ -12,14 +12,20 @@ export default function Dashboard() {
 
     const [listings, setListings] = useState([]);
 
+    const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+
     useEffect(() => {
         async function getListings() {
             try {
-                const response = await retrieveListings();
+                const response = await retrieveListings({userId: localCopyOfSignedInUser.id});
                 if (response && response.listings)
                 {
                     setListings(response.listings);
                     console.log("success in fetching");
+                }
+                else
+                {
+                    console.log("you know what to do");
                 }
             } catch (error) {
                 console.log({"error": error});

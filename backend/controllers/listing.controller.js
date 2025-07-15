@@ -94,14 +94,14 @@ const fetchListingsAndSetFavorites = async (req, res) => {
   try {
 
     const fetchInformation = req.body;
-    let fetchedListings = await Listing.find().limit(10); // check whether to set a limit for the fetch or just fetch as much as possible
+    let fetchedListings = await Listing.find(); // check whether to set a limit for the fetch or just fetch as much as possible
 
     let fetchedUser = await User.findById(fetchInformation.userId).populate("myFavorites");
 
     const newListingCollection = [];
 
     fetchedListings.map((listing) => {
-      const listingFound = fetchedUser.myFavorites.find((favListing) => favListing._id === listing._id);
+      const listingFound = fetchedUser.myFavorites.find((favListing) => favListing._id.toString() === listing._id.toString());
 
       const restructuredListing = {
         serviceProvider: listing.serviceProvider,
@@ -124,18 +124,17 @@ const fetchListingsAndSetFavorites = async (req, res) => {
 
     });
 
+    res.status(200).json({
+      listings: newListingCollection,
+      message: "Listings together with favorites have been successfully fetched",
+    });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal server error during custom listing(favorite included) fetch" });
   }
 }
 
-const fetchListing = async (req, res) => {
-  try {
-    const listing = await Listing.findById();
-  } catch (error) {
-    
-  }
-}
 
-module.exports = { createListing, editListing, fetchListings, fetchListingsAndSetFavorites };
+
+module.exports = { createListing, editListing, fetchListings, fetchListingsAndSetFavorites};
