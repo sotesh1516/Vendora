@@ -58,7 +58,7 @@ const updateUserListingList = async (req, res) => {
   try {
     const updateInformation = req.body;
     const existingUserQuery = await User.findByIdAndUpdate(
-      updatedInformation.userId,
+      updateInformation.userId,
       {
         $push: { myListings: updateInformation.listingId }
       }, {new: true}
@@ -103,12 +103,32 @@ const fetchUserListingList = async (req, res) => {
 const updateUserFavoriteList = async (req, res) => {
   try {
     const updateInformation = req.body;
-    const existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$push: {myFavorites: updateInformation.listingId}}, {new:true});
 
-    if (!existingUserQuery) {
+    const listingFavoriteStatusCheck = await User.findById(updateInformation.userId).populate('myFavorites');
+
+    if (!listingFavoriteStatusCheck)
+    {
       return res.status(401).json({error: "User not found"});
     }
-    res.status(200).json({
+
+    const matchFound = listingFavoriteStatusCheck.myFavorites.map((myFavorite) => updateInformation.listingId === myFavorite._id.toString());
+
+    let existingUserQuery = null;
+
+    if (matchFound) {
+      existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$pull: {myFavorites: updateInformation.listingId}}, {new:true});
+    }
+
+    else {
+      existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$push: {myFavorites: updateInformation.listingId}}, {new:true});
+    }
+
+    
+    if (!existingUserQuery) {
+      return res.status(401).json({error: "error during favorite list update (pop/push)"});
+    }
+
+    return res.status(200).json({
       updatedUser: existingUserQuery,
       message: "My favorite list has been updated successfully",
     })

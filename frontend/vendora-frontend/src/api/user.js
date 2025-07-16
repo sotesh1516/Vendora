@@ -91,6 +91,7 @@ export const updateUserFavorites = async (favoriteUpdateInfo) => {
 
         if (response.status == 200)
         {
+            console.log(response.data);
             return response.data;
         }
         console.error("An error has occured during my favorite update", response.status);
