@@ -98,7 +98,7 @@ function MyListings() {
 
           console.log("listing added to database");
           if (updateResponse && updateResponse.updatedUser) {
-            return check.updatedUser;
+            console.log(updateResponse.updatedUser);
           }
 
         }
@@ -119,12 +119,11 @@ function MyListings() {
 
   useEffect(() => {
     const fetchCompleteUser = async (fetchParams) => {
-        const check = await fetchUserListings(fetchParams);
+      const check = await fetchUserListings(fetchParams);
 
-        if (check && check.user)
-        {
-            setListings(check.user.myListings);
-        }
+      if (check && check.user) {
+        setListings(check.user.myListings);
+      }
     };
 
     const userInfo = {
@@ -144,97 +143,104 @@ function MyListings() {
     <>
       <div className="p-4 space-y-4">
         {/* Title + Add Button */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-wide">My Listings</h2>
-          <button className="btn btn-sm btn-square btn-ghost" title="Add Listing" onClick={() => {
-            setAddListing(true);
-          }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24" height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="15" x2="15" y1="12" y2="18" />
-              <line x1="12" x2="18" y1="15" y2="15" />
-              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-            </svg>
+        <div className="flex items-center justify-between border-b pb-4">
+          <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">
+            My <span className="text-blue-600">Listings</span>
+          </h2>
+          <button
+            className="btn btn-sm btn-primary rounded-lg font-medium"
+            title="Add Listing"
+            onClick={() => {
+              setAddListing(true);
+            }}
+          >
+            + New Listing
           </button>
         </div>
-        {listings.map((listing)=> (
-          
-        <div onClick={() => setSelectedListing(listing)} className="rounded-xl border border-gray-200 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition"
-        >
-          {/* Listing card */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between  transition px-1 py-3 rounded-lg gap-4">
-            {/* Avatar */}
-            <div className="flex-shrink-0">
-              <img
-                className="w-10 h-10 rounded-full object-cover"
-                src="https://img.daisyui.com/images/profile/demo/5@94.webp"
-                alt="Service Provider"
-              />
-            </div>
 
-            {/* Info */}
-            <div className="flex-grow">
-              <div className="font-semibold text-sm">{listing.serviceProvider}</div>
-              <div className="text-xs uppercase font-semibold opacity-60">{listing.serivceName}</div>
-              <div className="text-sm mt-1">
-                <span>⭐ 4.8</span>
-                <span className="text-gray-400 ml-1">(32)</span>
+        {/* Loop through each listing */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {listings.map((listing) => (
+            //card for each listing
+            <div
+              key={listing._id || listing.id}
+              onClick={() => setSelectedListing(listing)}
+              className="bg-white rounded-xl border hover:shadow-lg hover:border-blue-300 transition cursor-pointer p-5 flex flex-col"
+            >
+              {/* Listing card */}
+              <div className="flex items-center gap-4 mb-4">
+                {/* Avatar */}
+                <img
+                  className="w-12 h-12 rounded-full object-cover border"
+                  src={listing.avatar || "https://img.daisyui.com/images/profile/demo/5@94.webp"}
+                  alt="Service Provider"
+                />
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">{listing.serviceProvider || listing.name}</p>
+                  <p className="text-xs uppercase font-semibold opacity-60">{listing.serviceName || listing.title}</p>
+                </div>
               </div>
-              <p className="text-xs text-gray-600 mt-1 max-w-md">
-                {listing.description}
-              </p>
+
+              {/* Info */}
+              <p className="text-sm text-gray-600 flex-grow line-clamp-3">{listing.description}</p>
+
+              <div className="mt-4 flex items-center justify-between">
+                <div className="text-sm text-gray-700 font-medium flex items-center gap-1">
+                  ⭐ <span>{listing.rating || 4.8}</span>
+                  <span className="text-gray-400 text-xs">({listing.reviewsCount || 0})</span>
+                </div>
+                <div className="text-sm font-semibold text-blue-600">${listing.price || 0}/hr</div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="mt-4 flex justify-between border-t pt-3 gap-2">
+                <button
+                  className="btn btn-sm btn-outline flex-1"
+                  title="Edit Listing"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditListing(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-sm btn-outline btn-error flex-1"
+                  title="Remove Listing"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteListing(true);
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  className="btn btn-sm btn-ghost"
+                  title="Favorite"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFavorite(!favorite);
+                    //work on change the classnames
+                  }}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill={favorite ? "grey" : "none"}
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 14c1.5-1.5 3-3.25 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2C10.5 3.5 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5C2 10.75 3.5 12.5 5 14l7 7z" />
+                  </svg>
+                </button>
+              </div>
             </div>
-
-            {/* Action buttons */}
-            <div className="flex gap-2">
-              <button className="btn btn-square btn-ghost" title="Edit Listing" onClick={(e) => {
-                e.stopPropagation();
-                setEditListing(true);
-              }}>
-                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z" />
-                </svg>
-              </button>
-
-              <button className="btn btn-square btn-ghost" title="Remove Listing" onClick={(e) => {
-                e.stopPropagation();
-                setDeleteListing(true);
-              }}>
-                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                  <line x1="10" x2="10" y1="11" y2="17" />
-                  <line x1="14" x2="14" y1="11" y2="17" />
-                </svg>
-              </button>
-
-              <button className="btn btn-square btn-ghost" title="Favorite" onClick={(e) => {
-                e.stopPropagation();
-                setFavorite(!favorite);
-                //work on change the classnames
-              }}>
-                <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favorite ? "grey" : "none"}
-                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 14c1.5-1.5 3-3.25 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2C10.5 3.5 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5C2 10.75 3.5 12.5 5 14l7 7z" />
-                </svg>
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
-        ))}
-        
+
 
         {/* this is where the modal for a listing activates */}
         {selectedListing && (

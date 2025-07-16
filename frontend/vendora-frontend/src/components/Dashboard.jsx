@@ -17,18 +17,16 @@ export default function Dashboard() {
     useEffect(() => {
         async function getListings() {
             try {
-                const response = await retrieveListings({userId: localCopyOfSignedInUser.id});
-                if (response && response.listings)
-                {
+                const response = await retrieveListings({ userId: localCopyOfSignedInUser.id });
+                if (response && response.listings) {
                     setListings(response.listings);
                     console.log("success in fetching");
                 }
-                else
-                {
+                else {
                     console.log("you know what to do");
                 }
             } catch (error) {
-                console.log({"error": error});
+                console.log({ "error": error });
             }
         }
 
@@ -39,21 +37,23 @@ export default function Dashboard() {
         <>
             <Navbar />
 
-            {/* Category Navigation Bar */}
-            <div className="bg-base-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 py-2 flex justify-center gap-6 overflow-x-auto text-sm font-medium">
-                    {categories.map((category) => (
-                        <button
-                            key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`pb-1 ${activeCategory === category
-                                    ? "text-primary border-b-2 border-primary"
-                                    : "text-gray-600 hover:text-black"
-                                }`}
-                        >
-                            {category}
-                        </button>
-                    ))}
+            {/* Category Tabs */}
+            <div className="border-b border-gray-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="flex justify-center gap-4 overflow-x-auto text-sm font-medium py-3">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setActiveCategory(category)}
+                                className={`relative px-3 py-1 rounded-md transition-colors ${activeCategory === category
+                                        ? "text-blue-600 bg-blue-50"
+                                        : "text-gray-600 hover:bg-gray-100"
+                                    }`}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -62,9 +62,9 @@ export default function Dashboard() {
                 <h2 className="text-xl font-bold">Showing: {activeCategory}</h2>
                 {/* Tailored content based on activeCategory */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {listings.map((listing) => (
-                    <ListingCard key={listing._id} listing={listing}/>
-                ))}
+                    {listings.map((listing) => (
+                        <ListingCard key={listing._id} listing={listing} />
+                    ))}
                 </div>
             </div>
         </>

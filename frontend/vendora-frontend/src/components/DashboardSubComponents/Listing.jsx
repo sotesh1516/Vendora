@@ -5,68 +5,51 @@ import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
 import { updateUserBooking } from '../../api/user';
 
-function Listing() {
+export default function Listing() {
   const location = useLocation();
   const listing = location.state?.listing;
 
-  //this will be used to access a user transferred through useContext when signed in.
   const signedInUser = useContext(UserContext);
-
   const localCopyOfSignedInUser = signedInUser.user;
-  //i dont think i did the useState setter, but i will keep it for now
-  const localCopyOfSetSignedInUser = signedInUser.setUser;
 
   const [booking, setBooking] = useState(false);
-
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
-
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
-
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
     listingId: listing._id,
     customerId: localCopyOfSignedInUser.id,
-    customerSummary: "",
+    customerSummary: '',
     timeSlot: selectedTimeSlot,
-    status: "booked",  //start with a simple case of two enums for now
+    status: 'booked',
   });
 
-
   const parseTime = (isoTime) => {
-    return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
-
+    return new Date(isoTime).toLocaleString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    });
   };
 
   const handleBookingSubmission = async () => {
     try {
-      console.log("Selected time slot:", newBookingToBeRegistered);
       const registeredBooking = await bookListing(newBookingToBeRegistered);
-
       if (registeredBooking && registeredBooking.booking) {
         setShowBookingSuccess(true);
         const infoToBeUpdated = {
           userId: localCopyOfSignedInUser.id,
           bookingId: registeredBooking.booking.id,
         };
-
-        const check = await updateUserBooking(infoToBeUpdated);//-> this might be a problem
-        
-        if (check && check.updatedUser) {
-          return check.updatedUser;
-        }
-        else {
-          console.log({error: "error during user booking update"});
-        }
-
-
-      }
-      else {
-        console.log({error: "error during booking fetch"});
+        const check = await updateUserBooking(infoToBeUpdated);
+        if (check && check.updatedUser) return check.updatedUser;
       }
     } catch (error) {
-      console.error("Error during booking", error);
+      console.error('Error during booking', error);
     }
-
-  }
+  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -74,13 +57,21 @@ function Listing() {
 
       <div className="max-w-6xl mx-auto px-4 py-10">
         {/* Title and Rating */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
           <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-1">{listing.serviceName}</h1>
-            <p className="text-md text-gray-500">Provided by <span className="text-gray-800 font-medium">{listing.serviceProvider}</span></p>
+            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
+              {listing.serviceName}
+            </h1>
+            <p className="text-sm mt-1 text-gray-500">
+              Provided by{' '}
+              <span className="text-gray-800 font-semibold">
+                {listing.serviceProvider}
+              </span>
+            </p>
           </div>
-          <div className="mt-4 md:mt-0 text-sm text-gray-500">
-            ⭐ {listing.rating} ({listing.reviewers || 0} reviews)
+          <div className="mt-4 md:mt-0 text-sm text-gray-500 flex items-center gap-1">
+            <span className="text-yellow-500">⭐</span>
+            {listing.rating} ({listing.reviewers || 0} reviews)
           </div>
         </div>
 
@@ -91,7 +82,7 @@ function Listing() {
               key={i}
               src="https://via.placeholder.com/400x250"
               alt="Preview"
-              className="rounded-2xl object-cover w-full h-60 shadow-md hover:shadow-lg transition"
+              className="rounded-xl object-cover w-full h-60 shadow hover:shadow-lg transition-all duration-200"
             />
           ))}
         </div>
@@ -100,27 +91,41 @@ function Listing() {
           {/* Left Side */}
           <div className="lg:col-span-2 space-y-10">
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">Service Overview</h2>
-              <p className="text-gray-700 text-base leading-relaxed">{listing.description}</p>
+              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+                Service Overview
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                {listing.description}
+              </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">Service Options</h2>
-              <ul className="list-disc pl-6 space-y-2 text-gray-700 text-base">
-                {(listing.serviceOptions || []).map((opt, i) => <li key={i}>{opt}</li>)}
+              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+                Service Options
+              </h2>
+              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                {(listing.serviceOptions || []).map((opt, i) => (
+                  <li key={i}>{opt}</li>
+                ))}
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">Reviews</h2>
+              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+                Reviews
+              </h2>
               <div className="space-y-5">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm">
-                  <p className="font-semibold text-base text-gray-900">Jane Doe</p>
-                  <p className="text-sm text-gray-500">⭐⭐⭐⭐⭐ "Amazing tutor, explains clearly."</p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow transition">
+                  <p className="font-semibold text-gray-900">Jane Doe</p>
+                  <p className="text-sm text-gray-500">
+                    ⭐⭐⭐⭐⭐ &nbsp; “Amazing tutor, explains clearly.”
+                  </p>
                 </div>
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm">
-                  <p className="font-semibold text-base text-gray-900">John Smith</p>
-                  <p className="text-sm text-gray-500">⭐⭐⭐⭐ "Very helpful for my exam prep."</p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow transition">
+                  <p className="font-semibold text-gray-900">John Smith</p>
+                  <p className="text-sm text-gray-500">
+                    ⭐⭐⭐⭐ &nbsp; “Very helpful for my exam prep.”
+                  </p>
                 </div>
               </div>
             </section>
@@ -128,91 +133,127 @@ function Listing() {
 
           {/* Right Side */}
           <div className="space-y-8">
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Book This Service</h3>
+            <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                Book This Service
+              </h3>
               <button
                 onClick={() => setBooking(true)}
-                className="btn btn-primary w-full text-white text-sm font-medium"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
               >
                 Book Now
               </button>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">About the Provider</h3>
+            <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">
+                About the Provider
+              </h3>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Amina Yusuf is a math tutor with 4 years of experience tutoring college students in calculus and linear algebra.
+                Amina Yusuf is a math tutor with 4 years of experience tutoring
+                college students in calculus and linear algebra.
               </p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Booking Modal */}
       {booking && (
-        <div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-6">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-2xl space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold">Book a Session</h2>
+              <h2 className="text-2xl font-semibold text-gray-900">
+                Book a Session
+              </h2>
               <button
                 onClick={() => setBooking(false)}
-                className="text-2xl text-gray-400 hover:text-black"
+                className="text-2xl text-gray-400 hover:text-gray-700"
               >
                 &times;
               </button>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select a Time</label>
-              <select className="select select-bordered w-full" value={selectedTimeSlot} onChange={
-                (e) => {
-                  //i dont think we need the selectedTimeSlot state but we will keep since since it might affect the UI
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select a Time
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={selectedTimeSlot}
+                onChange={(e) => {
                   setSelectedTimeSlot(e.target.value);
-                  setNewBookingToBeRegistered({ ...newBookingToBeRegistered, timeSlot: e.target.value });
-                }}>
+                  setNewBookingToBeRegistered({
+                    ...newBookingToBeRegistered,
+                    timeSlot: e.target.value,
+                  });
+                }}
+              >
                 <option>-- Choose a time --</option>
                 {(listing.timeSlots || []).map((slot, i) => (
-                  <option key={i} value={slot}>{parseTime(slot)}</option>
+                  <option key={i} value={slot}>
+                    {parseTime(slot)}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">What do you need help with?</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                What do you need help with?
+              </label>
               <textarea
-                className="textarea textarea-bordered w-full"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows="3"
                 placeholder="Describe your issue or goal..."
                 value={newBookingToBeRegistered.customerSummary}
-                onChange={(event) => {
-                  setNewBookingToBeRegistered({ ...newBookingToBeRegistered, customerSummary: event.target.value });
-                }}
+                onChange={(event) =>
+                  setNewBookingToBeRegistered({
+                    ...newBookingToBeRegistered,
+                    customerSummary: event.target.value,
+                  })
+                }
               ></textarea>
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button className="btn btn-ghost">Cancel</button>
-              <button className="btn btn-primary text-white" onClick={handleBookingSubmission}>Confirm Booking</button>
+              <button
+                onClick={() => setBooking(false)}
+                className="px-4 py-2 rounded-lg text-sm border hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700"
+                onClick={handleBookingSubmission}
+              >
+                Confirm Booking
+              </button>
             </div>
           </div>
         </div>
       )}
-      {showBookingSuccess && (<div className="fixed inset-0 bg-transparent bg-opacity-40 flex items-center justify-center z-60">
-          <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
-            <h3 className="font-bold text-lg text-green-600">Success!</h3>
-            <p className="py-4">Your booking has been added successfully.</p>
-            <div className="modal-action">
-              <button className="btn btn-success" onClick={() => {
+
+      {/* Success Modal */}
+      {showBookingSuccess && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg text-center space-y-4">
+            <h3 className="text-lg font-bold text-green-600">✅ Success!</h3>
+            <p className="text-gray-700">
+              Your booking has been added successfully.
+            </p>
+            <button
+              className="mt-4 px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
+              onClick={() => {
                 setShowBookingSuccess(false);
                 setBooking(false);
-                //setAddListing(false);
-              }}>
-                OK
-              </button>
-            </div>
+              }}
+            >
+              OK
+            </button>
           </div>
-        </div>)}
+        </div>
+      )}
     </div>
   );
 }
-
-export default Listing;
