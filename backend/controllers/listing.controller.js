@@ -135,6 +135,10 @@ const fetchListingsAndSetFavorites = async (req, res) => {
   }
 }
 
+const searchListing = async () => {
+  const searchFilter = req.query;
+};
+
 
 
 module.exports = { createListing, editListing, fetchListings, fetchListingsAndSetFavorites};
