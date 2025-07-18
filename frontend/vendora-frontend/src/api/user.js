@@ -79,7 +79,7 @@ export const fetchUserListings = async (userInfo) => {
 };
 
 export const fetchUserFavorites = async () => {
-
+// need to be implemented when doing my favorite page
 };
 
 export const updateUserFavorites = async (favoriteUpdateInfo) => {

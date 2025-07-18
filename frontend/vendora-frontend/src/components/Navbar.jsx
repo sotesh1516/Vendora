@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar(props) {
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [listings, setListings] = useState([]);
+
+  const handleChange = async (event) => {
+    //this handles input change that happens inside the search box
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearch = async () => {
+    props.sendToParent(searchQuery);// this sends the query info to the dashboard component so it can be used for fetching the necessary listings
+  };
+
+
   return (
     <div className="navbar bg-white shadow-sm border-b border-gray-200 px-4 py-3">
       {/* Left Section */}
@@ -35,8 +50,10 @@ export default function Navbar() {
             type="text"
             placeholder="Search services..."
             className="input input-bordered input-sm w-64 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            onChange={handleChange}
+            value={searchQuery}
           />
-          <button className="btn btn-sm bg-blue-600 hover:bg-blue-700 text-white font-medium">
+          <button onClick={handleSearch} className="btn btn-sm bg-blue-600 hover:bg-blue-700 text-white font-medium">
             Search
           </button>
         </div>

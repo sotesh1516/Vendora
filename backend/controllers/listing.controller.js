@@ -35,7 +35,9 @@ const createListing = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during listing creation" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during listing creation" });
   }
 };
 
@@ -63,7 +65,9 @@ const editListing = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during listing update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during listing update" });
   }
 };
 
@@ -74,34 +78,44 @@ const fetchListings = async (req, res) => {
     // console.log(fetchedListings);
 
     if (!fetchedListings) {
-      return res.status(404).json({error: "Listing fetch returned null"});
+      return res.status(404).json({ error: "Listing fetch returned null" });
     }
 
-    if (fetchedListings.length == 0)
-    {
-      return res.status(200).json({listings: fetchedListings, message: "No listings found"})
+    if (fetchedListings.length == 0) {
+      return res
+        .status(200)
+        .json({ listings: fetchedListings, message: "No listings found" });
     }
 
-    return res.status(200).json({listings: fetchedListings, message: "Listings have been successfully fetched"})
+    return res
+      .status(200)
+      .json({
+        listings: fetchedListings,
+        message: "Listings have been successfully fetched",
+      });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during listing fetch" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during listing fetch" });
   }
-}
+};
 
 const fetchListingsAndSetFavorites = async (req, res) => {
-
   try {
-
     const fetchInformation = req.body;
     let fetchedListings = await Listing.find(); // check whether to set a limit for the fetch or just fetch as much as possible
 
-    let fetchedUser = await User.findById(fetchInformation.userId).populate("myFavorites");
+    let fetchedUser = await User.findById(fetchInformation.userId).populate(
+      "myFavorites"
+    );
 
     const newListingCollection = [];
 
     fetchedListings.map((listing) => {
-      const listingFound = fetchedUser.myFavorites.find((favListing) => favListing._id.toString() === listing._id.toString());
+      const listingFound = fetchedUser.myFavorites.find(
+        (favListing) => favListing._id.toString() === listing._id.toString()
+      );
 
       const restructuredListing = {
         serviceProvider: listing.serviceProvider,
@@ -114,31 +128,61 @@ const fetchListingsAndSetFavorites = async (req, res) => {
         isFavorite: false,
       };
 
-      if (listingFound)
-      {
+      if (listingFound) {
         restructuredListing.isFavorite = true;
       }
 
       //push the restructured listing into the new array
       newListingCollection.push(restructuredListing);
-
     });
 
     res.status(200).json({
       listings: newListingCollection,
-      message: "Listings together with favorites have been successfully fetched",
+      message:
+        "Listings together with favorites have been successfully fetched",
     });
-
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during custom listing(favorite included) fetch" });
+    return res
+      .status(500)
+      .json({
+        error:
+          "Internal server error during custom listing(favorite included) fetch",
+      });
   }
-}
-
-const searchListing = async () => {
-  const searchFilter = req.query;
 };
 
+const searchListings = async (req, res) => {
+  try {
+    const searchFilter = req.query;
 
+    const matchedListings = await Listing.find({
+      serviceName: { $regex: searchFilter.query, $options: "i" },
+    });
 
-module.exports = { createListing, editListing, fetchListings, fetchListingsAndSetFavorites};
+    if (!matchedListings) {
+      console.log("Listing(s) not found during search fetch");
+      return res
+        .status(401)
+        .json({ error: "Listing(s) not found during search fetch" });
+    }
+
+    return res.status(200).json({
+      fetchedListings: matchedListings,
+      message: "Listings have been successfully fetched",
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error during listings search fetch" });
+  }
+};
+
+module.exports = {
+  createListing,
+  editListing,
+  fetchListings,
+  fetchListingsAndSetFavorites,
+  searchListings
+};
