@@ -14,6 +14,10 @@ export default function Dashboard() {
 
     const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 
+    const [searchQueryInfo, setSearchQueryInfo] = useState(null);
+
+    const h
+
     useEffect(() => {
         async function getListings() {
             try {
