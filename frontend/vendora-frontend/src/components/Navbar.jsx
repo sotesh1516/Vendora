@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar(props) {
 
+  const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [listings, setListings] = useState([]);
 
   const handleChange = async (event) => {
     //this handles input change that happens inside the search box
@@ -14,6 +15,7 @@ export default function Navbar(props) {
 
   const handleSearch = async () => {
     props.sendToParent(searchQuery);// this sends the query info to the dashboard component so it can be used for fetching the necessary listings
+    console.log(searchQuery);
   };
 
 

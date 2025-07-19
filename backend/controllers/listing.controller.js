@@ -157,7 +157,9 @@ const searchListings = async (req, res) => {
     const searchFilter = req.query;
 
     const matchedListings = await Listing.find({
-      serviceName: { $regex: searchFilter.query, $options: "i" },
+      serviceName: { $regex: searchFilter.query, $options: "i" }, 
+      serviceProvider: { $regex: searchFilter.query, $options: "i" },
+      description: { $regex: searchFilter.query, $options: "i" },
     });
 
     if (!matchedListings) {

@@ -56,9 +56,12 @@ export const retrieveListings = async (userInfo) => {
   }
 };
 
+//encodeURIComponent is being used to avoid url breaking
+//Example:
+//"lap top" → "lap%20top"
 export const searchListings = async (query) => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/api/listing?query=${query}`);
+    const response = await axios.get(`http://127.0.0.1:8000/api/listing/search?query=${encodeURIComponent(query)}`);
 
     if (response.status == 200) {
       return response.data;
