@@ -189,7 +189,7 @@ function MyListings() {
                   ⭐ <span>{listing.rating || 4.8}</span>
                   <span className="text-gray-400 text-xs">({listing.reviewsCount || 0})</span>
                 </div>
-                <div className="text-sm font-semibold text-blue-600">${listing.price || 0}/hr</div>
+                <div className="text-sm font-semibold text-blue-600">${listing.ratePerHr || 0}/hr</div>
               </div>
 
               {/* Action buttons */}

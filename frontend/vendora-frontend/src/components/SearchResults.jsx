@@ -48,7 +48,7 @@ export default function SearchResults() {
 
       {/* Header */}
       <div className="border-b border-gray-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
-        <div className="max-w-[95rem] mx-auto px-3 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <h1 className="text-md font-bold text-gray-800">
             Search results for{" "}
             <span className="text-blue-600 font-extrabold italic">

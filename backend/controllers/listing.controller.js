@@ -71,6 +71,10 @@ const editListing = async (req, res) => {
   }
 };
 
+const fetchListing = async (req, res) => {
+
+};
+
 const fetchListings = async (req, res) => {
   try {
     let fetchedListings = await Listing.find().limit(10);
@@ -157,9 +161,11 @@ const searchListings = async (req, res) => {
     const searchFilter = req.query;
 
     const matchedListings = await Listing.find({
-      serviceName: { $regex: searchFilter.query, $options: "i" }, 
-      serviceProvider: { $regex: searchFilter.query, $options: "i" },
-      description: { $regex: searchFilter.query, $options: "i" },
+      $or: [
+        { serviceName: { $regex: searchFilter.query, $options: "i" } },
+        { serviceProvider: { $regex: searchFilter.query, $options: "i" } },
+        { description: { $regex: searchFilter.query, $options: "i" } }
+      ]
     });
 
     if (!matchedListings) {
