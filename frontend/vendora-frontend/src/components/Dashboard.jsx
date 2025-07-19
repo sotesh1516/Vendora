@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import ListingCard from "./DashboardSubComponents/ListingCard";
 import { retrieveListings, searchListings } from "../api/listing";
+import Footer from "./Footer";
 
 
 export default function Dashboard() {
@@ -108,6 +109,7 @@ export default function Dashboard() {
                     ))}
                 </div>
             </div>
+            <Footer/>
         </>
     );
 }
