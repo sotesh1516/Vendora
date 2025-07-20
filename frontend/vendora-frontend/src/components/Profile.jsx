@@ -36,7 +36,6 @@ export default function Profile() {
                               <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-credit-card-icon lucide-credit-card ${subSection === "paymentInfo" ? "text-gray-900" : "text-gray-500"}`}><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>Payment Info</button>
                               <button onClick={() => handleSection("favorites")} className={`flex items-center gap-4 w-full text-left p-3 rounded cursor-pointer ${subSection === "favorites" ? "bg-gray-100 font-semibold" : "hover:bg-gray-100"}`}>
                               <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-heart-icon lucide-heart ${subSection === "favorites" ? "text-gray-900" : "text-gray-500"}`}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Favorites</button>
-                              <button className="w-full text-left p-3 hover:bg-red-50 text-red-600 rounded">Logout</button>
                           </div>
                       </div>
 
