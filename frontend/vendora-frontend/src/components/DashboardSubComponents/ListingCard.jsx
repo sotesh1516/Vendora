@@ -28,7 +28,7 @@ function ListingCard({ listing }) {
 
   return (
     <div>
-      <div className="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition w-full">
+      <div className="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition w-full h-80 flex flex-col">
         {/* Avatar */}
         <img
           src="https://img.daisyui.com/images/profile/demo/5@94.webp"
@@ -52,7 +52,7 @@ function ListingCard({ listing }) {
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-500 mt-3 line-clamp-2 leading-snug">
+        <p className="text-sm text-gray-500 mt-3 line-clamp-2 leading-snug overflow-hidden">
           {listing.description}
         </p>
 

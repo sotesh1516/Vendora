@@ -1,18 +1,35 @@
 import axios from "axios";
 
+//By default, Node/Express don't magically know how to handle raw files
+//If you try to send a raw file object without any encoding, the browser doesn't knwo what ccontent type
+//to use, and express wouldn't know how to separate it from other form fields like name, email
+//So HTTP instroduces multipart/form-data -> Binary file data + Text fields
+// FormData build a properly structured multipart/form-data to send to the backend
+// NOTE: The backend will automatically detect files and non-files, req.body and req.files
 export const registerListing = async (newListing) => {
+  const multiPartStructuredUserData = new FormData();
+
+  multiPartStructuredUserData.append("serviceProvider", newListing.name);
+  multiPartStructuredUserData.append("serivceName", newListing.service);
+  newListing.serviceOpts.forEach((opt) => {
+    multiPartStructuredUserData.append("serviceOptions", opt);
+  });
+  newListing.timeSlotsAv.forEach((slot) => {
+    multiPartStructuredUserData.append("timeSlots", slot);
+  });
+  multiPartStructuredUserData.append("ratePerHr", newListing.price);
+  //JSON.stringify is used to avoid the conversion of [] => ""
+  //On the backend it is required to do const ratings = JSON.parse(req.body.ratings);
+  multiPartStructuredUserData.append("ratings", JSON.stringify([]));
+  multiPartStructuredUserData.append("description", newListing.description);
+  newListing.selectedImages.forEach((file) => {
+    multiPartStructuredUserData.append("images", file);
+  });
+
   try {
     const result = await axios.post(
       "http://127.0.0.1:8000/api/listing/create",
-      {
-        serviceProvider: newListing.name,
-        serviceName: newListing.service,
-        serviceOptions: newListing.serviceOpts,
-        timeSlots: newListing.timeSlotsAv,
-        ratePerHr: newListing.price,
-        ratings: [],
-        description: newListing.description,
-      }
+      multiPartStructuredUserData
     );
 
     if (result.status == 200) {
@@ -61,12 +78,15 @@ export const retrieveListings = async (userInfo) => {
 //"lap top" → "lap%20top"
 export const searchListings = async (query) => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/api/listing/search?query=${encodeURIComponent(query)}`);
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/listing/search?query=${encodeURIComponent(
+        query
+      )}`
+    );
 
     if (response.status == 200) {
       return response.data;
     }
-
   } catch (error) {
     console.error("Error during the listing retrieval process");
     return {

@@ -60,6 +60,9 @@ function MyListings() {
   //state for controlling single timeslot pick
   const [timeSlot, setTimeSlot] = useState("");
 
+  //state for keeping track of the added images
+  const [selectedImages, setSelectedImages] = useState([]);
+
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
 
@@ -74,6 +77,7 @@ function MyListings() {
     description: "",
     rating: [],
     avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+    images: selectedImages,
   });
 
   const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
@@ -519,15 +523,6 @@ function MyListings() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-m font-medium text-gray-700">Service Images</label>
-
-                    <input
-                      type="file"
-                      name="images"
-                      accept="image/*"
-                      multiple
-                      className="file-input file-input-bordered w-full"
-                    />
 
                     <div>
                       <label className="block text-m font-medium text-gray-700 pb-2">Service Options</label>
@@ -572,6 +567,19 @@ function MyListings() {
                       </div>
 
                     </div>
+
+                    <label className="block text-m font-medium text-gray-700">Service Images</label>
+
+                    <input
+                      type="file"
+                      name="images"
+                      accept="image/*"
+                      multiple
+                      className="file-input file-input-bordered w-full"
+                      onChange={(e) => {
+                        setSelectedImages([...selectedImages, e.target.files]);
+                      }}
+                    />
 
 
                     {/* Preview grid (replace src with dynamic preview later) */}
