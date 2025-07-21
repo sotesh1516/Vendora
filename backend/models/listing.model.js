@@ -43,6 +43,10 @@ const listingSchema = new mongoose.Schema({
         required: true,
     },
 
+    cloudStoredImages: {
+        type: Array,
+    }
+
 
 })
 
