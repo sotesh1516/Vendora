@@ -1,10 +1,46 @@
 const express = require("express");
 const Listing = require("../models/listing.model");
 const User = require("../models/user.model");
+const cloudinary = require("../cloud_uploads/image");
 
 const createListing = async (req, res) => {
   try {
+    // const unstructuredNewListing = req.body;
+    // const newListing = {
+    //   serviceProvider: unstructuredNewListing.serviceProvider,
+    //   serviceName: unstructuredNewListing.serviceName,
+    //   serviceOptions: [],
+    //   timeSlots: [],
+    //   ratePerHr: unstructuredNewListing.ratePerHr,
+    //   ratings: [],
+    //   descriptions: unstructuredNewListing.ratePerHr,
+    //   //new to add url to images after passing it through cloudinary
+    // };
+
+    // if (
+    //   !unstructuredNewListing.serviceProvider ||
+    //   !unstructuredNewListing.serviceName ||
+    //   !unstructuredNewListing.serviceOptions ||
+    //   !unstructuredNewListing.timeSlots ||
+    //   !unstructuredNewListing.ratePerHr ||
+    //   !unstructuredNewListing.description
+    // ) {
+    //   return res.status(400).json({ error: "One or more fields are missing" });
+    // }
+
+    // for (const key in unstructuredNewListing)
+    // {
+    //   if (Object.prototype.hasOwnProperty.call(unstructuredNewListing, key))
+    //   {
+    //     if (key === "serviceOptions" || key === "timeSlots" || key === "ratings")
+    //     {
+            
+    //     }
+    //   }
+    // };
+
     const newListing = req.body;
+    const images = req.files;
 
     if (
       !newListing.serviceProvider ||
@@ -14,6 +50,7 @@ const createListing = async (req, res) => {
       !newListing.ratePerHr ||
       !newListing.description
     ) {
+      console.log("One or more field backend");
       return res.status(400).json({ error: "One or more fields are missing" });
     }
 
@@ -25,6 +62,12 @@ const createListing = async (req, res) => {
 
     if (newListing.serviceName.length < 4) {
       return res.status(400).json({ error: "Service name is too short" });
+    }
+
+    //handle image upload
+    for (const image of images) {
+      const uploadResult = await cloudinary.uploader.upload(image.path);
+      newListing.cloudStoredImages.push(uploadResult);
     }
 
     const listingToSave = new Listing(newListing);

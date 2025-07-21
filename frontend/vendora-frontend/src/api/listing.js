@@ -10,21 +10,28 @@ export const registerListing = async (newListing) => {
   const multiPartStructuredUserData = new FormData();
 
   multiPartStructuredUserData.append("serviceProvider", newListing.name);
-  multiPartStructuredUserData.append("serivceName", newListing.service);
-  newListing.serviceOpts.forEach((opt) => {
-    multiPartStructuredUserData.append("serviceOptions", opt);
-  });
-  newListing.timeSlotsAv.forEach((slot) => {
-    multiPartStructuredUserData.append("timeSlots", slot);
-  });
+  multiPartStructuredUserData.append("serviceName", newListing.service);
+  // newListing.serviceOpts.forEach((opt) => {
+  //   multiPartStructuredUserData.append("serviceOptions", opt);
+  // });
+  // newListing.timeSlotsAv.forEach((slot) => {
+  //   multiPartStructuredUserData.append("timeSlots", slot);
+  // });
+  multiPartStructuredUserData.append("serviceOptions", JSON.stringify(newListing.serviceOpts));
+  multiPartStructuredUserData.append("timeSlots", JSON.stringify(newListing.timeSlotsAv));
   multiPartStructuredUserData.append("ratePerHr", newListing.price);
   //JSON.stringify is used to avoid the conversion of [] => ""
   //On the backend it is required to do const ratings = JSON.parse(req.body.ratings);
   multiPartStructuredUserData.append("ratings", JSON.stringify([]));
+  multiPartStructuredUserData.append("cloudStoredImages", JSON.stringify([]))
   multiPartStructuredUserData.append("description", newListing.description);
-  newListing.selectedImages.forEach((file) => {
+  newListing.images.forEach((file) => {
     multiPartStructuredUserData.append("images", file);
   });
+
+  for (let [key, value] of multiPartStructuredUserData.entries()) {
+    console.log(key, value);
+  }
 
   try {
     const result = await axios.post(
