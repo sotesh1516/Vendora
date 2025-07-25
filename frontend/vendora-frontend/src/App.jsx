@@ -8,7 +8,6 @@ import Listing from './components/DashboardSubComponents/Listing';
 import { UserProvider } from './components/contexts/UserContext';
 import Settings from './components/Settings';
 import SearchResults from './components/SearchResults';
-import LandingPage from './components/LandingPage';
 
 
 
@@ -25,7 +24,6 @@ function App() {
       <Route path='/listing/:id' element={<Listing/>}/>
       <Route path='/settings' element={<Settings/>}/>
       <Route path='/results' element={<SearchResults/>}/>
-      <Route path='/landing' element={<LandingPage/>}/>
     </Routes>
     </UserProvider>
     </>

@@ -61,6 +61,7 @@ function ListingCard({ listing }) {
           <button
             className="btn btn-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4"
             onClick={() => {
+              console.log(listing);
               navigate(`/listing/${listing._id}`, { state: { listing } });
             }}
           >

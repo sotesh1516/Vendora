@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { fetchUserBookings } from '../../api/user';
+import { fetchListing } from '../../api/listing';
 
 
 function MyBookings() {
@@ -44,6 +45,10 @@ function MyBookings() {
     return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
 
   };
+
+  const handleNavigation = async () => {
+    const navigationQuery = await fetchListing()
+  }
 
 
   return (

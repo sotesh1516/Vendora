@@ -1,13 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../Navbar';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
 import { updateUserBooking } from '../../api/user';
+import { fetchListing } from '../../api/listing';
 
 export default function Listing() {
   const location = useLocation();
-  const listing = location.state?.listing;
+  //const listing = location.state?.listing;
+  const { id } = useParams();// this is much beter that useLocation, and useParams return object so we need desctruction
+  const [listing, setListing] = useState(null);
 
   const signedInUser = useContext(UserContext);
   const localCopyOfSignedInUser = signedInUser.user;
@@ -16,12 +19,29 @@ export default function Listing() {
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
-    listingId: listing._id,
+    listingId: id,
     customerId: localCopyOfSignedInUser.id,
     customerSummary: '',
     timeSlot: selectedTimeSlot,
     status: 'booked',
   });
+
+  const [isRescheduleMode, setIsRescheduleMode] = useState(true);
+
+  useEffect(() => {
+    const fetchSingleListing = async () => {
+      const returnedListing = await fetchListing(id);
+
+      if (returnedListing && returnedListing.fetchedListing) {
+        setListing(returnedListing.fetchedListing)
+      }
+    };
+
+    if (id) { // Only fetch if id exists
+      fetchSingleListing();
+    }
+
+  }, [id]);
 
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString('en-US', {
@@ -51,6 +71,19 @@ export default function Listing() {
     }
   };
 
+  if (!listing) {
+    return (
+      <div className="bg-white min-h-screen">
+        <Navbar />
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="text-center">
+            <div className="text-lg">Loading listing...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
@@ -77,10 +110,10 @@ export default function Listing() {
 
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-          {[1, 2, 3].map((_, i) => (
+          {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image) => (
             <img
-              key={i}
-              src="https://via.placeholder.com/400x250"
+              key={image.public_id}
+              src={listing.cloudStoredImages.length > 0 ? image.url : "https://via.placeholder.com/400x250"}
               alt="Preview"
               className="rounded-xl object-cover w-full h-60 shadow hover:shadow-lg transition-all duration-200"
             />
@@ -133,17 +166,56 @@ export default function Listing() {
 
           {/* Right Side */}
           <div className="space-y-8">
-            <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">
-                Book This Service
-              </h3>
-              <button
-                onClick={() => setBooking(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
-              >
-                Book Now
-              </button>
-            </div>
+            {!isRescheduleMode ? (
+              // BOOK NOW - Default state
+              <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                  Book This Service
+                </h3>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Ready to get started? Book your session now!
+                  </p>
+                  <button
+                    onClick={() => setBooking(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // RESCHEDULE - Alternative state
+              <div className="bg-white border border-amber-200 rounded-xl shadow p-6">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                  Reschedule Your Booking
+                </h3>
+                <div className="space-y-3">
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                    <p className="text-sm text-amber-800">
+                      <span className="font-medium">Current booking:</span> Friday, Dec 15 at 2:00 PM
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Select a new time slot for your session.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setBooking(true)}
+                      className="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
+                    >
+                      Choose New Time
+                    </button>
+                    <button
+                      onClick={() => setIsRescheduleMode(false)}
+                      className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
               <h3 className="text-xl font-semibold mb-3 text-gray-900">

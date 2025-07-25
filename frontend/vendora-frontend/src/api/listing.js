@@ -23,7 +23,7 @@ export const registerListing = async (newListing) => {
   //JSON.stringify is used to avoid the conversion of [] => ""
   //On the backend it is required to do const ratings = JSON.parse(req.body.ratings);
   multiPartStructuredUserData.append("ratings", JSON.stringify([]));
-  multiPartStructuredUserData.append("cloudStoredImages", JSON.stringify([]))
+  multiPartStructuredUserData.append("cloudStoredImages", JSON.stringify([])) //might not need this
   multiPartStructuredUserData.append("description", newListing.description);
   newListing.images.forEach((file) => {
     multiPartStructuredUserData.append("images", file);
@@ -95,10 +95,27 @@ export const searchListings = async (query) => {
       return response.data;
     }
   } catch (error) {
+    console.error("Error during the listing(s) retrieval process");
+    return {
+      error: error,
+      message: "Listing(s) retrieval failed. PLease try again",
+    };
+  }
+};
+
+export const fetchListing = async (id) => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/api/listing/${id}`);
+
+    if (response.status == 200) {
+      return response.data;
+    }
+
+  } catch (error) {
     console.error("Error during the listing retrieval process");
     return {
       error: error,
       message: "Listing retrieval failed. PLease try again",
     };
   }
-};
+}

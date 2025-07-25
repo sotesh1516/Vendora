@@ -23,9 +23,23 @@ const createBooking = async (req, res) => {
     
 }
 
-const fetchBookings = async (req, res) => {
+const fetchBooking = async (req, res) => {
     try {
-        
+        const fetchInfo = req.params;
+
+        const fetchedBooking = await Booking.findById(fetchListingsAndSetFavorites.id).exec();
+
+        if (!fetchBooking)
+        {
+            return res.status(401).json({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            fetchedBooking: fetchBooking,
+            message: "Booking data retrieved",
+        })
     } catch (error) {
         
     }
