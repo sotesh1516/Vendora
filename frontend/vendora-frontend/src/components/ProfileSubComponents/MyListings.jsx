@@ -5,6 +5,7 @@ import { fetchUserListings, updateUserListing } from '../../api/user';
 
 function MyListings() {
 
+
   //this should be replaced by database query or an array of listings
   const [listings, setListings] = useState([
     {
@@ -97,7 +98,7 @@ function MyListings() {
             listingId: response.listing._id,  //when doing the same exact thing on booking i did id and it worked but here i have to use _id which makes sense since i am not modifying the database response
           };
 
-          console.log(infoToBeUpdated);
+          //console.log(infoToBeUpdated);
           const updateResponse = await updateUserListing(infoToBeUpdated);
 
           console.log("listing added to database");
@@ -136,6 +137,14 @@ function MyListings() {
 
     fetchCompleteUser(userInfo);
   }, []);
+
+  //to update the final objet's image attribute
+  useEffect(() => {
+    setNewListingToRegister((prev) => ({
+      ...prev,
+      images: selectedImages,
+    }));
+  }, [selectedImages]);
 
 
   const handleChange = (event) => {
@@ -577,7 +586,19 @@ function MyListings() {
                       multiple
                       className="file-input file-input-bordered w-full"
                       onChange={(e) => {
-                        setSelectedImages([...selectedImages, e.target.files]);
+                        //A filelist is an array like objects 
+                        //need to convert (or destructure/spread) that FileList into individual File objects 
+                        // before merging with your existing selectedImages array
+                        //Array.from takes in an array like object and converts to an array
+                        const files = Array.from(e.target.files);
+                        const newTotal = selectedImages.length + files.length;
+
+                        if (newTotal !== 3) {
+                          alert(`Please select exactly 3 images. You currently have ${newTotal} image(s).`);
+                          return;
+                        }
+
+                        setSelectedImages((prev) => [...prev, ...files]);
                       }}
                     />
 

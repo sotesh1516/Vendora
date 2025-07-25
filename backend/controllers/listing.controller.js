@@ -42,6 +42,7 @@ const createListing = async (req, res) => {
     const newListing = req.body;
     const images = req.files;
 
+
     if (
       !newListing.serviceProvider ||
       !newListing.serviceName ||
@@ -64,13 +65,24 @@ const createListing = async (req, res) => {
       return res.status(400).json({ error: "Service name is too short" });
     }
 
+    const structuredNewListing = {
+      serviceProvider: newListing.serviceProvider,
+      serviceName: newListing.serviceName,
+      serviceOptions: newListing.serviceOptions,
+      timeSlots: newListing.timeSlots,
+      ratePerHr: newListing.ratePerHr,
+      description: newListing.description,
+      cloudStoredImages: []
+    };
+
+
     //handle image upload
     for (const image of images) {
       const uploadResult = await cloudinary.uploader.upload(image.path);
-      newListing.cloudStoredImages.push(uploadResult);
+      structuredNewListing.cloudStoredImages.push(uploadResult);
     }
 
-    const listingToSave = new Listing(newListing);
+    const listingToSave = new Listing(structuredNewListing);
     const savedListing = await listingToSave.save();
     return res.status(200).json({
       listing: savedListing,
@@ -115,8 +127,29 @@ const editListing = async (req, res) => {
 };
 
 const fetchListing = async (req, res) => {
+  try {
+    const fetchInfo = req.params;
 
-};
+        const fetchedListing = await Listing.findById(fetchInfo.id).exec();
+
+        if (!fetchedListing)
+        {
+            return res.status(404).json({
+                message: "Listing not found"
+            });
+        }
+
+        return res.status(200).json({
+            fetchedListing: fetchedListing,
+            message: "Booking data retrieved",
+        })
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error during single listing fetch" });
+  }
+  };
 
 const fetchListings = async (req, res) => {
   try {
@@ -165,6 +198,7 @@ const fetchListingsAndSetFavorites = async (req, res) => {
       );
 
       const restructuredListing = {
+        _id: listing._id,
         serviceProvider: listing.serviceProvider,
         serviceProviderId: listing.serviceProviderId,
         serviceName: listing.serviceName,
@@ -172,6 +206,7 @@ const fetchListingsAndSetFavorites = async (req, res) => {
         timeSlots: listing.timeSlots,
         ratings: listing.ratings,
         description: listing.description,
+        cloudStoredImages: listing.cloudStoredImages,
         isFavorite: false,
       };
 
@@ -233,6 +268,7 @@ const searchListings = async (req, res) => {
 module.exports = {
   createListing,
   editListing,
+  fetchListing,
   fetchListings,
   fetchListingsAndSetFavorites,
   searchListings
