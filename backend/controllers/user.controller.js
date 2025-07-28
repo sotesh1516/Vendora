@@ -16,15 +16,15 @@ const updateUserBookingList = async (req, res) => {
       return res.status(401).json({ error: "User not found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        updatedUser: existingUserQuery,
-        message: "My booking list has been updated successfully",
-      });
+    return res.status(200).json({
+      updatedUser: existingUserQuery,
+      message: "My booking list has been updated successfully",
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during mybooking update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during mybooking update" });
   }
 };
 
@@ -33,24 +33,27 @@ const updateUserBookingList = async (req, res) => {
 const fetchUserBookingList = async (req, res) => {
   try {
     const fetchInformation = req.body;
-    const userWithBooking = await User.findById(fetchInformation.userId).populate('myBookings').exec();
+    const userWithBooking = await User.findById(fetchInformation.userId)
+      .populate("myBookings")
+      .exec();
 
-    if (!userWithBooking)
-    {
-      return res.status(401).json({error: "User not found"});
+    if (!userWithBooking) {
+      return res.status(401).json({ error: "User not found" });
     }
 
     const userBookings = userWithBooking.myBookings;
 
-    await Booking.populate(userBookings, {path: "listingId"});
+    await Booking.populate(userBookings, { path: "listingId" });
 
     return res.status(200).json({
       user: userWithBooking,
       message: "User with the booking list has been successfully fetched",
-    })
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during mybooking update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during mybooking update" });
   }
 };
 
@@ -60,30 +63,40 @@ const updateUserListingList = async (req, res) => {
     const existingUserQuery = await User.findByIdAndUpdate(
       updateInformation.userId,
       {
-        $push: { myListings: updateInformation.listingId }
-      }, {new: true}
+        $push: { myListings: updateInformation.listingId },
+      },
+      { new: true }
     ).exec();
 
-    if (!existingUserQuery)
-    {
-        return res.status(401).json({error: "User with the given credential has not been found"});
+    if (!existingUserQuery) {
+      return res
+        .status(401)
+        .json({ error: "User with the given credential has not been found" });
     }
 
-    return res.status(200).json({updatedUser: existingUserQuery, message: "My listing array has been updated successfully"})
+    return res
+      .status(200)
+      .json({
+        updatedUser: existingUserQuery,
+        message: "My listing array has been updated successfully",
+      });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during mylisting update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during mylisting update" });
   }
 };
 
 const fetchUserListingList = async (req, res) => {
   try {
     const fetchInformation = req.body;
-    const userWithListing = await User.findById(fetchInformation.userId).populate('myListings').exec();
+    const userWithListing = await User.findById(fetchInformation.userId)
+      .populate("myListings")
+      .exec();
 
-    if (!userWithListing)
-    {
-      return res.status(401).json({error: "User not found"});
+    if (!userWithListing) {
+      return res.status(401).json({ error: "User not found" });
     }
 
     //const userListings = userWithListings.myListings;
@@ -92,73 +105,123 @@ const fetchUserListingList = async (req, res) => {
     return res.status(200).json({
       user: userWithListing,
       message: "User with the listing list has been successfully fetched",
-    })
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during mybooking update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during mybooking update" });
   }
 };
-
 
 const updateUserFavoriteList = async (req, res) => {
   try {
     const updateInformation = req.body;
 
-    const listingFavoriteStatusCheck = await User.findById(updateInformation.userId).populate('myFavorites');
+    const listingFavoriteStatusCheck = await User.findById(
+      updateInformation.userId
+    ).populate("myFavorites");
 
-    if (!listingFavoriteStatusCheck)
-    {
-      return res.status(401).json({error: "User not found"});
+    if (!listingFavoriteStatusCheck) {
+      return res.status(401).json({ error: "User not found" });
     }
 
-    const matchFound = listingFavoriteStatusCheck.myFavorites.map((myFavorite) => updateInformation.listingId === myFavorite._id.toString());
+    const matchFound = listingFavoriteStatusCheck.myFavorites.map(
+      (myFavorite) => updateInformation.listingId === myFavorite._id.toString()
+    );
 
     let existingUserQuery = null;
 
     if (matchFound) {
-      existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$pull: {myFavorites: updateInformation.listingId}}, {new:true});
+      existingUserQuery = await User.findByIdAndUpdate(
+        updateInformation.userId,
+        { $pull: { myFavorites: updateInformation.listingId } },
+        { new: true }
+      );
+    } else {
+      existingUserQuery = await User.findByIdAndUpdate(
+        updateInformation.userId,
+        { $push: { myFavorites: updateInformation.listingId } },
+        { new: true }
+      );
     }
 
-    else {
-      existingUserQuery = await User.findByIdAndUpdate(updateInformation.userId, {$push: {myFavorites: updateInformation.listingId}}, {new:true});
-    }
-
-    
     if (!existingUserQuery) {
-      return res.status(401).json({error: "error during favorite list update (pop/push)"});
+      return res
+        .status(401)
+        .json({ error: "error during favorite list update (pop/push)" });
     }
 
     return res.status(200).json({
       updatedUser: existingUserQuery,
       message: "My favorite list has been updated successfully",
-    })
-
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ error: "Internal server error during myfavorite update" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error during myfavorite update" });
   }
-  
-
 };
 
 const fetchUserFavoriteList = async (req, res) => {
   try {
     const fetchInformation = req.body;
-    const userWithFavorite = User.findById(fetchInformation).populate('myFavorite').exec();
+    const userWithFavorite = User.findById(fetchInformation)
+      .populate("myFavorite")
+      .exec();
 
-    if (!userWithFavorite)
-    {
-      res.status(401).json({error: "User not found"});
+    if (!userWithFavorite) {
+      res.status(401).json({ error: "User not found" });
     }
 
     res.status(200).json({
       user: userWithListing,
       message: "User with the favorite list has been successfully fetched",
     });
-
   } catch (error) {
-    
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error during myfavorite fetch" });
   }
-}
+};
 
-module.exports = { updateUserBookingList, fetchUserBookingList, updateUserListingList, fetchUserListingList, updateUserFavoriteList, fetchUserFavoriteList };
+const registerUserCashAppHandle = async (req, res) => {
+  try {
+    const userId = req.query;
+    const updateInfo = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { cashAppHandle: updateInfo },
+      { new: true }
+    ).exec();
+
+    if (!updatedUser) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      updatedUser: updatedUser,
+      message: "User's cash app handle has been successfully updated",
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error during cash app handle update" });
+  }
+};
+
+const registerVenmoHandle = async (userInfo) => {};
+
+module.exports = {
+  updateUserBookingList,
+  fetchUserBookingList,
+  updateUserListingList,
+  fetchUserListingList,
+  updateUserFavoriteList,
+  fetchUserFavoriteList,
+  registerUserCashAppHandle
+};
