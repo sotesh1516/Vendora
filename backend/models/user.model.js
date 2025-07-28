@@ -44,6 +44,14 @@ const userSchema = new mongoose.Schema({
         ref: "Listing",
     }],
 
+    cashAppHandle: {
+        type: String,
+    },
+
+    venmoHandle: {
+        type: String
+    },
+
     createdAt: {
         type: Date,
         default: Date.now
