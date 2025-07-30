@@ -189,7 +189,7 @@ const fetchUserFavoriteList = async (req, res) => {
 
 const registerUserCashAppHandle = async (req, res) => {
   try {
-    const userId = req.query;
+    const userId = req.params.id;
     const updateInfo = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -214,7 +214,80 @@ const registerUserCashAppHandle = async (req, res) => {
   }
 };
 
-const registerVenmoHandle = async (userInfo) => {};
+const fetchUserCashAppHandle = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId).select("cashAppHandle").exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      cashAppHandle: user.cashAppHandle,
+      message: "Successfully fetched Cash App handle",
+    });
+  } catch (error) {
+    console.error("Error fetching Cash App handle:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error while fetching Cash App handle" });
+  }
+};
+
+
+const registerUserVenmoHandle = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updateInfo = req.body; // should contain the Venmo handle string
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { venmoHandle: updateInfo },
+      { new: true }
+    ).exec();
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      updatedUser,
+      message: "User's Venmo handle has been successfully updated",
+    });
+  } catch (error) {
+    console.error("Error updating Venmo handle:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error during Venmo handle update" });
+  }
+};
+
+const fetchUserVenmoHandle = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId).select("venmoHandle").exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      venmoHandle: user.venmoHandle,
+      message: "Successfully fetched Venmo handle",
+    });
+  } catch (error) {
+    console.error("Error fetching Venmo handle:", error);
+    return res
+      .status(500)
+      .json({ error: "Internal server error while fetching Venmo handle" });
+  }
+};
+
+
+
 
 module.exports = {
   updateUserBookingList,
@@ -223,5 +296,8 @@ module.exports = {
   fetchUserListingList,
   updateUserFavoriteList,
   fetchUserFavoriteList,
-  registerUserCashAppHandle
+  registerUserCashAppHandle,
+  fetchUserCashAppHandle,
+  registerUserVenmoHandle,
+  fetchUserVenmoHandle
 };

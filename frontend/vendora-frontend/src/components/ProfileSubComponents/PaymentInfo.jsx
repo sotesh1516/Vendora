@@ -1,6 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { registerCashApp } from '../../api/user';
 
 function PaymentInfo() {
+  const [cashAppHandle, setCashAppHandle] = useState("");
+  const [venmoHandle, setVenmoHandle] = useState("");
+
+  useEffect(() => {
+    //fetch during initial load and update the states
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      const updatedInfo = await registerCashApp();
+    } catch (error) {
+      
+    }
+  };
+
+  const handleChange = (e) => {
+    e.target.name === "cashApp" ? setCashAppHandle(e.target.value) : setVenmoHandle(e.target.value);
+  };
+
   return (
     <div className="p-4">
       {/* Title Section */}
@@ -23,8 +43,10 @@ function PaymentInfo() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Cash App Handle</label>
             <input
               type="text"
+              name='cashApp'
               className="input input-bordered w-full"
-              placeholder="$yourcashtag"
+              placeholder={cashAppHandle.trim() !== "" ? cashAppHandle : "$yourcashtag" }
+              onChange={handleChange}
             />
           </div>
 
@@ -32,15 +54,17 @@ function PaymentInfo() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Venmo Handle</label>
             <input
               type="text"
+              name='venmo'
               className="input input-bordered w-full"
-              placeholder="@yourvenmo"
+              placeholder={venmoHandle.trim() !== "" ? venmoHandle : "@yourvenmo"}
+              onChange={handleChange}
             />
           </div>
         </div>
 
         {/* Save Button */}
         <div className="flex justify-end pt-4 border-t">
-          <button className="btn btn-primary px-6">Save Payment Info</button>
+          <button className="btn btn-primary px-6" onClick={handleClick}>Save Payment Info</button>
         </div>
       </div>
     </div>

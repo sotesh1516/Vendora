@@ -94,11 +94,27 @@ export const updateUserFavorites = async (favoriteUpdateInfo) => {
             console.log(response.data);
             return response.data;
         }
-        console.error("An error has occured during my favorite update", response.status);
-        return {error: "an error has occured during my favorite update"};
+        console.error("Server responded with an error during my favorite update", response.status);
+        return {error: "Server responded with an error my favorite update"};
     } catch (error) {
         console.error("Error during my favorite update");
         return {error: "My favorite update failed. Please try again"};
     }
 };
 
+
+export const registerCashApp = async (userInfo) => {
+    try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/user/paymentinfo/cashapp/${userInfo.id}`);
+
+        if (response.status == 200) {
+            return response.data;
+        }
+
+        console.error("Server responded with an error cash app handle update", response.status);
+        return {error: "Server responded with an error cash app handle update"};
+    } catch (error) {
+        console.error("Error during cash app handle update");
+        return {error: "Cash app handle update failed. Please try again"};
+    }
+};

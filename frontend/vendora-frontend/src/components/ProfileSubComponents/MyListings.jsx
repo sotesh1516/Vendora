@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
 import { fetchUserListings, updateUserListing } from '../../api/user';
+import ListingEdit from './MyListingSubComponents/ListingEdit';
 
 function MyListings() {
 
@@ -42,6 +43,9 @@ function MyListings() {
 
   //state for activating a modal for editing listing
   const [editListing, setEditListing] = useState(false);
+
+  //state for marking the listing to be updated 
+  const [listingToBeUpdated, setListingToBeUpdated] = useState(null);
 
   //state for changing the heart/favorite icon 
   const [favorite, setFavorite] = useState(false);
@@ -213,6 +217,7 @@ function MyListings() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditListing(true);
+                    setListingToBeUpdated(listing);
                   }}
                 >
                   Edit
@@ -368,50 +373,9 @@ function MyListings() {
 
 
         {editListing && (
-          <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
-            <div className="bg-white w-[90%] max-w-xl p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Edit Listing</h2>
-                <button onClick={() => setEditListing(false)} className="text-gray-400 hover:text-black text-xl">&times;</button>
-              </div>
-
-              {/* Form */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  // handle saving here
-                  setEditListing(false);
-                }}
-                className="space-y-4"
-              >
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input type="text" defaultValue={listing.name} className="input input-bordered w-full" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Title</label>
-                  <input type="text" defaultValue={listing.title} className="input input-bordered w-full" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Price ($/hr)</label>
-                  <input type="number" defaultValue={listing.price} className="input input-bordered w-full" />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea defaultValue={listing.description} className="textarea textarea-bordered w-full" />
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <button type="button" onClick={() => setEditListing(false)} className="btn btn-ghost">Cancel</button>
-                  <button type="submit" className="btn btn-primary">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ListingEdit listing={listingToBeUpdated} setEditListing={setEditListing} />
         )}
+
 
         {deleteListing && (
           <div className="fixed inset-0 z-50 bg-transparent bg-opacity-30 flex items-center justify-center">
