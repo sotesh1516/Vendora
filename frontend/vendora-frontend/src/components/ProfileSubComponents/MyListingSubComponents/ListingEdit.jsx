@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { editListing } from '../../../api/listing';
 
-function ListingEdit({ listing, setEditListing}) {
+function ListingEdit({ listing, setEditListing }) {
 
     //state to keep track of service option for a single listing
     const [serviceOptions, setServiceOptions] = useState(listing.serviceOptions);
@@ -14,18 +15,30 @@ function ListingEdit({ listing, setEditListing}) {
     //state for keeping track of the added images
     const [selectedImages, setSelectedImages] = useState([]);
 
+    //state for keeping track of cloud stored images
+    const [cloudStoredImages, setCloudStoredImages] = useState(listing.cloudStoredImages);
+
+    //state to signify the success of edition
+    const [showEditSuccess, setShowEditSuccess] = useState(false);
+
+    //state to signify that the edition is in the process
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     const [listingToBeUpdated, setListingToBeUpdated] = useState({
-        name: listing.serviceProvider,
-        service: listing.serviceName,
-        serviceOpts: serviceOptions,
-        timeSlotsAv: timeSlots,
-        price: "",
-        description: "",
-        rating: [],
-        avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+        serviceProvider: listing.serviceProvider,
+        serviceName: listing.serviceName,
+        serviceOptions: serviceOptions,
+        timeSlots: timeSlots,
+        ratePerHr: listing.ratePerHr,
+        description: listing.description,
+        ratings: listing.ratings,
+        //avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+        cloudStoredImages: cloudStoredImages,
         images: selectedImages,
     });
+
+    let numberOfTotalImages = listingToBeUpdated.cloudStoredImages.length + listingToBeUpdated.images.length;
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -35,8 +48,24 @@ function ListingEdit({ listing, setEditListing}) {
     const handleSubmission = async () => {
         try {
             //might need to implement editListing
+            setIsSubmitting(true);
+            const updateInfo = {
+                id: listing._id,
+                updatedListing: listingToBeUpdated
+            };
+
+            const result = await editListing(updateInfo);
+
+            if (result && result.listing) {
+                setIsSubmitting(false);
+                setShowEditSuccess(true);
+            }
         } catch (error) {
-            
+
+        }
+        finally {
+            //this block runs unconditionally
+
         }
     };
 
@@ -54,26 +83,24 @@ function ListingEdit({ listing, setEditListing}) {
                     </div>
 
                     {/* Form */}
-                    <form
-                        className="space-y-5"
-                    >
+                    <form className="space-y-5">
                         {/* Section: Basic Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-lg font-medium text-gray-700">Your Name</label>
-                                <input name="name" type="text" required className="input input-bordered w-full" value={listingToBeUpdated.name} onChange={handleChange} />
+                                <input name="name" type="text" required className="input input-bordered w-full" value={listingToBeUpdated.serviceProvider} onChange={handleChange} />
                             </div>
 
                             <div>
                                 <label className="block text-lg font-medium text-gray-700">Service Title</label>
-                                <input name="service" type="text" required className="input input-bordered w-full" value={listingToBeUpdated.service} onChange={handleChange} />
+                                <input name="service" type="text" required className="input input-bordered w-full" value={listingToBeUpdated.serviceName} onChange={handleChange} />
                             </div>
                         </div>
 
                         {/* Section: Price */}
                         <div>
                             <label className="block text-m font-medium text-gray-700">Rate per Hour ($)</label>
-                            <input name="price" type="number" min="1" required className="input input-bordered w-full" value={listingToBeUpdated.price} onChange={handleChange} />
+                            <input name="price" type="number" min="1" required className="input input-bordered w-full" value={listingToBeUpdated.ratePerHr} onChange={handleChange} />
                         </div>
 
                         {/* Section: Description */}
@@ -188,12 +215,16 @@ function ListingEdit({ listing, setEditListing}) {
                                     const files = Array.from(e.target.files);
                                     const newTotal = selectedImages.length + files.length;
 
-                                    if (newTotal !== 3) {
-                                        alert(`Please select exactly 3 images. You currently have ${newTotal} image(s).`);
+                                    if (newTotal > 3) {
+                                        alert(`Please select exactly 3 images.`);
                                         return;
+                                    }
+                                    else if (newTotal < 3) {
+                                        alert(`Please select exactly 3 images. You currently have ${newTotal} image(s).`);
                                     }
 
                                     setSelectedImages((prev) => [...prev, ...files]);
+                                    console.log(selectedImages);
                                 }}
                             />
 
@@ -225,17 +256,39 @@ function ListingEdit({ listing, setEditListing}) {
                             </button>
                             <button className="btn btn-primary" onClick={(e) => {
                                 e.preventDefault();
-                                setEdit(true); // <-- this triggers the update handler you’ll implement
+                                handleSubmission(); // <-- this triggers the update handler you’ll implement
                                 //i might take the handleSubmission route
-                                setEditListing(false);
-                            }}>
-                                Save Changes
+
+                            }} disabled={isSubmitting}>
+                                {isSubmitting ? "Saving..." : "Save Changes"}
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+
+            {showEditSuccess && (
+                <div className="fixed inset-0 z-50 bg-transparent bg-opacity-40 flex items-center justify-center">
+                    <div className="bg-white w-[90%] max-w-md p-6 rounded-lg shadow-lg">
+                        <h3 className="font-bold text-lg text-green-600">Success!</h3>
+                        <p className="py-4">Your listing has been updated successfully.</p>
+                        <div className="modal-action">
+                            <button
+                                className="btn btn-success"
+                                onClick={() => {
+                                    setShowEditSuccess(false);
+                                    setEditListing(false);
+                                }}
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
+
+
     )
 }
 

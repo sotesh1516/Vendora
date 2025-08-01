@@ -99,6 +99,7 @@ const createListing = async (req, res) => {
 const editListing = async (req, res) => {
   try {
     const incomingListing = req.body;
+    const listingId = req.params;
 
     if (
       !incomingListing.serviceProvider ||
@@ -111,7 +112,7 @@ const editListing = async (req, res) => {
     }
 
     const updatedListing = await Listing.replaceOne(
-      { _id: incomingListing.id },
+      { _id: listingId },
       incomingListing
     );
     return res.status(200).json({
@@ -264,6 +265,7 @@ const searchListings = async (req, res) => {
       .json({ error: "Internal server error during listings search fetch" });
   }
 };
+
 
 module.exports = {
   createListing,

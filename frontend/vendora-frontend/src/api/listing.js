@@ -17,13 +17,19 @@ export const registerListing = async (newListing) => {
   // newListing.timeSlotsAv.forEach((slot) => {
   //   multiPartStructuredUserData.append("timeSlots", slot);
   // });
-  multiPartStructuredUserData.append("serviceOptions", JSON.stringify(newListing.serviceOpts));
-  multiPartStructuredUserData.append("timeSlots", JSON.stringify(newListing.timeSlotsAv));
+  multiPartStructuredUserData.append(
+    "serviceOptions",
+    JSON.stringify(newListing.serviceOpts)
+  );
+  multiPartStructuredUserData.append(
+    "timeSlots",
+    JSON.stringify(newListing.timeSlotsAv)
+  );
   multiPartStructuredUserData.append("ratePerHr", newListing.price);
   //JSON.stringify is used to avoid the conversion of [] => ""
   //On the backend it is required to do const ratings = JSON.parse(req.body.ratings);
   multiPartStructuredUserData.append("ratings", JSON.stringify([]));
-  multiPartStructuredUserData.append("cloudStoredImages", JSON.stringify([])) //might not need this
+  multiPartStructuredUserData.append("cloudStoredImages", JSON.stringify([])); //might not need this
   multiPartStructuredUserData.append("description", newListing.description);
   newListing.images.forEach((file) => {
     multiPartStructuredUserData.append("images", file);
@@ -107,10 +113,33 @@ export const fetchListing = async (id) => {
   try {
     const response = await axios.get(`http://127.0.0.1:8000/api/listing/${id}`);
 
-    if (response.status == 200) {
+    if (response.status === 200) {
       return response.data;
+    } else if (response.status === 404) {
+      // Not found
+      return {
+        error: true,
+        message: "Listing not found.",
+      };
+    } else if (response.status === 401) {
+      // Unauthorized
+      return {
+        error: true,
+        message: "Unauthorized. Please log in again.",
+      };
+    } else if (response.status === 500) {
+      // Server error
+      return {
+        error: true,
+        message: "Server error. Please try again later.",
+      };
+    } else {
+      // All other non-200 statuses
+      return {
+        error: true,
+        message: `Unexpected error: ${response.status}`,
+      };
     }
-
   } catch (error) {
     console.error("Error during the listing retrieval process");
     return {
@@ -118,4 +147,48 @@ export const fetchListing = async (id) => {
       message: "Listing retrieval failed. PLease try again",
     };
   }
-}
+};
+
+export const editListing = async (updateInfo) => {
+  try {
+    console.log(updateInfo);
+    const response = await axios.put(
+      `http://127.0.0.1:8000/api/listing/${updateInfo.id}`,
+      updateInfo.updatedListing
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else if (response.status === 404) {
+      // Not found
+      return {
+        error: true,
+        message: "Listing not found.",
+      };
+    } else if (response.status === 401) {
+      // Unauthorized
+      return {
+        error: true,
+        message: "Unauthorized. Please log in again.",
+      };
+    } else if (response.status === 500) {
+      // Server error
+      return {
+        error: true,
+        message: "Server error. Please try again later.",
+      };
+    } else {
+      // All other non-200 statuses
+      return {
+        error: true,
+        message: `Unexpected error: ${response.status}`,
+      };
+    }
+  } catch (error) {
+    console.error("Error during the listing retrieval process");
+    return {
+      error: error,
+      message: "Listing retrieval failed. PLease try again",
+    };
+  }
+};
