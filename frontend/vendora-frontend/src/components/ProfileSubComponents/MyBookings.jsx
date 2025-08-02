@@ -121,43 +121,52 @@ function MyBookings() {
             </div>
           </div>
 
-          {/* Example: Completed Bookings */}
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">Completed</h3>
-            <div className="space-y-4">
-              <div className="rounded-xl border border-gray-200 p-4 hover:bg-gray-50 hover:shadow-md cursor-pointer bg-white transition">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between transition rounded-lg gap-4">
-                  <div className="flex-shrink-0">
-                    <img
-                      className="w-12 h-12 rounded-full object-cover shadow-sm"
-                      src="https://img.daisyui.com/images/profile/demo/3@94.webp"
-                      alt="Provider"
-                    />
-                  </div>
+          {/* Completed Bookings */}
+<div>
+  <h3 className="text-xl font-semibold text-gray-800 mb-3">Completed</h3>
+  <div className="space-y-4">
+    <div
+      className="rounded-xl border border-gray-200 hover:border-blue-400 p-4 hover:bg-blue-50 hover:shadow-md cursor-pointer bg-white transition"
+      onClick={() => {
+        navigate("/dashboard");
+      }}
+    >
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between transition rounded-lg gap-4">
+        {/* Avatar */}
+        <div className="flex-shrink-0">
+          <img
+            className="w-12 h-12 rounded-full object-cover shadow-sm"
+            src="https://img.daisyui.com/images/profile/demo/3@94.webp"
+            alt="Provider"
+          />
+        </div>
 
-                  <div className="flex-grow">
-                    <div className="font-semibold text-base text-gray-900">John Doe</div>
-                    <div className="text-sm uppercase font-medium text-gray-500">Physics Review</div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Friday, May 17 • 2 hours • $30 total
-                    </p>
-                  </div>
+        {/* Info */}
+        <div className="flex-grow">
+          <div className="font-semibold text-base text-gray-900">John Doe</div>
+          <div className="text-sm uppercase font-medium text-gray-500">Physics Review</div>
+          <p className="text-sm text-gray-600 mt-1">
+            Friday, May 17 • 2 hours • $30 total
+          </p>
+        </div>
 
-                  <div className="flex items-center gap-2 self-stretch">
-                    <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // add rebook logic
-                      }}
-                    >
-                      Rebook
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Actions */}
+        <div className="flex items-center gap-2 self-stretch">
+          <button
+            className="btn btn-sm btn-ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              // add rebook logic
+            }}
+          >
+            Rebook
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
         </div>
       </div>

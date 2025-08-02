@@ -23,22 +23,6 @@ export default function Navbar(props) {
     <div className="navbar bg-white shadow-sm border-b border-gray-200 px-4 py-3">
       {/* Left Section */}
       <div className="flex items-center gap-3 flex-1">
-        <button className="btn btn-square btn-ghost hover:bg-gray-100">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="inline-block h-5 w-5 stroke-current"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </button>
-
         <Link
           to="/dashboard"
           className="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors"
