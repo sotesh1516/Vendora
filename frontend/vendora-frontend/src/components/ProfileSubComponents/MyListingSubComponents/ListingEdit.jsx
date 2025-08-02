@@ -24,6 +24,9 @@ function ListingEdit({ listing, setEditListing }) {
     //state to signify that the edition is in the process
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    //state to save the urls of images to delete from cloudinary
+    const [imagesToDelete, setImagesToDelete] = useState([]);
+
 
     const [listingToBeUpdated, setListingToBeUpdated] = useState({
         serviceProvider: listing.serviceProvider,
@@ -36,6 +39,7 @@ function ListingEdit({ listing, setEditListing }) {
         //avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
         cloudStoredImages: cloudStoredImages,
         images: selectedImages,
+        imagesToDelete: imagesToDelete,
     });
 
     let numberOfTotalImages = listingToBeUpdated.cloudStoredImages.length + listingToBeUpdated.images.length;
@@ -63,10 +67,11 @@ function ListingEdit({ listing, setEditListing }) {
         } catch (error) {
 
         }
-        finally {
-            //this block runs unconditionally
+    };
 
-        }
+    const handleCloudStoredImages = (imageToBeRemovedId) => {
+       listingToBeUpdated.cloudStoredImages = listingToBeUpdated.cloudStoredImages.filter((image => image.public_id === imageToBeRemovedId));
+       setImagesToDelete((prev) => [...prev, imageToBeRemovedId]);
     };
 
     return (
@@ -191,7 +196,10 @@ function ListingEdit({ listing, setEditListing }) {
                                     <button
                                         type="button"
                                         className="btn btn-sm btn-outline mt-1"
-                                        onClick={() => setServiceOptions([...serviceOptions, ""])}
+                                        onClick={() => {
+                                            setServiceOptions([...serviceOptions, ""])
+                                            //console.log(serviceOptions);
+                                        }}
                                     >
                                         + Add
                                     </button>
@@ -214,13 +222,16 @@ function ListingEdit({ listing, setEditListing }) {
                                     //Array.from takes in an array like object and converts to an array
                                     const files = Array.from(e.target.files);
                                     const newTotal = selectedImages.length + files.length;
+                                    const grandTotal = newTotal + listingToBeUpdated.cloudStoredImages.length;
 
-                                    if (newTotal > 3) {
+                                    if (grandTotal > 3) {
                                         alert(`Please select exactly 3 images.`);
+                                        // Clear the file input
+                                        e.target.value = "";
                                         return;
                                     }
-                                    else if (newTotal < 3) {
-                                        alert(`Please select exactly 3 images. You currently have ${newTotal} image(s).`);
+                                    else if (grandTotal < 3) {
+                                        alert(`Please select exactly 3 images. You currently have ${grandTotal} image(s).`);
                                     }
 
                                     setSelectedImages((prev) => [...prev, ...files]);
@@ -228,24 +239,37 @@ function ListingEdit({ listing, setEditListing }) {
                                 }}
                             />
 
+                            {/* Combined Preview Grid */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+                                {/* Cloud images */}
+                                {cloudStoredImages.map((image, index) => (
+                                    <div key={`cloud-${index}`} className="relative border rounded-lg overflow-hidden aspect-square">
+                                        <img src={image.url} alt={`Cloud ${index + 1}`} className="object-cover w-full h-full" />
+                                        <button
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-sm"
+                                            onClick={() => {
+                                                handleCloudStoredImages(image.url);
+                                            }}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
 
-                            {/* Preview grid (replace src with dynamic preview later) */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
-                                <div className="w-full aspect-square overflow-hidden rounded-lg border">
-                                    <img
-                                        src="https://via.placeholder.com/150"
-                                        alt="preview"
-                                        className="object-cover w-full h-full"
-                                    />
-                                </div>
-                                <div className="w-full aspect-square overflow-hidden rounded-lg border">
-                                    <img
-                                        src="https://via.placeholder.com/150"
-                                        alt="preview"
-                                        className="object-cover w-full h-full"
-                                    />
-                                </div>
-                                {/* Add more <div>s dynamically once you hook up state */}
+                                {/* Local selected images */}
+                                {selectedImages.map((file, index) => (
+                                    <div key={`local-${index}`} className="relative border rounded-lg overflow-hidden aspect-square">
+                                        <img src={URL.createObjectURL(file)} alt={`Selected ${index + 1}`} className="object-cover w-full h-full" />
+                                        <button
+                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-sm"
+                                            onClick={() => {
+                                                setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                                            }}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 

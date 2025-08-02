@@ -79,26 +79,29 @@ export default function Dashboard() {
 
     return (
         <>
-            <Navbar sendToParent={getQueryInfo} />
+            <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                <Navbar sendToParent={getQueryInfo} />
 
-            {/* Category Tabs */}
-            <div className="border-b border-gray-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="flex justify-center gap-4 overflow-x-auto text-sm font-medium py-3">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => setActiveCategory(category)}
-                                className={`relative px-3 py-1 rounded-md transition-colors ${activeCategory === category
-                                    ? "text-blue-600 bg-blue-50"
-                                    : "text-gray-600 hover:bg-gray-100"
-                                    }`}
-                            >
-                                {category}
-                            </button>
-                        ))}
+                {/* Category Tabs */}
+                <div className="border-b border-gray-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="flex justify-center gap-4 overflow-x-auto text-sm font-medium py-3">
+                            {categories.map((category) => (
+                                <button
+                                    key={category}
+                                    onClick={() => setActiveCategory(category)}
+                                    className={`relative px-3 py-1 rounded-md transition-colors ${activeCategory === category
+                                        ? "text-blue-600 bg-blue-50"
+                                        : "text-gray-600 hover:bg-gray-100"
+                                        }`}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
+
             </div>
 
             <div className="flex justify-end mt-4 px-4">

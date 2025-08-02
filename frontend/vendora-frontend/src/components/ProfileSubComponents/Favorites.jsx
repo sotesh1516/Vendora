@@ -38,19 +38,16 @@ function Favorites() {
 
             {/* Info section */}
             <div className="flex-grow">
-              <div className="font-semibold text-base text-gray-900">
-                {dummyFavorite.serviceName}
-              </div>
-              <div className="text-sm uppercase font-medium text-gray-500">
-                {dummyFavorite.serviceProvider}
-              </div>
+              <div className="font-semibold text-base text-gray-900">{dummyFavorite.serviceProvider}</div>
+              <div className="text-sm uppercase font-medium text-gray-500">{dummyFavorite.serviceName}</div>
               <p className="text-sm text-gray-600 mt-1">
                 {dummyFavorite.description}
               </p>
-              <div className="mt-2 text-sm text-gray-700 font-medium">
-                {dummyFavorite.ratePerHr} / hr · ⭐ {dummyFavorite.rating} ({dummyFavorite.reviewers})
-              </div>
+              <p className="text-sm text-gray-600 mt-1">
+                ${dummyFavorite.ratePerHr} / hr · ⭐ {dummyFavorite.rating} ({dummyFavorite.reviewers})
+              </p>
             </div>
+
 
             {/* Actions (same height alignment as MyBookings) */}
             <div className="flex items-center gap-2 self-stretch">

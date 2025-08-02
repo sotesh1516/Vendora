@@ -62,29 +62,31 @@ export default function SearchResults() {
       </div>
 
       {/* Vertical results - stretched wider */}
-      <div className="max-w-[95rem] mx-auto px-3 py-6 space-y-6">
+      <div className="w-full px-7 py-6 space-y-4">
         {searchResults.map((listing, idx) => (
           <div
-            key={idx}
-            className="w-full flex gap-6 p-5 border border-gray-200 rounded-xl bg-white hover:shadow-lg transition-all"
-          >
+          key={idx}
+          className="w-full flex gap-4 p-4 border border-gray-100 rounded-lg bg-white hover:shadow-sm transition-all"
+        >
+        
             {/* Thumbnail */}
             <img
               // src={listing.avatar}
               src="https://img.daisyui.com/images/profile/demo/5@94.webp"
               alt={listing.title}
-              className="w-32 h-32 rounded-lg object-cover flex-shrink-0"
+              className="w-24 h-24 rounded-md object-cover flex-shrink-0"
             />
 
             {/* Info section */}
             <div className="flex flex-col justify-between w-full">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {listing.serviceName}
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  {listing.serviceProvider}
-                </p>
+              <h2 className="text-base font-semibold text-gray-800">
+  {listing.serviceName}
+</h2>
+<p className="text-xs text-gray-500 mt-0.5">
+  {listing.serviceProvider}
+</p>
+
                 <p className="text-sm text-gray-600 mt-2 leading-snug line-clamp-2">
                   {listing.description}
                 </p>

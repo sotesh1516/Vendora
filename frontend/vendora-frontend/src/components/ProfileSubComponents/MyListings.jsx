@@ -92,6 +92,7 @@ function MyListings() {
 
 
       try {
+        console.log(newListingToRegister);
         const response = await registerListing(newListingToRegister);
         //add the listingId to the user's array
         if (response && response.listing) {
@@ -149,6 +150,16 @@ function MyListings() {
       images: selectedImages,
     }));
   }, [selectedImages]);
+
+
+  //effect to update listing when service options change
+  useEffect(() => {
+    setNewListingToRegister((prev) => ({
+      ...prev,
+      serviceOpts: serviceOptions,
+    }));
+  }, [serviceOptions]);
+  
 
 
   const handleChange = (event) => {
@@ -533,7 +544,10 @@ function MyListings() {
                         <button
                           type="button"
                           className="btn btn-sm btn-outline mt-1"
-                          onClick={() => setServiceOptions([...serviceOptions, ""])}
+                          onClick={() => {
+                            setServiceOptions([...serviceOptions, ""])
+                            //console.log(serviceOptions);
+                          }}
                         >
                           + Add
                         </button>

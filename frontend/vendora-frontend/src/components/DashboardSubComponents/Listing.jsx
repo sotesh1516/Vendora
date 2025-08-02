@@ -26,7 +26,7 @@ export default function Listing() {
     status: 'booked',
   });
 
-  const [isRescheduleMode, setIsRescheduleMode] = useState(true);
+  const [isRescheduleMode, setIsRescheduleMode] = useState(false);
 
   useEffect(() => {
     const fetchSingleListing = async () => {
