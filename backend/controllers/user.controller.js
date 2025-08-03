@@ -90,8 +90,8 @@ const updateUserListingList = async (req, res) => {
 
 const fetchUserListingList = async (req, res) => {
   try {
-    const fetchInformation = req.body;
-    const userWithListing = await User.findById(fetchInformation.userId)
+    const userId = req.params;
+    const userWithListing = await User.findById(userId)
       .populate("myListings")
       .exec();
 
@@ -126,9 +126,18 @@ const updateUserFavoriteList = async (req, res) => {
       return res.status(401).json({ error: "User not found" });
     }
 
-    const matchFound = listingFavoriteStatusCheck.myFavorites.map(
-      (myFavorite) => updateInformation.listingId === myFavorite._id.toString()
-    );
+    let matchFound = false;
+
+
+    listingFavoriteStatusCheck.myFavorites.forEach(
+      (myFavorite) => 
+        {
+           if (updateInformation.listingId === myFavorite._id.toString())
+           {
+            matchFound = true;
+            return;
+           }
+  });
 
     let existingUserQuery = null;
 

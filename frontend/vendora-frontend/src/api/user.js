@@ -78,8 +78,21 @@ export const fetchUserListings = async (userInfo) => {
     }
 };
 
-export const fetchUserFavorites = async () => {
-// need to be implemented when doing my favorite page
+export const fetchUserFavorites = async (userInfo) => {
+    try {
+        const response = await axios.post(`http://127.0.0.1:8000/api/user/myfavorites/${userInfo.userId}`);
+
+        if (response.status == 200)
+        {
+            console.log(response.data);
+            return response.data;
+        }
+        console.error("Server responded with an error during my favorites fetch", response.status);
+        return {error: "Server responded with an error my favorites fetch"};
+    } catch (error) {
+        console.error("Error during my favorites fetch");
+        return {error: "My favorites fetch failed. Please try again"};
+    }
 };
 
 export const updateUserFavorites = async (favoriteUpdateInfo) => {
