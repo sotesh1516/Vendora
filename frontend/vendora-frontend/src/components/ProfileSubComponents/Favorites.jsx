@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { fetchUserFavorites } from '../../api/user';
 
 function Favorites() {
   const dummyFavorite = {
@@ -6,11 +7,23 @@ function Favorites() {
     serviceName: "Event Photography",
     serviceProvider: "Amina Yusuf",
     description: "Professional event photography for campus events, parties, and more. High-quality DSLR, edits included.",
-    ratePerHr: "$40",
+    ratePerHr: "40",
     rating: 4.9,
     reviewers: 28,
     avatar: "https://img.daisyui.com/images/profile/demo/5@94.webp",
   };
+
+  const localCopyOfSignedInUser = 
+
+  useEffect(() => {
+    const fetchUserMyFavorite = async () => {
+      try {
+        const serverResponse = await fetchUserFavorites();
+      } catch (error) {
+        
+      }
+    };
+  }, []);
 
   return (
     <div className="p-4 space-y-6">
@@ -44,7 +57,7 @@ function Favorites() {
                 {dummyFavorite.description}
               </p>
               <p className="text-sm text-gray-600 mt-1">
-                ${dummyFavorite.ratePerHr} / hr · ⭐ {dummyFavorite.rating} ({dummyFavorite.reviewers})
+                $ {dummyFavorite.ratePerHr}/hr · ⭐ {dummyFavorite.rating} ({dummyFavorite.reviewers})
               </p>
             </div>
 
