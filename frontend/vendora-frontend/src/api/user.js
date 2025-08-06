@@ -78,9 +78,9 @@ export const fetchUserListings = async (userInfo) => {
     }
 };
 
-export const fetchUserFavorites = async (userInfo) => {
+export const fetchUserFavorites = async (userId) => {
     try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/user/myfavorites/${userInfo.userId}`);
+        const response = await axios.post(`http://127.0.0.1:8000/api/user/myfavorites/${userId}`);
 
         if (response.status == 200)
         {

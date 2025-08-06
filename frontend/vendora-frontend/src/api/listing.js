@@ -11,20 +11,20 @@ export const registerListing = async (newListing) => {
 
   multiPartStructuredUserData.append("serviceProvider", newListing.name);
   multiPartStructuredUserData.append("serviceName", newListing.service);
-  // newListing.serviceOpts.forEach((opt) => {
-  //   multiPartStructuredUserData.append("serviceOptions", opt);
-  // });
-  // newListing.timeSlotsAv.forEach((slot) => {
-  //   multiPartStructuredUserData.append("timeSlots", slot);
-  // });
-  multiPartStructuredUserData.append(
-    "serviceOptions",
-    JSON.stringify(newListing.serviceOpts)
-  );
-  multiPartStructuredUserData.append(
-    "timeSlots",
-    JSON.stringify(newListing.timeSlotsAv)
-  );
+  newListing.serviceOpts.forEach((opt) => {
+    multiPartStructuredUserData.append("serviceOptions", opt);
+  });
+  newListing.timeSlotsAv.forEach((slot) => {
+    multiPartStructuredUserData.append("timeSlots", slot);
+  });
+  // multiPartStructuredUserData.append(
+  //   "serviceOptions",
+  //   JSON.stringify(newListing.serviceOpts)
+  // );
+  // multiPartStructuredUserData.append(
+  //   "timeSlots",
+  //   JSON.stringify(newListing.timeSlotsAv)
+  // );
   multiPartStructuredUserData.append("ratePerHr", newListing.price);
   //JSON.stringify is used to avoid the conversion of [] => ""
   //On the backend it is required to do const ratings = JSON.parse(req.body.ratings);
@@ -67,6 +67,7 @@ export const retrieveListings = async (userInfo) => {
       "http://127.0.0.1:8000/api/listing/fetch",
       {
         userId: userInfo.userId,
+        pageNumber: userInfo.pageNumber,
       }
     );
 

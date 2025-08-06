@@ -90,8 +90,8 @@ const updateUserListingList = async (req, res) => {
 
 const fetchUserListingList = async (req, res) => {
   try {
-    const userId = req.params;
-    const userWithListing = await User.findById(userId)
+    const fetchInformation = req.body;
+    const userWithListing = await User.findById(fetchInformation.userId)
       .populate("myListings")
       .exec();
 
@@ -175,9 +175,9 @@ const updateUserFavoriteList = async (req, res) => {
 
 const fetchUserFavoriteList = async (req, res) => {
   try {
-    const fetchInformation = req.body;
-    const userWithFavorite = User.findById(fetchInformation)
-      .populate("myFavorite")
+    const userId = req.params.id;
+    const userWithFavorite = await User.findById(userId)
+      .populate("myFavorites")
       .exec();
 
     if (!userWithFavorite) {
@@ -185,7 +185,7 @@ const fetchUserFavoriteList = async (req, res) => {
     }
 
     res.status(200).json({
-      user: userWithListing,
+      user: userWithFavorite,
       message: "User with the favorite list has been successfully fetched",
     });
   } catch (error) {
