@@ -20,30 +20,37 @@ export default function Dashboard() {
 
     const [searchQueryInfo, setSearchQueryInfo] = useState("");
 
+    const [pageNumber, setPageNumber] = useState(0);
+
     const getQueryInfo = async (queryToBeTransferredFromNavbar) => {
         setSearchQueryInfo(queryToBeTransferredFromNavbar);
     };
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        async function getListings() {
-            try {
-                const response = await retrieveListings({ userId: localCopyOfSignedInUser.id });
-                if (response && response.listings) {
-                    setListings(response.listings);
-                    console.log("success in fetching");
-                }
-                else {
-                    console.log("you know what to do");
-                }
-            } catch (error) {
-                console.log({ "error": error });
+    async function getListings() {
+        try {
+            const response = await retrieveListings({ 
+                userId: localCopyOfSignedInUser.id,
+                pageNumber: pageNumber,
+            });
+            if (response && response.listings) {
+                //this is wrong since i am passing a value instead of a function, states are async in React
+                //setListings([...listings, response.listings]);
+                setListings(prev => [...prev, ...response.listings]);
+                console.log("success in fetching");
             }
+            else {
+                console.log("you know what to do");
+            }
+        } catch (error) {
+            console.log({ "error": error });
         }
+    }
 
+    useEffect(() => {
         getListings();
-    }, [])
+    },[pageNumber]);
 
     useEffect(() => {
         // Only search if there is a valid query
@@ -173,6 +180,7 @@ export default function Dashboard() {
                     onClick={() => {
                         // you’ll handle functionality here
                         console.log("Load more clicked!");
+                        setPageNumber(prev => prev + 1);
                     }}
                 >
                     Load More
