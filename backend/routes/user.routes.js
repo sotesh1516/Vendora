@@ -1,5 +1,5 @@
 const express = require("express");
-const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle } = require("../controllers/user.controller");
+const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing } = require("../controllers/user.controller");
 const router = express.Router();
 
 //change the fetch POST method to get with fetchInfo passed through req.query..
@@ -9,9 +9,10 @@ router.post("/mybookings/fetch", fetchUserBookingList);
 router.post("/mylistings/fetch", fetchUserListingList);
 router.post("/myfavorites/:id", fetchUserFavoriteList);
 router.post("/myfavorite/update", updateUserFavoriteList);
-router.post("/paymentinfo/cashapp/:id", registerUserCashAppHandle)
-router.post("/paymentinfo/venmo/:id", registerUserVenmoHandle)
-router.get("/paymentinfo/cashapp/:id", fetchUserCashAppHandle)
-router.get("/paymentinfo/venmo/:id", fetchUserVenmoHandle)
+router.post("/paymentinfo/cashapp/:id", registerUserCashAppHandle);
+router.post("/paymentinfo/venmo/:id", registerUserVenmoHandle);
+router.get("/paymentinfo/cashapp/:id", fetchUserCashAppHandle);
+router.get("/paymentinfo/venmo/:id", fetchUserVenmoHandle);
+router.get("/users/:id/bookings/check", checkUserBookingForListing);
 
 module.exports = router;
