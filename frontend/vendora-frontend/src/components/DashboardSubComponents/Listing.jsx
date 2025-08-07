@@ -3,7 +3,7 @@ import Navbar from '../Navbar';
 import { useLocation, useParams } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
-import { updateUserBooking } from '../../api/user';
+import { checkUserBookingStatusForListing, updateUserBooking } from '../../api/user';
 import { fetchListing } from '../../api/listing';
 
 export default function Listing() {
@@ -42,6 +42,30 @@ export default function Listing() {
     }
 
   }, [id]);
+
+  useEffect(() => {
+    const checkBookingStatus = async () => {
+      try {
+        const isBooked = await checkUserBookingStatusForListing({
+          userId: localCopyOfSignedInUser.id,
+          listingId: listing.id,
+        });
+  
+        if (isBooked)
+        {
+          setIsRescheduleMode(true);
+        }
+      } catch (error) {
+        
+      }
+    };
+
+    if (id)
+    {
+      checkBookingStatus();
+    }
+
+  }, []);
 
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString('en-US', {

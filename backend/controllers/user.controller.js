@@ -74,12 +74,10 @@ const updateUserListingList = async (req, res) => {
         .json({ error: "User with the given credential has not been found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        updatedUser: existingUserQuery,
-        message: "My listing array has been updated successfully",
-      });
+    return res.status(200).json({
+      updatedUser: existingUserQuery,
+      message: "My listing array has been updated successfully",
+    });
   } catch (error) {
     console.log(error);
     return res
@@ -128,16 +126,12 @@ const updateUserFavoriteList = async (req, res) => {
 
     let matchFound = false;
 
-
-    listingFavoriteStatusCheck.myFavorites.forEach(
-      (myFavorite) => 
-        {
-           if (updateInformation.listingId === myFavorite._id.toString())
-           {
-            matchFound = true;
-            return;
-           }
-  });
+    listingFavoriteStatusCheck.myFavorites.forEach((myFavorite) => {
+      if (updateInformation.listingId === myFavorite._id.toString()) {
+        matchFound = true;
+        return;
+      }
+    });
 
     let existingUserQuery = null;
 
@@ -245,7 +239,6 @@ const fetchUserCashAppHandle = async (req, res) => {
   }
 };
 
-
 const registerUserVenmoHandle = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -295,8 +288,38 @@ const fetchUserVenmoHandle = async (req, res) => {
   }
 };
 
+const checkUserBookingForListing = async (req, res) => {
+  try {
+    const listingId = req.query.listing_id;
+    const userId = req.params.id;
 
+    if (!listingId) {
+      return res.status(400).json({ error: "Missing listing_id in query" });
+    }
 
+    const foundUser = await User.findById(userId).populate("myBookings");
+
+    if (!foundUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let matchFound = false;
+
+    foundUser.myBookings.forEach((booking) => {
+      if (booking.listingId === listingId) {
+        matchFound = true;
+      }
+
+    });
+
+    return res.status(200).json({ booked: matchFound });
+
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Internal server error while checking listing's status" });
+  }
+};
 
 module.exports = {
   updateUserBookingList,
@@ -308,5 +331,6 @@ module.exports = {
   registerUserCashAppHandle,
   fetchUserCashAppHandle,
   registerUserVenmoHandle,
-  fetchUserVenmoHandle
+  fetchUserVenmoHandle,
+  checkUserBookingForListing
 };

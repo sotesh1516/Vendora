@@ -131,3 +131,20 @@ export const registerCashApp = async (userInfo) => {
         return {error: "Cash app handle update failed. Please try again"};
     }
 };
+
+export const checkUserBookingStatusForListing = async (fetchInfo) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/user/users/${fetchInfo.userId}/bookings/check/listing_id?${fetchInfo.listing_id}`);
+
+        if (response.status == 200)
+        {
+            return response.data;
+        }
+
+        console.error("Server responded with an error during user booking status check for a listing", response.status);
+        return {error: "Server responded with an error during user booking status check for a listing"};
+    } catch (error) {
+        console.error("Error during user booking status check for a listing");
+        return {error: "during user booking status check for a listing failed. Please try again"};
+    }
+}
