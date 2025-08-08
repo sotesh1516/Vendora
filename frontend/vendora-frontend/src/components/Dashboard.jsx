@@ -38,6 +38,7 @@ export default function Dashboard() {
                 //this is wrong since i am passing a value instead of a function, states are async in React
                 //setListings([...listings, response.listings]);
                 setListings(prev => [...prev, ...response.listings]);
+                console.log(pageNumber);
                 console.log("current Listings", listings);
                 console.log("success in fetching");
             }
