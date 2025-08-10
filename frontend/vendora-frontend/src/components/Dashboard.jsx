@@ -30,7 +30,7 @@ export default function Dashboard() {
 
     async function getListings() {
         try {
-            const response = await retrieveListings({ 
+            const response = await retrieveListings({
                 userId: localCopyOfSignedInUser.id,
                 pageNumber: pageNumber,
             });
@@ -50,9 +50,22 @@ export default function Dashboard() {
         }
     }
 
+    //the boolean guard is done because of React's strict mode 
+    let hasRun = false;
     useEffect(() => {
-        getListings();
-    },[pageNumber]);
+        if (!hasRun) {
+            console.log("fetched by default");
+            getListings();
+            hasRun = true;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (pageNumber != 0) {
+            console.log("fetched cuz of pageNumber");
+            getListings();
+        }
+    }, [pageNumber]);
 
     useEffect(() => {
         // Only search if there is a valid query

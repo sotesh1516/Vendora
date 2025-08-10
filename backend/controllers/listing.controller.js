@@ -34,14 +34,13 @@ const createListing = async (req, res) => {
     //   {
     //     if (key === "serviceOptions" || key === "timeSlots" || key === "ratings")
     //     {
-            
+
     //     }
     //   }
     // };
 
     const newListing = req.body;
     const images = req.files;
-
 
     if (
       !newListing.serviceProvider ||
@@ -72,9 +71,8 @@ const createListing = async (req, res) => {
       timeSlots: newListing.timeSlots,
       ratePerHr: newListing.ratePerHr,
       description: newListing.description,
-      cloudStoredImages: []
+      cloudStoredImages: [],
     };
-
 
     //handle image upload
     for (const image of images) {
@@ -131,26 +129,25 @@ const fetchListing = async (req, res) => {
   try {
     const fetchInfo = req.params;
 
-        const fetchedListing = await Listing.findById(fetchInfo.id).exec();
+    const fetchedListing = await Listing.findById(fetchInfo.id).exec();
 
-        if (!fetchedListing)
-        {
-            return res.status(404).json({
-                message: "Listing not found"
-            });
-        }
+    if (!fetchedListing) {
+      return res.status(404).json({
+        message: "Listing not found",
+      });
+    }
 
-        return res.status(200).json({
-            fetchedListing: fetchedListing,
-            message: "Booking data retrieved",
-        })
+    return res.status(200).json({
+      fetchedListing: fetchedListing,
+      message: "Booking data retrieved",
+    });
   } catch (error) {
     console.log(error);
     return res
       .status(500)
       .json({ error: "Internal server error during single listing fetch" });
   }
-  };
+};
 
 const fetchListings = async (req, res) => {
   try {
@@ -168,12 +165,10 @@ const fetchListings = async (req, res) => {
         .json({ listings: fetchedListings, message: "No listings found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        listings: fetchedListings,
-        message: "Listings have been successfully fetched",
-      });
+    return res.status(200).json({
+      listings: fetchedListings,
+      message: "Listings have been successfully fetched",
+    });
   } catch (error) {
     console.log(error);
     return res
@@ -186,7 +181,13 @@ const fetchListingsAndSetFavorites = async (req, res) => {
   try {
     const limit = 20;
     const fetchInformation = req.body;
-    let fetchedListings = await Listing.find().sort({ _id: -1 }).skip(fetchInformation.pageNumber*limit).limit(limit); // check whether to set a limit for the fetch or just fetch as much as possible
+    const pageNumber = parseInt(fetchInformation.pageNumber) || 0;
+    console.log("Parsed pageNumber:", pageNumber);
+    const skip = pageNumber * limit;
+    let fetchedListings = await Listing.find()
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit); // check whether to set a limit for the fetch or just fetch as much as possible
 
     let fetchedUser = await User.findById(fetchInformation.userId).populate(
       "myFavorites"
@@ -227,12 +228,10 @@ const fetchListingsAndSetFavorites = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({
-        error:
-          "Internal server error during custom listing(favorite included) fetch",
-      });
+    return res.status(500).json({
+      error:
+        "Internal server error during custom listing(favorite included) fetch",
+    });
   }
 };
 
@@ -244,8 +243,8 @@ const searchListings = async (req, res) => {
       $or: [
         { serviceName: { $regex: searchFilter.query, $options: "i" } },
         { serviceProvider: { $regex: searchFilter.query, $options: "i" } },
-        { description: { $regex: searchFilter.query, $options: "i" } }
-      ]
+        { description: { $regex: searchFilter.query, $options: "i" } },
+      ],
     });
 
     if (!matchedListings) {
@@ -267,12 +266,11 @@ const searchListings = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createListing,
   editListing,
   fetchListing,
   fetchListings,
   fetchListingsAndSetFavorites,
-  searchListings
+  searchListings,
 };
