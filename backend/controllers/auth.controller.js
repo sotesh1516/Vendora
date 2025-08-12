@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv').config();
 // const connectDB = require("../models/db");
 const User = require("../models/user.model");
 
@@ -67,6 +69,7 @@ const signUp = async (req, res) => {
       password: newUser.password,
     });
     const savedUser = await userToSave.save();
+
     return res
       .status(200)
       .json({
@@ -117,9 +120,12 @@ const signIn = async (req, res) => {
       id: userFound._id,
     };
 
+    //takes in a payload, can be user object, that needs to be serialized
+    const accessToken = jwt.sign(savedUser, process.env.ACCESS_TOKEN_SECRET);
+
     return res
       .status(200)
-      .json({ user: userWithOutPassword, message: "Signed in successfully" });
+      .json({ accessToken: accessToken, message: "Signed in successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal server error" });

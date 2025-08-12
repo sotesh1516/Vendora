@@ -1,0 +1,38 @@
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+function verifyUser(token, secretKey) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, secretKey, (err, user) => {
+            if (err) return reject(err);
+            return resolve(user);
+        });
+    });
+}
+
+async function authorizeUser(req, res, next) {
+    //get the token from the request header
+    //req.headers
+    // {
+    //      Authorzation: Bearere <TOKEN>
+    //
+    //}
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split[" "][1];
+
+    if (!token) {
+        return res.status(401).json({message: "No token was sent"});
+    }
+    try {
+        const decodedUser = await verifyUser(token, process.env.JWT_ACCESS_TOKEN);
+        req.user = decodedUser;
+        next();
+    } catch (error) {
+        console.log({message: "Token is no longer valid"});
+        return res.status(403).json({message: "Token is no longer valid"});
+    }
+    
+}
+
+
+module.exports = { authorizeUser }

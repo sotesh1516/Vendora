@@ -74,6 +74,11 @@ function ListingEdit({ listing, setEditListing }) {
        setImagesToDelete((prev) => [...prev, imageToBeRemovedId]);
     };
 
+    const parseTime = (isoTime) => {
+        return new Date(isoTime).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "numeric", hour12: true })
+    
+      };
+
     return (
         <div className="fixed inset-0 z-50 bg-transparent bg-opacity-40 overflow-y-auto">
             <div className="min-h-screen flex items-center justify-center p-4">
@@ -137,7 +142,7 @@ function ListingEdit({ listing, setEditListing }) {
                                         //const value = document.getElementById("date-time-input").value;
                                         const updatedTimeSlots = [...timeSlots, timeSlot]
                                         setTimeSlots(updatedTimeSlots);
-                                        setlistingToBeUpdated(prev => ({
+                                        setListingToBeUpdated(prev => ({
                                             ...prev,
                                             timeSlotsAv: updatedTimeSlots
                                         }));

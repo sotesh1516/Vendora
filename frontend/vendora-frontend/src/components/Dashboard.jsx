@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import ListingCard from "./DashboardSubComponents/ListingCard";
+import ProfilePhotoModal from './DashboardSubComponents/ProfilePhotoModal';
 import { retrieveListings, searchListings } from "../api/listing";
 import Footer from "./Footer";
 
@@ -21,6 +22,9 @@ export default function Dashboard() {
     const [searchQueryInfo, setSearchQueryInfo] = useState("");
 
     const [pageNumber, setPageNumber] = useState(0);
+
+    //make the user upload a profile photo
+    const [showProfilePhotoModal, setShowProfilePhotoModal] = React.useState(false);
 
     const getQueryInfo = async (queryToBeTransferredFromNavbar) => {
         setSearchQueryInfo(queryToBeTransferredFromNavbar);
@@ -98,6 +102,12 @@ export default function Dashboard() {
 
         searchRetrieveListings();
     }, [searchQueryInfo]);
+
+    // useEffect(() => {
+    //     if (localCopyOfSignedInUser && !localCopyOfSignedInUser.profilePhotoUrl) {
+    //       setShowProfilePhotoModal(true);
+    //     }
+    //   }, []);
 
     return (
         <>
@@ -202,6 +212,9 @@ export default function Dashboard() {
                 </button>
             </div>
             <Footer />
+
+            {showProfilePhotoModal && (
+  <ProfilePhotoModal/> )}
 
 
         </>

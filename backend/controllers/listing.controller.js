@@ -182,7 +182,6 @@ const fetchListingsAndSetFavorites = async (req, res) => {
     const limit = 20;
     const fetchInformation = req.body;
     const pageNumber = parseInt(fetchInformation.pageNumber) || 0;
-    console.log("Parsed pageNumber:", pageNumber);
     const skip = pageNumber * limit;
     let fetchedListings = await Listing.find()
       .sort({ _id: -1 })
@@ -207,6 +206,7 @@ const fetchListingsAndSetFavorites = async (req, res) => {
         serviceName: listing.serviceName,
         serviceOptions: listing.serviceOptions,
         timeSlots: listing.timeSlots,
+        ratePerHr: listing.ratePerHr,
         ratings: listing.ratings,
         description: listing.description,
         cloudStoredImages: listing.cloudStoredImages,

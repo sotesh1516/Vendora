@@ -31,7 +31,7 @@ export default function Navbar(props) {
         </Link>
 
         {/* Search */}
-        <div className="hidden md:flex items-center gap-2 ml-4">
+        <div className="md:flex items-center gap-2 ml-4">
           <input
             type="text"
             placeholder="Search services..."

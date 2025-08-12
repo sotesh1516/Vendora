@@ -4,6 +4,7 @@ import General from './SettingsSubComponents/General';
 import PaymentInfo from "./ProfileSubComponents/PaymentInfo";
 import Favorites from "./ProfileSubComponents/Favorites";
 import AccountInfo from './SettingsSubComponents/AccountInfo';
+import Security from './SettingsSubComponents/Security';
 
 function Settings() {
   const [subSection, setSubSection] = useState("general");
@@ -16,6 +17,7 @@ function Settings() {
   const sectionComponents = {
     general: <General />,
     accountInfo: <AccountInfo />,
+    security: <Security />,
     paymentInfo: <PaymentInfo />,
     favorites: <Favorites />,
   };
@@ -79,6 +81,18 @@ function Settings() {
                 </svg>
               </div>
               {!isCollapsed && <span>Account Info</span>}
+            </button>
+
+            <button
+              onClick={() => handleSection("security")}
+              className={`flex items-center gap-4 w-full text-left p-3 rounded cursor-pointer ${subSection === "security" ? "bg-gray-100 font-semibold" : "hover:bg-gray-100"}`}
+            >
+              <div className="min-w-[24px] flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide w-5 h-5 ${subSection === "security" ? "text-gray-900" : "text-gray-500"}`}>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              {!isCollapsed && <span>Security</span>}
             </button>
 
             <button
