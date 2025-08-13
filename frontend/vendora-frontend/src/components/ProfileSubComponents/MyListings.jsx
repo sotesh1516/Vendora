@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
 import { registerListing } from "../../api/listing"
-import { fetchUserListings, updateUserListing } from '../../api/user';
+import { fetchUserListings, updateUserListingList } from '../../api/user';
 import ListingEdit from './MyListingSubComponents/ListingEdit';
+import { useAuth } from "../contexts/AuthContext";
 
 function MyListings() {
 
@@ -85,7 +86,9 @@ function MyListings() {
     images: selectedImages,
   });
 
-  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+
+  const { accesstoken } = useAuth();
 
   useEffect(() => {
     const handleSubmission = async () => {
@@ -99,12 +102,12 @@ function MyListings() {
           console.log(response.listing);
           setShowListingSuccess(true);
           const infoToBeUpdated = {
-            userId: localCopyOfSignedInUser.id,
+            accesstoken: accesstoken,
             listingId: response.listing._id,  //when doing the same exact thing on booking i did id and it worked but here i have to use _id which makes sense since i am not modifying the database response
           };
 
           //console.log(infoToBeUpdated);
-          const updateResponse = await updateUserListing(infoToBeUpdated);
+          const updateResponse = await updateUserListingList(infoToBeUpdated);
 
           console.log("listing added to database");
           if (updateResponse && updateResponse.updatedUser) {

@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/api/auth', authRoutes);
-app.use('/api/listing', listingRoutes);
+app.use('/api/listings', listingRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/user', userRoutes);
 

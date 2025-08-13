@@ -18,7 +18,7 @@ async function authorizeUser(req, res, next) {
     //
     //}
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split[" "][1];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({message: "No token was sent"});
@@ -35,4 +35,4 @@ async function authorizeUser(req, res, next) {
 }
 
 
-module.exports = { authorizeUser }
+module.exports = { authorizeUser, verifyUser }

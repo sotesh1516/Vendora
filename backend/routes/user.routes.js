@@ -1,14 +1,15 @@
 const express = require("express");
 const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing } = require("../controllers/user.controller");
+const { authorizeUser } = require("../middlewares/jwt");
 const router = express.Router();
 
 //change the fetch POST method to get with fetchInfo passed through req.query..
 router.post("/mybooking/update", updateUserBookingList);
-router.post("/mylisting/update", updateUserListingList);
+router.post("/mylistings/:listingId", updateUserListingList);
 router.post("/mybookings/fetch", fetchUserBookingList);
-router.post("/mylistings/fetch", fetchUserListingList);
-router.post("/myfavorites/:id", fetchUserFavoriteList);
-router.post("/myfavorite/update", updateUserFavoriteList);
+router.post("/mylistings/fetch", authorizeUser, fetchUserListingList);
+router.patch("/myfavorites/:id", fetchUserFavoriteList);
+router.put("/favorites/:listingId", authorizeUser, updateUserFavoriteList);
 router.post("/paymentinfo/cashapp/:id", registerUserCashAppHandle);
 router.post("/paymentinfo/venmo/:id", registerUserVenmoHandle);
 router.get("/paymentinfo/cashapp/:id", fetchUserCashAppHandle);

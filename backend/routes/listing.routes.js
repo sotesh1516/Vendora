@@ -4,10 +4,12 @@ const router = express.Router();
 const multer  = require('multer')
 const upload = multer({dest: 'uploads/'});
 
+const { authorizeUser } = require("../middlewares/jwt");
 
-router.post("/create", upload.array('images', 12) , createListing);
+
+router.post("/", authorizeUser, upload.array('images', 12) , createListing);
 // router.get("/fetch", fetchListings); this does filter the user favorites
-router.post("/fetch", fetchListingsAndSetFavorites);
+router.get("/", authorizeUser, fetchListingsAndSetFavorites);
 //this needs to be changed, the use of verbs inside an end point is not a good practice
 router.get("/search", searchListings)
 router.get("/:id", fetchListing); // single fetch using url params

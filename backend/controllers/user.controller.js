@@ -59,11 +59,12 @@ const fetchUserBookingList = async (req, res) => {
 
 const updateUserListingList = async (req, res) => {
   try {
-    const updateInformation = req.body;
+    const listingId = req.params.listingId;
+    const verifiedUser = req.user;
     const existingUserQuery = await User.findByIdAndUpdate(
-      updateInformation.userId,
+      verifiedUser.id,
       {
-        $push: { myListings: updateInformation.listingId },
+        $push: { myListings: listingId },
       },
       { new: true }
     ).exec();
@@ -114,10 +115,10 @@ const fetchUserListingList = async (req, res) => {
 
 const updateUserFavoriteList = async (req, res) => {
   try {
-    const updateInformation = req.body;
-
+    const listingId = req.params.listingId;
+    const verifiedUser = req.user;
     const listingFavoriteStatusCheck = await User.findById(
-      updateInformation.userId
+      verifiedUser.id
     ).populate("myFavorites");
 
     if (!listingFavoriteStatusCheck) {
@@ -127,7 +128,7 @@ const updateUserFavoriteList = async (req, res) => {
     let matchFound = false;
 
     listingFavoriteStatusCheck.myFavorites.forEach((myFavorite) => {
-      if (updateInformation.listingId === myFavorite._id.toString()) {
+      if (listingId === myFavorite._id.toString()) {
         matchFound = true;
         return;
       }
@@ -137,14 +138,14 @@ const updateUserFavoriteList = async (req, res) => {
 
     if (matchFound) {
       existingUserQuery = await User.findByIdAndUpdate(
-        updateInformation.userId,
-        { $pull: { myFavorites: updateInformation.listingId } },
+        verifiedUser.id,
+        { $pull: { myFavorites: listingId } },
         { new: true }
       );
     } else {
       existingUserQuery = await User.findByIdAndUpdate(
-        updateInformation.userId,
-        { $push: { myFavorites: updateInformation.listingId } },
+        verifiedUser.id,
+        { $push: { myFavorites: listingId } },
         { new: true }
       );
     }

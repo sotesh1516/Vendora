@@ -5,7 +5,7 @@ import SignIn from './components/SignIn';
 import Dashboard from './components/Dashboard'
 import Profile from './components/Profile';
 import Listing from './components/DashboardSubComponents/Listing';
-import { UserProvider } from './components/contexts/UserContext';
+import { AuthProvider } from './components/contexts/AuthContext';
 import Settings from './components/Settings';
 import SearchResults from './components/SearchResults';
 
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-    <UserProvider>
+    <AuthProvider>
     <Routes>
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/signin" element={<SignIn/>}/>
@@ -25,7 +25,7 @@ function App() {
       <Route path='/settings' element={<Settings/>}/>
       <Route path='/results' element={<SearchResults/>}/>
     </Routes>
-    </UserProvider>
+    </AuthProvider>
     </>
   )
 }

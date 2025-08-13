@@ -1,150 +1,197 @@
 import axios from "axios";
 
 export const updateUserBooking = async (bookingUpdateInfo) => {
-    try {
-        const response = await axios.post('http://127.0.0.1:8000/api/user/mybooking/update', {
-            userId: bookingUpdateInfo.userId,
-            bookingId: bookingUpdateInfo.bookingId,
-        });
-    
-        if (response.status == 200) {
-            return response.data;
-        }
-        console.error("An error has occured during my booking update", response.status);
-        return {error: "an error has occured during my booking update"};
-    } catch (error) {
-        console.error("Error during my booking update");
-        return {error: "My booking update failed. Please try again"};
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/user/mybooking/update",
+      {
+        userId: bookingUpdateInfo.userId,
+        bookingId: bookingUpdateInfo.bookingId,
+      }
+    );
+
+    if (response.status == 200) {
+      return response.data;
     }
-   
+    console.error(
+      "An error has occured during my booking update",
+      response.status
+    );
+    return { error: "an error has occured during my booking update" };
+  } catch (error) {
+    console.error("Error during my booking update");
+    return { error: "My booking update failed. Please try again" };
+  }
 };
 
 export const fetchUserBookings = async (userInfo) => {
-    try {
-        const response = await axios.post('http://127.0.0.1:8000/api/user/mybookings/fetch', {
-            userId: userInfo.userId,
-        });
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/user/mybookings/fetch",
+      {
+        userId: userInfo.userId,
+      }
+    );
 
-        if (response.status == 200)
-        {
-            //console.log("My booking successfully fetched", response.status);
-            return response.data;
-        }
-
-        console.error("An error has occured during my booking fetch", response.status);
-        return {error: "an error has occured during my booking fetch"};
-    } catch (error) {
-        console.error("Error during my booking fetch");
-        return {error: "My booking fetch failed. Please try again"};
+    if (response.status == 200) {
+      //console.log("My booking successfully fetched", response.status);
+      return response.data;
     }
-}
 
-export const updateUserListing = async (listingUpdateInfo) => {
-    try {
-        const response = await axios.post('http://127.0.0.1:8000/api/user/mylisting/update', {
-            userId: listingUpdateInfo.userId,
-            listingId: listingUpdateInfo.listingId
-        });
+    console.error(
+      "An error has occured during my booking fetch",
+      response.status
+    );
+    return { error: "an error has occured during my booking fetch" };
+  } catch (error) {
+    console.error("Error during my booking fetch");
+    return { error: "My booking fetch failed. Please try again" };
+  }
+};
 
-        if (response.status == 200) {
-            return response.data;
-        }
-        console.error("An error has occured during my listing update", response.status);
-        return {error: "an error has occured during my listing update"};
-    } catch (error) {
-        console.error("Error during my listing update");
-        return {error: "My listing update failed. Please try again"};
+export const updateUserListingList = async (listingUpdateInfo) => {
+  try {
+    const response = await axios.patch(
+      `http://127.0.0.1:8000/api/user/mylistings/${listingUpdateInfo.listingId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${listingUpdateInfo.accessToken}`,
+        },
+      }
+    );
+
+    if (response.status == 200) {
+      return response.data;
     }
+    console.error(
+      "An error has occured during my listing update",
+      response.status
+    );
+    return { error: "an error has occured during my listing update" };
+  } catch (error) {
+    console.error("Error during my listing update");
+    return { error: "My listing update failed. Please try again" };
+  }
 };
 
 export const fetchUserListings = async (userInfo) => {
-    try {
-        const response = await axios.post('http://127.0.0.1:8000/api/user/mylistings/fetch', {
-            userId: userInfo.userId,
-        });
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/api/user/mylistings/fetch", // remove fetch
+      {
+        userId: userInfo.userId,
+      }
+    );
 
-        if (response.status == 200)
-        {
-            //console.log("My booking successfully fetched", response.status);
-            //console.log(response.data);
-            return response.data;
-        }
-
-        console.error("An error has occured during my booking fetch", response.status);
-        return {error: "an error has occured during my booking fetch"};
-    } catch (error) {
-        console.error("Error during my booking fetch");
-        return {error: "My booking fetch failed. Please try again"};
+    if (response.status == 200) {
+      //console.log("My booking successfully fetched", response.status);
+      //console.log(response.data);
+      return response.data;
     }
+
+    console.error(
+      "An error has occured during my booking fetch",
+      response.status
+    );
+    return { error: "an error has occured during my booking fetch" };
+  } catch (error) {
+    console.error("Error during my booking fetch");
+    return { error: "My booking fetch failed. Please try again" };
+  }
 };
 
 export const fetchUserFavorites = async (userId) => {
-    try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/user/myfavorites/${userId}`);
+  try {
+    const response = await axios.post(
+      `http://127.0.0.1:8000/api/user/myfavorites/${userId}`
+    );
 
-        if (response.status == 200)
-        {
-            console.log(response.data);
-            return response.data;
-        }
-        console.error("Server responded with an error during my favorites fetch", response.status);
-        return {error: "Server responded with an error my favorites fetch"};
-    } catch (error) {
-        console.error("Error during my favorites fetch");
-        return {error: "My favorites fetch failed. Please try again"};
+    if (response.status == 200) {
+      console.log(response.data);
+      return response.data;
     }
+    console.error(
+      "Server responded with an error during my favorites fetch",
+      response.status
+    );
+    return { error: "Server responded with an error my favorites fetch" };
+  } catch (error) {
+    console.error("Error during my favorites fetch");
+    return { error: "My favorites fetch failed. Please try again" };
+  }
 };
 
 export const updateUserFavorites = async (favoriteUpdateInfo) => {
-    try {
-        const response = await axios.post("http://127.0.0.1:8000/api/user/myfavorite/update", {
-            userId: favoriteUpdateInfo.userId,
-            listingId: favoriteUpdateInfo.listingId,
-        });
+  try {
+    const response = await axios.put(
+      `http://127.0.0.1:8000/api/favorites/${favoriteUpdateInfo.listingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${favoriteUpdateInfo.accessToken}`,
+        },
+      }
+    );
 
-        if (response.status == 200)
-        {
-            console.log(response.data);
-            return response.data;
-        }
-        console.error("Server responded with an error during my favorite update", response.status);
-        return {error: "Server responded with an error my favorite update"};
-    } catch (error) {
-        console.error("Error during my favorite update");
-        return {error: "My favorite update failed. Please try again"};
+    if (response.status == 200) {
+      console.log(response.data);
+      return response.data;
     }
+    console.error(
+      "Server responded with an error during my favorite update",
+      response.status
+    );
+    return { error: "Server responded with an error my favorite update" };
+  } catch (error) {
+    console.error("Error during my favorite update");
+    return { error: "My favorite update failed. Please try again" };
+  }
 };
 
-
 export const registerCashApp = async (userInfo) => {
-    try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/user/paymentinfo/cashapp/${userInfo.id}`);
+  try {
+    const response = await axios.post(
+      `http://127.0.0.1:8000/api/user/paymentinfo/cashapp/${userInfo.id}`
+    );
 
-        if (response.status == 200) {
-            return response.data;
-        }
-
-        console.error("Server responded with an error cash app handle update", response.status);
-        return {error: "Server responded with an error cash app handle update"};
-    } catch (error) {
-        console.error("Error during cash app handle update");
-        return {error: "Cash app handle update failed. Please try again"};
+    if (response.status == 200) {
+      return response.data;
     }
+
+    console.error(
+      "Server responded with an error cash app handle update",
+      response.status
+    );
+    return { error: "Server responded with an error cash app handle update" };
+  } catch (error) {
+    console.error("Error during cash app handle update");
+    return { error: "Cash app handle update failed. Please try again" };
+  }
 };
 
 export const checkUserBookingStatusForListing = async (fetchInfo) => {
-    try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/user/users/${fetchInfo.userId}/bookings/check/listing_id?${fetchInfo.listing_id}`);
+  try {
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/user/users/${fetchInfo.userId}/bookings/check/listing_id?${fetchInfo.listing_id}`
+    );
 
-        if (response.status == 200)
-        {
-            return response.data;
-        }
-
-        console.error("Server responded with an error during user booking status check for a listing", response.status);
-        return {error: "Server responded with an error during user booking status check for a listing"};
-    } catch (error) {
-        console.error("Error during user booking status check for a listing");
-        return {error: "during user booking status check for a listing failed. Please try again"};
+    if (response.status == 200) {
+      return response.data;
     }
-}
+
+    console.error(
+      "Server responded with an error during user booking status check for a listing",
+      response.status
+    );
+    return {
+      error:
+        "Server responded with an error during user booking status check for a listing",
+    };
+  } catch (error) {
+    console.error("Error during user booking status check for a listing");
+    return {
+      error:
+        "during user booking status check for a listing failed. Please try again",
+    };
+  }
+};

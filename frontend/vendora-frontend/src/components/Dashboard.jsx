@@ -5,6 +5,7 @@ import ListingCard from "./DashboardSubComponents/ListingCard";
 import ProfilePhotoModal from './DashboardSubComponents/ProfilePhotoModal';
 import { retrieveListings, searchListings } from "../api/listing";
 import Footer from "./Footer";
+import { useAuth } from "./contexts/AuthContext";
 
 
 export default function Dashboard() {
@@ -17,7 +18,9 @@ export default function Dashboard() {
 
     const [showFilterBar, setShowFilterBar] = useState(false);
 
-    const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+    //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+
+    const { accessToken } = useAuth();
 
     const [searchQueryInfo, setSearchQueryInfo] = useState("");
 
@@ -34,8 +37,9 @@ export default function Dashboard() {
 
     async function getListings() {
         try {
+            console.log("access token recieved by dashboard", accessToken);
             const response = await retrieveListings({
-                userId: localCopyOfSignedInUser.id,
+                accessToken: accessToken,
                 pageNumber: pageNumber,
             });
             if (response && response.listings) {

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateUserFavorites } from '../../api/user';
+import { useAuth } from "../contexts/AuthContext";
 
 function ListingCard({ listing }) {
   const navigate = useNavigate();
   
   const [isFavorite, setIsFavorite] = useState(listing.isFavorite);
   
-  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  const { accessToken } = useAuth();
   
   const handleClick = async () => {
     // intentionally done to avoid latency

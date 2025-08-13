@@ -180,15 +180,15 @@ const fetchListings = async (req, res) => {
 const fetchListingsAndSetFavorites = async (req, res) => {
   try {
     const limit = 20;
-    const fetchInformation = req.body;
-    const pageNumber = parseInt(fetchInformation.pageNumber) || 0;
+    const pageNumber = parseInt(req.query.pageNumber) || 0;
+    const verifiedUser = req.user;
     const skip = pageNumber * limit;
     let fetchedListings = await Listing.find()
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit); // check whether to set a limit for the fetch or just fetch as much as possible
 
-    let fetchedUser = await User.findById(fetchInformation.userId).populate(
+    let fetchedUser = await User.findById(verifiedUser.id).populate(
       "myFavorites"
     );
 

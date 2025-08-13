@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv').config();
 // const connectDB = require("../models/db");
 const User = require("../models/user.model");
+const { verifyUser } = require("../middlewares/jwt");
 
 /** 
  * * validates whether the email has a correct format using regex
@@ -82,6 +83,28 @@ const signUp = async (req, res) => {
   }
 };
 
+const generateAccessToken = (user) => {
+  return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10m'});
+};
+
+const renewToken = (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken) return res.status(401).json({message: "refresh token does not exist"});
+  //check if reddis or database still have the refresh token coming in, if not send a 403
+  const verifiedUser = verifyUser(refreshToken, process.env.JWT_REFRESH_TOKEN);
+  //avoid additional info by extracting just user
+  const accessToken = generateAccessToken({
+    name: verifiedUser.name,
+    username: verifiedUser.username,
+    email: verifiedUser.email,
+    id: verifiedUser.id,
+  });
+
+  res.status(200).json({accessToken: accessToken});
+
+};
+
 const signIn = async (req, res) => {
   try {
     let inComingUser = req.body;
@@ -120,12 +143,18 @@ const signIn = async (req, res) => {
       id: userFound._id,
     };
 
+    //this allows forever access which is why we need a acces + refresh token => gives limited and timed use which
+    //for access token which needs to be renewed by a refreshed token timely
+    //Also invalidate a refresh token through a logout route
     //takes in a payload, can be user object, that needs to be serialized
-    const accessToken = jwt.sign(savedUser, process.env.ACCESS_TOKEN_SECRET);
+    const accessToken = generateAccessToken(userWithOutPassword);
+    const refreshToken = jwt.sign(userWithOutPassword, process.env.JWT_REFRESH_TOKEN);
+
+    //refresh tokens must be saved some where like redis or a database
 
     return res
       .status(200)
-      .json({ accessToken: accessToken, message: "Signed in successfully" });
+      .json({ accessToken: accessToken, refreshToken: refreshToken, message: "Signed in successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal server error" });

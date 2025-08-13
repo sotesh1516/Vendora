@@ -41,7 +41,7 @@ export const registerListing = async (newListing) => {
 
   try {
     const result = await axios.post(
-      "http://127.0.0.1:8000/api/listing/create",
+      "http://127.0.0.1:8000/api/listings/",
       multiPartStructuredUserData
     );
 
@@ -63,11 +63,13 @@ export const registerListing = async (newListing) => {
 
 export const retrieveListings = async (userInfo) => {
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/listing/fetch",
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/listings/",
       {
-        userId: userInfo.userId,
-        pageNumber: userInfo.pageNumber,
+        params: { pageNumber: userInfo.pageNumber},
+        headers: {
+          Authorization: `Bearer ${userInfo.accessToken}` 
+        }
       }
     );
 
