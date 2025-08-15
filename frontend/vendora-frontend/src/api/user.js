@@ -26,10 +26,12 @@ export const updateUserBooking = async (bookingUpdateInfo) => {
 
 export const fetchUserBookings = async (userInfo) => {
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/user/mybookings/fetch",
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/user/mybookings/",
       {
-        userId: userInfo.userId,
+        Headers: {
+            Authorization: `Bearer ${userInfo.accessToken}`,
+        }
       }
     );
 
@@ -77,10 +79,12 @@ export const updateUserListingList = async (listingUpdateInfo) => {
 
 export const fetchUserListings = async (userInfo) => {
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/user/mylistings/fetch", // remove fetch
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/user/mylistings/", // remove fetch
       {
-        userId: userInfo.userId,
+       headers: {
+        Authorization: `Bearer ${userInfo.accessToken}`,
+       }
       }
     );
 

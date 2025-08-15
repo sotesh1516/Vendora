@@ -32,8 +32,8 @@ const updateUserBookingList = async (req, res) => {
 //populates the "myBookings" attribute by using the stored objectid into an actual object/document
 const fetchUserBookingList = async (req, res) => {
   try {
-    const fetchInformation = req.body;
-    const userWithBooking = await User.findById(fetchInformation.userId)
+    const verifiedUser = req.user;
+    const userWithBooking = await User.findById(verifiedUser.id)
       .populate("myBookings")
       .exec();
 
@@ -89,8 +89,8 @@ const updateUserListingList = async (req, res) => {
 
 const fetchUserListingList = async (req, res) => {
   try {
-    const fetchInformation = req.body;
-    const userWithListing = await User.findById(fetchInformation.userId)
+    const verifiedUser = req.user;
+    const userWithListing = await User.findById(verifiedUser.id)
       .populate("myListings")
       .exec();
 

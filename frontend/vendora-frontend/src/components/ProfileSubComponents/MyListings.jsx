@@ -88,7 +88,7 @@ function MyListings() {
 
   //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 
-  const { accesstoken } = useAuth();
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     const handleSubmission = async () => {
@@ -102,7 +102,7 @@ function MyListings() {
           console.log(response.listing);
           setShowListingSuccess(true);
           const infoToBeUpdated = {
-            accesstoken: accesstoken,
+            accesstoken: accessToken,
             listingId: response.listing._id,  //when doing the same exact thing on booking i did id and it worked but here i have to use _id which makes sense since i am not modifying the database response
           };
 
@@ -140,7 +140,7 @@ function MyListings() {
     };
 
     const userInfo = {
-      userId: localCopyOfSignedInUser.id,
+      accessToken: accessToken,
     };
 
     fetchCompleteUser(userInfo);

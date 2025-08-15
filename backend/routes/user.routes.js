@@ -5,9 +5,9 @@ const router = express.Router();
 
 //change the fetch POST method to get with fetchInfo passed through req.query..
 router.post("/mybooking/update", updateUserBookingList);
-router.post("/mylistings/:listingId", updateUserListingList);
-router.post("/mybookings/fetch", fetchUserBookingList);
-router.post("/mylistings/fetch", authorizeUser, fetchUserListingList);
+router.patch("/mylistings/:listingId", updateUserListingList);
+router.get("/mybookings/", authorizeUser, fetchUserBookingList);
+router.get("/mylistings/", authorizeUser, fetchUserListingList);
 router.patch("/myfavorites/:id", fetchUserFavoriteList);
 router.put("/favorites/:listingId", authorizeUser, updateUserFavoriteList);
 router.post("/paymentinfo/cashapp/:id", registerUserCashAppHandle);

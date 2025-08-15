@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { fetchUserBookings } from '../../api/user';
 import { fetchListing } from '../../api/listing';
+import { useAuth } from '../contexts/AuthContext';
 
 
 function MyBookings() {
@@ -14,18 +15,18 @@ function MyBookings() {
 
   };
 
-  const signedInUser = useContext(UserContext);
+  const { accessToken } = useAuth();
 
   //this is to get access to the signed in user from useContext
   // const localCopyOfSignedInUser = signedInUser.user;
   //const setLocalCopyOfSignedUser = signedInUser.setUser;
-  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
 
   //this is to expand the scope of fetched user in the useEffect and keep a copy of myBooking array
   const [fetchedUserBookings, setFetchedUserBookings] = useState([]);
 
   const userInfo = {
-    userId: localCopyOfSignedInUser.id,
+    accessToken: accessToken,
   };
 
   useEffect(() => {
