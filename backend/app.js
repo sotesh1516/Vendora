@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
-app.use('/api/booking', bookingRoutes);
+app.use('/api/bookings', bookingRoutes);
 app.use('/api/user', userRoutes);
 
 app.get('/test', (req, res) => {

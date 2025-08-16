@@ -2,11 +2,12 @@ import axios from "axios";
 
 export const updateUserBooking = async (bookingUpdateInfo) => {
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/user/mybooking/update",
-      {
-        userId: bookingUpdateInfo.userId,
-        bookingId: bookingUpdateInfo.bookingId,
+    const response = await axios.patch(
+      `http://127.0.0.1:8000/api/user/mybookings/${bookingUpdateInfo.bookingId}`,
+      {}, {
+        headers: {
+            Authorization: `Bearer ${bookingUpdateInfo.accessToken}`,
+          },
       }
     );
 
@@ -29,7 +30,7 @@ export const fetchUserBookings = async (userInfo) => {
     const response = await axios.get(
       "http://127.0.0.1:8000/api/user/mybookings/",
       {
-        Headers: {
+        headers: {
             Authorization: `Bearer ${userInfo.accessToken}`,
         }
       }
@@ -105,10 +106,15 @@ export const fetchUserListings = async (userInfo) => {
   }
 };
 
-export const fetchUserFavorites = async (userId) => {
+export const fetchUserFavorites = async (userInfo) => {
   try {
-    const response = await axios.post(
-      `http://127.0.0.1:8000/api/user/myfavorites/${userId}`
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/user/myfavorites/`, 
+      {
+        headers: {
+            Authorization: `Bearer ${userInfo.accessToken}`,
+        }
+      }
     );
 
     if (response.status == 200) {
@@ -176,7 +182,12 @@ export const registerCashApp = async (userInfo) => {
 export const checkUserBookingStatusForListing = async (fetchInfo) => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/user/users/${fetchInfo.userId}/bookings/check/listing_id?${fetchInfo.listing_id}`
+      `http://127.0.0.1:8000/api/user/bookings/check/listing/${fetchInfo.listingId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${fetchInfo.accessToken}`,
+    },
+  }
     );
 
     if (response.status == 200) {

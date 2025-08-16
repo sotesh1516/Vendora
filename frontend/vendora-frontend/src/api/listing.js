@@ -95,7 +95,7 @@ export const retrieveListings = async (userInfo) => {
 export const searchListings = async (query) => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/listing/search?query=${encodeURIComponent(
+      `http://127.0.0.1:8000/api/listings/search?query=${encodeURIComponent(
         query
       )}`
     );
@@ -114,7 +114,7 @@ export const searchListings = async (query) => {
 
 export const fetchListing = async (id) => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/api/listing/${id}`);
+    const response = await axios.get(`http://127.0.0.1:8000/api/listings/${id}`);
 
     if (response.status === 200) {
       return response.data;

@@ -5,6 +5,7 @@ import { UserContext } from '../contexts/UserContext';
 import { bookListing } from '../../api/booking';
 import { checkUserBookingStatusForListing, updateUserBooking } from '../../api/user';
 import { fetchListing } from '../../api/listing';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Listing() {
   const location = useLocation();
@@ -13,17 +14,19 @@ export default function Listing() {
   const [listing, setListing] = useState(null);
 
   const signedInUser = useContext(UserContext);
-  const localCopyOfSignedInUser = signedInUser.user;
+  //const localCopyOfSignedInUser = signedInUser.user;
+  const { accessToken } = useAuth();
 
   const [booking, setBooking] = useState(false);
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
     listingId: id,
-    customerId: localCopyOfSignedInUser.id,
+    customerId: "",
     customerSummary: '',
     timeSlot: selectedTimeSlot,
     status: 'booked',
+    accessToken: accessToken,
   });
 
   const [isRescheduleMode, setIsRescheduleMode] = useState(false);
@@ -47,25 +50,26 @@ export default function Listing() {
     const checkBookingStatus = async () => {
       try {
         const isBooked = await checkUserBookingStatusForListing({
-          userId: localCopyOfSignedInUser.id,
-          listingId: listing.id,
+          accessToken: accessToken,
+          listingId: listing._id,
         });
   
-        if (isBooked)
+        if (isBooked.booked)
         {
           setIsRescheduleMode(true);
         }
       } catch (error) {
-        
+        console.log(error);
       }
     };
 
-    if (id)
+    if (id && listing && listing._id)
     {
+      console.log("line 52", listing);
       checkBookingStatus();
     }
 
-  }, []);
+  }, [listing]); // make sure listing is loaded
 
   const parseTime = (isoTime) => {
     return new Date(isoTime).toLocaleString('en-US', {
@@ -84,8 +88,8 @@ export default function Listing() {
       if (registeredBooking && registeredBooking.booking) {
         setShowBookingSuccess(true);
         const infoToBeUpdated = {
-          userId: localCopyOfSignedInUser.id,
-          bookingId: registeredBooking.booking.id,
+          accessToken: accessToken,
+          bookingId: registeredBooking.booking._id,
         };
         const check = await updateUserBooking(infoToBeUpdated);
         if (check && check.updatedUser) return check.updatedUser;

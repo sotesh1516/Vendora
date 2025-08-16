@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserFavorites } from '../../api/user';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 function Favorites() {
   const dummyFavorite = {
@@ -18,12 +19,13 @@ function Favorites() {
 
   const navigate = useNavigate();
 
-  const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     const fetchUserMyFavorite = async () => {
       try {
-        const serverResponse = await fetchUserFavorites(localCopyOfSignedInUser.id);
+        const serverResponse = await fetchUserFavorites({accessToken});
 
         if (serverResponse && serverResponse.user)
         {

@@ -37,7 +37,7 @@ export default function Dashboard() {
 
     async function getListings() {
         try {
-            console.log("access token recieved by dashboard", accessToken);
+            //console.log("access token recieved by dashboard", accessToken);
             const response = await retrieveListings({
                 accessToken: accessToken,
                 pageNumber: pageNumber,

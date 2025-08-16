@@ -3,11 +3,13 @@ const User = require("../models/user.model");
 
 const updateUserBookingList = async (req, res) => {
   try {
-    const updateInformation = req.body;
+    const bookingId = req.params.bookingId;
+    console.log(bookingId);
+    const verifiedUser = req.user;
     const existingUserQuery = await User.findByIdAndUpdate(
-      updateInformation.userId,
+      verifiedUser.id,
       {
-        $push: { myBookings: updateInformation.bookingId },
+        $push: { myBookings: bookingId },
       },
       { new: true }
     ).exec();
@@ -170,8 +172,8 @@ const updateUserFavoriteList = async (req, res) => {
 
 const fetchUserFavoriteList = async (req, res) => {
   try {
-    const userId = req.params.id;
-    const userWithFavorite = await User.findById(userId)
+    const verifiedUser = req.user;
+    const userWithFavorite = await User.findById(verifiedUser.id)
       .populate("myFavorites")
       .exec();
 
@@ -291,28 +293,28 @@ const fetchUserVenmoHandle = async (req, res) => {
 
 const checkUserBookingForListing = async (req, res) => {
   try {
-    const listingId = req.query.listing_id;
-    const userId = req.params.id;
+    const listingId = req.params.listingId;
+    const verifiedUser = req.user;
 
     if (!listingId) {
       return res.status(400).json({ error: "Missing listing_id in query" });
     }
 
-    const foundUser = await User.findById(userId).populate("myBookings");
+    const foundUser = await User.findById(verifiedUser.id).populate("myBookings");
 
     if (!foundUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
     let matchFound = false;
-
+  
     foundUser.myBookings.forEach((booking) => {
-      if (booking.listingId === listingId) {
+      //console.log(booking.listingId.toString())
+      if (booking.listingId.equals(listingId)) {
         matchFound = true;
       }
 
     });
-
     return res.status(200).json({ booked: matchFound });
 
   } catch (error) {
