@@ -42,18 +42,24 @@ export default function Navbar(props) {
                 "
                 onChange={handleChange}
                 value={searchQuery}
+
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
               />
-              <svg 
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <button 
-              onClick={handleSearch} 
+            <button
+              onClick={handleSearch}
               className="
                 px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
                 hover:shadow-lg transition-all duration-200 hover:scale-105 text-sm
@@ -78,9 +84,7 @@ export default function Navbar(props) {
             <div
               tabIndex={0}
               role="button"
-              className="
-                flex items-center gap-2 p-1 hover:bg-gray-100 rounded-xl transition-colors duration-200 cursor-pointer
-              "
+              className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded-xl transition-colors duration-200 cursor-pointer"
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
@@ -90,11 +94,21 @@ export default function Navbar(props) {
                     className="w-9 h-9 rounded-full object-cover bg-white"
                   />
                 </div>
-                {/* Online status indicator */}
+                {/* Optional online indicator */}
                 {/* <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div> */}
               </div>
-              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg
+                className="w-4 h-4 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </div>
             <ul
@@ -123,8 +137,8 @@ export default function Navbar(props) {
                 </div>
               </li>
               <li>
-                <Link 
-                  to="/profile" 
+                <Link
+                  to="/profile"
                   className="
                     flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 
                     rounded-lg transition-colors duration-200 text-sm
@@ -137,8 +151,8 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/settings" 
+                <Link
+                  to="/settings"
                   className="
                     flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 
                     rounded-lg transition-colors duration-200 text-sm
@@ -152,7 +166,7 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li className="mt-2 pt-2 border-t border-gray-100">
-                <button 
+                <button
                   className="
                     flex items-center gap-3 px-3 py-2 hover:bg-red-50 hover:text-red-700 
                     rounded-lg transition-colors duration-200 w-full text-left text-sm text-red-600

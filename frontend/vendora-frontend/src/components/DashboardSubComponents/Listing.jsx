@@ -20,6 +20,8 @@ export default function Listing() {
   const [booking, setBooking] = useState(false);
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [showImageGallery, setShowImageGallery] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [newBookingToBeRegistered, setNewBookingToBeRegistered] = useState({
     listingId: id,
     customerId: "",
@@ -99,6 +101,21 @@ export default function Listing() {
     }
   };
 
+  const openImageGallery = (index) => {
+    setSelectedImageIndex(index);
+    setShowImageGallery(true);
+  };
+
+  const nextImage = () => {
+    const totalImages = listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages.length : 3;
+    setSelectedImageIndex((prev) => (prev + 1) % totalImages);
+  };
+
+  const prevImage = () => {
+    const totalImages = listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages.length : 3;
+    setSelectedImageIndex((prev) => (prev - 1 + totalImages) % totalImages);
+  };
+
   if (!listing) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -154,12 +171,24 @@ export default function Listing() {
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
           {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image, index) => (
-            <div key={image.public_id || index} className="group relative overflow-hidden rounded-xl">
+            <div 
+              key={image.public_id || index} 
+              className="group relative overflow-hidden rounded-xl cursor-pointer"
+              onClick={() => openImageGallery(index)}
+            >
               <img
                 src={listing.cloudStoredImages.length > 0 ? image.url : "https://via.placeholder.com/400x250"}
                 alt="Preview"
                 className="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105"
               />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -313,6 +342,96 @@ export default function Listing() {
           </div>
         </div>
       </div>
+
+      {/* Image Gallery Modal */}
+      {showImageGallery && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-4xl h-full flex flex-col">
+            {/* Close button */}
+            <button
+              onClick={() => setShowImageGallery(false)}
+              className="
+                absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 
+                text-white transition-colors duration-200 flex items-center justify-center
+              "
+            >
+              ✕
+            </button>
+
+            {/* Navigation buttons */}
+            <button
+              onClick={prevImage}
+              className="
+                absolute left-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 rounded-full 
+                bg-black/50 hover:bg-black/70 text-white transition-colors duration-200 
+                flex items-center justify-center
+              "
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button
+              onClick={nextImage}
+              className="
+                absolute right-4 top-1/2 transform -translate-y-1/2 z-10 w-12 h-12 rounded-full 
+                bg-black/50 hover:bg-black/70 text-white transition-colors duration-200 
+                flex items-center justify-center
+              "
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            {/* Main image container */}
+            <div className="flex-1 flex items-center justify-center mb-24">
+              <img
+                src={
+                  listing.cloudStoredImages.length > 0 
+                    ? listing.cloudStoredImages[selectedImageIndex]?.url 
+                    : "https://via.placeholder.com/800x600"
+                }
+                alt={`Gallery image ${selectedImageIndex + 1}`}
+                className="max-w-full max-h-full object-contain rounded-lg"
+              />
+            </div>
+
+            {/* Bottom section with counter and thumbnails */}
+            <div className="absolute bottom-4 left-0 right-0">
+              {/* Image counter */}
+              <div className="flex justify-center mb-4">
+                <div className="bg-black/50 text-white px-4 py-2 rounded-full text-sm">
+                  {selectedImageIndex + 1} / {listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages.length : 3}
+                </div>
+              </div>
+
+              {/* Thumbnail navigation */}
+              <div className="flex justify-center">
+                <div className="flex gap-2 max-w-md overflow-x-auto px-4">
+                  {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image, index) => (
+                    <button
+                      key={image.public_id || index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`
+                        flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200
+                        ${selectedImageIndex === index ? 'border-white' : 'border-transparent opacity-60 hover:opacity-80'}
+                      `}
+                    >
+                      <img
+                        src={listing.cloudStoredImages.length > 0 ? image.url : "https://via.placeholder.com/64x64"}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Booking Modal */}
       {booking && (
