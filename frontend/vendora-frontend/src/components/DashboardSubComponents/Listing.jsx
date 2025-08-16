@@ -101,11 +101,19 @@ export default function Listing() {
 
   if (!listing) {
     return (
-      <div className="bg-white min-h-screen">
-        <Navbar />
-        <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+          <Navbar />
+        </div>
+        <div className="flex items-center justify-center min-h-[calc(100vh-72px)]">
           <div className="text-center">
-            <div className="text-lg">Loading listing...</div>
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
+            <div className="text-lg font-semibold text-gray-900">Loading listing...</div>
+            <div className="text-sm text-gray-600 mt-1">Please wait while we fetch the details</div>
           </div>
         </div>
       </div>
@@ -113,80 +121,107 @@ export default function Listing() {
   }
 
   return (
-    <div className="bg-white min-h-screen">
-      <Navbar />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+        <Navbar />
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Title and Rating */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
-              {listing.serviceName}
-            </h1>
-            <p className="text-sm mt-1 text-gray-500">
-              Provided by{' '}
-              <span className="text-gray-800 font-semibold">
-                {listing.serviceProvider}
-              </span>
-            </p>
-          </div>
-          <div className="mt-4 md:mt-0 text-sm text-gray-500 flex items-center gap-1">
-            <span className="text-yellow-500">⭐</span>
-            {listing.rating} ({listing.reviewers || 0} reviews)
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                {listing.serviceName}
+              </h1>
+              <p className="text-gray-600 flex items-center gap-2">
+                <span>Provided by</span>
+                <span className="font-semibold text-blue-600">
+                  {listing.serviceProvider}
+                </span>
+              </p>
+            </div>
+            <div className="mt-4 md:mt-0 flex items-center gap-2">
+              <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span className="font-semibold text-gray-900">{listing.rating}</span>
+              <span className="text-gray-500">({listing.reviewers || 0} reviews)</span>
+            </div>
           </div>
         </div>
 
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-          {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image) => (
-            <img
-              key={image.public_id}
-              src={listing.cloudStoredImages.length > 0 ? image.url : "https://via.placeholder.com/400x250"}
-              alt="Preview"
-              className="rounded-xl object-cover w-full h-60 shadow hover:shadow-lg transition-all duration-200"
-            />
+          {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image, index) => (
+            <div key={image.public_id || index} className="group relative overflow-hidden rounded-xl">
+              <img
+                src={listing.cloudStoredImages.length > 0 ? image.url : "https://via.placeholder.com/400x250"}
+                alt="Preview"
+                className="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Left Side */}
-          <div className="lg:col-span-2 space-y-10">
+          <div className="lg:col-span-2 space-y-12">
             <section>
-              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Service Overview
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed text-lg">
                 {listing.description}
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Service Options
               </h2>
-              <ul className="list-disc pl-6 space-y-2 text-gray-700">
+              <div className="space-y-3">
                 {(listing.serviceOptions || []).map((opt, i) => (
-                  <li key={i}>{opt}</li>
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-gray-700">{opt}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-3 text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Reviews
               </h2>
-              <div className="space-y-5">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow transition">
-                  <p className="font-semibold text-gray-900">Jane Doe</p>
-                  <p className="text-sm text-gray-500">
-                    ⭐⭐⭐⭐⭐ &nbsp; “Amazing tutor, explains clearly.”
-                  </p>
+              <div className="space-y-6">
+                <div className="border-l-4 border-blue-500 pl-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-gray-600 font-semibold text-sm">JD</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Jane Doe</p>
+                      <div className="flex text-yellow-400">
+                        {'⭐'.repeat(5)}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">"Amazing tutor, explains clearly."</p>
                 </div>
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow transition">
-                  <p className="font-semibold text-gray-900">John Smith</p>
-                  <p className="text-sm text-gray-500">
-                    ⭐⭐⭐⭐ &nbsp; “Very helpful for my exam prep.”
-                  </p>
+                <div className="border-l-4 border-blue-500 pl-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-gray-600 font-semibold text-sm">JS</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">John Smith</p>
+                      <div className="flex text-yellow-400">
+                        {'⭐'.repeat(4)}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">"Very helpful for my exam prep."</p>
                 </div>
               </div>
             </section>
@@ -196,17 +231,24 @@ export default function Listing() {
           <div className="space-y-8">
             {!isRescheduleMode ? (
               // BOOK NOW - Default state
-              <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
-                <h3 className="text-xl font-semibold mb-4 text-gray-900">
+              <div className="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 rounded-xl border border-gray-200 p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
                   Book This Service
                 </h3>
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-600">
+                <div className="space-y-4">
+                  <div className="text-center py-4">
+                    <span className="text-3xl font-bold text-blue-600">${listing.ratePerHr || 0}</span>
+                    <span className="text-gray-600"> / hour</span>
+                  </div>
+                  <p className="text-gray-600 text-center">
                     Ready to get started? Book your session now!
                   </p>
                   <button
                     onClick={() => setBooking(true)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
+                    className="
+                      w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-xl
+                      hover:shadow-lg transition-all duration-200 hover:scale-105
+                    "
                   >
                     Book Now
                   </button>
@@ -214,29 +256,34 @@ export default function Listing() {
               </div>
             ) : (
               // RESCHEDULE - Alternative state
-              <div className="bg-white border border-amber-200 rounded-xl shadow p-6">
-                <h3 className="text-xl font-semibold mb-4 text-gray-900">
+              <div className="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 rounded-xl border border-gray-200 p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
                   Reschedule Your Booking
                 </h3>
-                <div className="space-y-3">
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                    <p className="text-sm text-amber-800">
-                      <span className="font-medium">Current booking:</span> Friday, Dec 15 at 2:00 PM
-                    </p>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-600 mb-1">Current booking:</p>
+                    <p className="font-semibold text-gray-900">Friday, Dec 15 at 2:00 PM</p>
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-gray-600">
                     Select a new time slot for your session.
                   </p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setBooking(true)}
-                      className="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition"
+                      className="
+                        flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
+                        hover:shadow-lg transition-all duration-200 hover:scale-105
+                      "
                     >
                       Choose New Time
                     </button>
                     <button
                       onClick={() => setIsRescheduleMode(false)}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition"
+                      className="
+                        px-4 py-3 bg-gray-100 text-gray-600 font-medium rounded-xl
+                        hover:bg-gray-200 transition-colors duration-200
+                      "
                     >
                       Cancel
                     </button>
@@ -245,11 +292,20 @@ export default function Listing() {
               </div>
             )}
 
-            <div className="bg-white border border-gray-200 rounded-xl shadow p-6">
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">
+            <div className="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 rounded-xl border border-gray-200 p-6 shadow-lg">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
                 About the Provider
               </h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold">AY</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{listing.serviceProvider}</p>
+                  <p className="text-sm text-gray-600">Service Provider</p>
+                </div>
+              </div>
+              <p className="text-gray-700 leading-relaxed">
                 Amina Yusuf is a math tutor with 4 years of experience tutoring
                 college students in calculus and linear algebra.
               </p>
@@ -260,75 +316,95 @@ export default function Listing() {
 
       {/* Booking Modal */}
       {booking && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-md p-8 rounded-xl shadow-2xl space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Book a Session
-              </h2>
-              <button
-                onClick={() => setBooking(false)}
-                className="text-2xl text-gray-400 hover:text-gray-700"
-              >
-                &times;
-              </button>
-            </div>
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Book a Session
+                </h2>
+                <button
+                  onClick={() => setBooking(false)}
+                  className="
+                    w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 
+                    text-gray-500 hover:text-gray-700 transition-colors duration-200
+                    flex items-center justify-center
+                  "
+                >
+                  ✕
+                </button>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select a Time
-              </label>
-              <select
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedTimeSlot}
-                onChange={(e) => {
-                  setSelectedTimeSlot(e.target.value);
-                  setNewBookingToBeRegistered({
-                    ...newBookingToBeRegistered,
-                    timeSlot: e.target.value,
-                  });
-                }}
-              >
-                <option>-- Choose a time --</option>
-                {(listing.timeSlots || []).map((slot, i) => (
-                  <option key={i} value={slot}>
-                    {parseTime(slot)}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Select a Time
+                  </label>
+                  <select
+                    className="
+                      w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
+                      focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200
+                    "
+                    value={selectedTimeSlot}
+                    onChange={(e) => {
+                      setSelectedTimeSlot(e.target.value);
+                      setNewBookingToBeRegistered({
+                        ...newBookingToBeRegistered,
+                        timeSlot: e.target.value,
+                      });
+                    }}
+                  >
+                    <option>-- Choose a time --</option>
+                    {(listing.timeSlots || []).map((slot, i) => (
+                      <option key={i} value={slot}>
+                        {parseTime(slot)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                What do you need help with?
-              </label>
-              <textarea
-                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="3"
-                placeholder="Describe your issue or goal..."
-                value={newBookingToBeRegistered.customerSummary}
-                onChange={(event) =>
-                  setNewBookingToBeRegistered({
-                    ...newBookingToBeRegistered,
-                    customerSummary: event.target.value,
-                  })
-                }
-              ></textarea>
-            </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    What do you need help with?
+                  </label>
+                  <textarea
+                    className="
+                      w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
+                      focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-none
+                    "
+                    rows="4"
+                    placeholder="Describe your issue or goal..."
+                    value={newBookingToBeRegistered.customerSummary}
+                    onChange={(event) =>
+                      setNewBookingToBeRegistered({
+                        ...newBookingToBeRegistered,
+                        customerSummary: event.target.value,
+                      })
+                    }
+                  ></textarea>
+                </div>
+              </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <button
-                onClick={() => setBooking(false)}
-                className="px-4 py-2 rounded-lg text-sm border hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded-lg text-sm bg-blue-600 text-white hover:bg-blue-700"
-                onClick={handleBookingSubmission}
-              >
-                Confirm Booking
-              </button>
+              <div className="flex gap-3 pt-6 border-t border-gray-200 mt-6">
+                <button
+                  onClick={() => setBooking(false)}
+                  className="
+                    flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 
+                    rounded-xl font-medium transition-colors duration-200
+                  "
+                >
+                  Cancel
+                </button>
+                <button
+                  className="
+                    flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white 
+                    rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105
+                  "
+                  onClick={handleBookingSubmission}
+                >
+                  Confirm Booking
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -336,21 +412,31 @@ export default function Listing() {
 
       {/* Success Modal */}
       {showBookingSuccess && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-lg text-center space-y-4">
-            <h3 className="text-lg font-bold text-green-600">✅ Success!</h3>
-            <p className="text-gray-700">
-              Your booking has been added successfully.
-            </p>
-            <button
-              className="mt-4 px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
-              onClick={() => {
-                setShowBookingSuccess(false);
-                setBooking(false);
-              }}
-            >
-              OK
-            </button>
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Success!</h3>
+              <p className="text-gray-600 mb-6">
+                Your booking has been added successfully.
+              </p>
+              <button
+                className="
+                  w-full px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white 
+                  rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105
+                "
+                onClick={() => {
+                  setShowBookingSuccess(false);
+                  setBooking(false);
+                }}
+              >
+                Perfect!
+              </button>
+            </div>
           </div>
         </div>
       )}

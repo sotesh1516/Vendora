@@ -116,7 +116,9 @@ export default function Dashboard() {
     return (
         <>
             <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-                <Navbar sendToParent={getQueryInfo} />
+            <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+            <Navbar sendToParent={getQueryInfo} />
+            </div>
 
                 {/* Category Tabs */}
                 <div className="border-b border-gray-200 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-30">
