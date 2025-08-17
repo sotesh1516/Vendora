@@ -188,6 +188,13 @@ const fetchListingsAndSetFavorites = async (req, res) => {
       .skip(skip)
       .limit(limit); // check whether to set a limit for the fetch or just fetch as much as possible
 
+    if (!verifiedUser)
+    {
+      return res.status(200).json({listings: fetchedListings,
+        message:
+          "Listings have been successfully fetched"});
+    }
+
     let fetchedUser = await User.findById(verifiedUser.id).populate(
       "myFavorites"
     );

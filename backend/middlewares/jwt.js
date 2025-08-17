@@ -34,5 +34,29 @@ async function authorizeUser(req, res, next) {
     
 }
 
+// middleware/optionalAuth.js
+const optionalAuthorizeUser = (req, res, next) => {
+    // Check if authorization header exists
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // No auth provided - continue as guest user
+      req.user = null;
+      return next();
+    }
+    
+    // Auth provided - validate it
+    try {
+      const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      // Invalid token - continue as guest user instead of failing
+      req.user = null;
+      next();
+    }
+  };
 
-module.exports = { authorizeUser, verifyUser }
+
+module.exports = { authorizeUser, verifyUser, optionalAuthorizeUser }

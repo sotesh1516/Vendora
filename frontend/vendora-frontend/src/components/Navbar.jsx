@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { searchListings } from "../api/listing";
 
-export default function Navbar(props) {
+export default function Navbar() {
 
   const navigate = useNavigate();
 
@@ -12,10 +13,42 @@ export default function Navbar(props) {
     setSearchQuery(event.target.value);
   };
 
-  const handleSearch = async () => {
-    props.sendToParent(searchQuery);// this sends the query info to the dashboard component so it can be used for fetching the necessary listings
-    console.log(searchQuery);
-  };
+  const [shouldSearch, setShouldSearch] = useState(false);
+
+  useEffect(() => {
+          // Only search if there is a valid query
+          if (!searchQuery || searchQuery.trim() === "") {
+              return; // don't trigger search
+          }
+  
+          async function searchRetrieveListings() {
+              try {
+                  const retrievedListings = await searchListings(searchQuery);
+  
+                  if (retrievedListings && retrievedListings.fetchedListings) {
+                      // setListings(retrievedListings.fetchedListings); this is useful if i decide to display the search results on the dashboard
+                      const searchInfo = {
+                          data: retrievedListings.fetchedListings,
+                          searchKeyword: searchQuery,
+                      };
+                      window.localStorage.setItem("search_fetched_listings", JSON.stringify(searchInfo));
+                      navigate("/results");
+                      console.log("success in search fetching");
+                  }
+                  else {
+                      console.log("you know what to do search edition");
+                  }
+  
+              } catch (error) {
+                  console.log(error);
+              }
+          }
+          
+          if (shouldSearch)
+          {
+            searchRetrieveListings();
+          }
+      }, [shouldSearch]);
 
   return (
     <div className="bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200 px-6 py-4">
@@ -45,7 +78,7 @@ export default function Navbar(props) {
 
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    handleSearch();
+                    setShouldSearch(true);
                   }
                 }}
               />
@@ -59,7 +92,7 @@ export default function Navbar(props) {
               </svg>
             </div>
             <button
-              onClick={handleSearch}
+              onClick={() => setShouldSearch(true)} 
               className="
                 px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
                 hover:shadow-lg transition-all duration-200 hover:scale-105 text-sm

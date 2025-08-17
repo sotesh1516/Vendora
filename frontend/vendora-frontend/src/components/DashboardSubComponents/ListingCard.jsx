@@ -17,7 +17,7 @@ function ListingCard({ listing }) {
     console.log(isFavorite);
     
     const updateInfo = {
-      userId: localCopyOfSignedInUser.id,
+      accessToken: accessToken,
       listingId: listing._id,
     };
     

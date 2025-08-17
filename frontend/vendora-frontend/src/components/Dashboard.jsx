@@ -3,26 +3,27 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import ListingCard from "./DashboardSubComponents/ListingCard";
 import ProfilePhotoModal from './DashboardSubComponents/ProfilePhotoModal';
-import { retrieveListings, searchListings } from "../api/listing";
+import { retrieveListings } from "../api/listing";
 import Footer from "./Footer";
 import { useAuth } from "./contexts/AuthContext";
 
 
 export default function Dashboard() {
 
+    // this is for keyword query that will be triggered by a button on the dashboard
     const categories = ["Trending", "New", "Popular", "For You", "Top Rated"];
-
     const [activeCategory, setActiveCategory] = useState("Trending");
 
+    //this state array stores the fetched listings array
     const [listings, setListings] = useState([]);
+
 
     const [showFilterBar, setShowFilterBar] = useState(false);
 
-    //const localCopyOfSignedInUser = JSON.parse(localStorage.getItem("logged_in_user"));
-
     const { accessToken } = useAuth();
 
-    const [searchQueryInfo, setSearchQueryInfo] = useState("");
+    //just incase we need it
+    const [searchQueryInfo, setSearchQueryInfo] = useState(JSON.parse(localStorage.getItem("search_fetched_listings")).searchKeyword);
 
     const [pageNumber, setPageNumber] = useState(0);
 
@@ -37,14 +38,12 @@ export default function Dashboard() {
 
     async function getListings() {
         try {
-            //console.log("access token recieved by dashboard", accessToken);
             const response = await retrieveListings({
                 accessToken: accessToken,
                 pageNumber: pageNumber,
             });
             if (response && response.listings) {
                 //this is wrong since i am passing a value instead of a function, states are async in React
-                //setListings([...listings, response.listings]);
                 setListings(prev => [...prev, ...response.listings]);
                 console.log(pageNumber);
                 console.log("current Listings", listings);
@@ -75,49 +74,11 @@ export default function Dashboard() {
         }
     }, [pageNumber]);
 
-    useEffect(() => {
-        // Only search if there is a valid query
-        if (!searchQueryInfo || searchQueryInfo.trim() === "") {
-            return; // don't trigger search
-        }
-
-        async function searchRetrieveListings() {
-            try {
-                const retrievedListings = await searchListings(searchQueryInfo);
-
-                if (retrievedListings && retrievedListings.fetchedListings) {
-                    // setListings(retrievedListings.fetchedListings); this is useful if i decide to display the search results on the dashboard
-                    const searchInfo = {
-                        data: retrievedListings.fetchedListings,
-                        searchKeyword: searchQueryInfo,
-                    };
-                    window.localStorage.setItem("search_fetched_listings", JSON.stringify(searchInfo));
-                    navigate("/results");
-                    console.log("success in search fetching");
-                }
-                else {
-                    console.log("you know what to do search edition");
-                }
-
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        searchRetrieveListings();
-    }, [searchQueryInfo]);
-
-    // useEffect(() => {
-    //     if (localCopyOfSignedInUser && !localCopyOfSignedInUser.profilePhotoUrl) {
-    //       setShowProfilePhotoModal(true);
-    //     }
-    //   }, []);
-
     return (
         <>
             <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             <div className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-            <Navbar sendToParent={getQueryInfo} />
+            <Navbar />
             </div>
 
                 {/* Category Tabs */}

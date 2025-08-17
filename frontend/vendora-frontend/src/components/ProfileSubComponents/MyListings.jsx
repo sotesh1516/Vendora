@@ -160,7 +160,7 @@ function MyListings() {
       serviceOpts: serviceOptions,
     }));
   }, [serviceOptions]);
-  
+
 
 
   const handleChange = (event) => {
@@ -253,8 +253,8 @@ function MyListings() {
                     "
                     onClick={(e) => {
                       e.stopPropagation();
-                      setEditListing(true);
                       setListingToBeUpdated(listing);
+                      setEditListing(true);
                     }}
                   >
                     Edit
@@ -304,134 +304,149 @@ function MyListings() {
 
         {/* this is where the modal for a listing activates */}
         {selectedListing && (
-          <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center overflow-auto p-4">
-            <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-6xl rounded-2xl shadow-2xl border border-gray-200">
-              {/* Header */}
-              <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  {selectedListing.title || "Service Title"}
-                </h2>
-                <button
-                  onClick={() => setSelectedListing(null)}
-                  className="
+          <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto">
+            <div className="min-h-screen flex items-start justify-center p-4 py-8">
+              <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-6xl my-8 rounded-2xl shadow-2xl border border-gray-200">
+                {/* Header */}
+                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                    {selectedListing.title || "Service Title"}
+                  </h2>
+                  <button
+                    onClick={() => setSelectedListing(null)}
+                    className="
                     w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 
                     text-gray-500 hover:text-gray-700 transition-colors duration-200
                     flex items-center justify-center
                   "
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Main Content */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6">
-                {/* Left: Info */}
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Image Banner */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="rounded-xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100">
-                      <img
-                        src="https://via.placeholder.com/400x250"
-                        alt="Preview"
-                        className="w-full h-56 object-cover"
-                      />
-                    </div>
-                    <div className="rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100">
-                      <img
-                        src="https://via.placeholder.com/400x250"
-                        alt="Preview"
-                        className="w-full h-56 object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-900">Service Overview</h3>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      {selectedListing.description || "No description provided."}
-                    </p>
-                  </section>
-
-                  {/* Service Options */}
-                  <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-900">Service Options</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {(selectedListing.options || ["No options listed"]).map((opt, i) => (
-                        <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                          {opt}
-                        </span>
-                      ))}
-                    </div>
-                  </section>
-
-                  {/* Reviews */}
-                  <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-900">Client Reviews</h3>
-                    <div className="space-y-3">
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
-                        <p className="text-sm font-medium text-gray-900">Jane Doe</p>
-                        <p className="text-xs text-gray-600 mt-1">⭐⭐⭐⭐⭐ "Amazing tutor, explains clearly."</p>
-                      </div>
-                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-100">
-                        <p className="text-sm font-medium text-gray-900">John Smith</p>
-                        <p className="text-xs text-gray-600 mt-1">⭐⭐⭐⭐ "Very helpful for my exam prep."</p>
-                      </div>
-                    </div>
-                  </section>
+                  >
+                    ✕
+                  </button>
                 </div>
 
-                {/* Right: Owner Controls */}
-                <div className="space-y-6">
-                  {/* Provider Info */}
-                  <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-5 border border-gray-200 shadow-sm">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
-                          <img
-                            src={selectedListing.avatar}
-                            className="w-14 h-14 rounded-full object-cover bg-white"
-                            alt="Avatar"
-                          />
+                {/* Main Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6">
+                  {/* Left: Info */}
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Images - Only Cloud Stored Images */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                      {/* Only show cloud images from the listing */}
+                      {selectedListing.cloudStoredImages && selectedListing.cloudStoredImages.length > 0 ? (
+                        selectedListing.cloudStoredImages.map((image, index) => (
+                          <div key={`cloud-${index}`} className="rounded-xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100">
+                            <img src={image.url} alt={`Service ${index + 1}`} className="w-full h-56 object-cover" />
+                          </div>
+                        ))
+                      ) : (
+                        // Show placeholder if no cloud images
+                        <>
+                          <div className="rounded-xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100">
+                            <img
+                              src="https://via.placeholder.com/400x250"
+                              alt="Preview"
+                              className="w-full h-56 object-cover"
+                            />
+                          </div>
+                          <div className="rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100">
+                            <img
+                              src="https://via.placeholder.com/400x250"
+                              alt="Preview"
+                              className="w-full h-56 object-cover"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Description */}
+                    <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
+                      <h3 className="text-lg font-semibold mb-3 text-gray-900">Service Overview</h3>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {selectedListing.description || "No description provided."}
+                      </p>
+                    </section>
+
+                    {/* Service Options */}
+                    <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
+                      <h3 className="text-lg font-semibold mb-3 text-gray-900">Service Options</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {(selectedListing.serviceOptions || ["No options listed"]).map((opt, i) => (
+                          <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                            {opt}
+                          </span>
+                        ))}
+                      </div>
+                    </section>
+
+                    {/* Reviews */}
+                    <section className="bg-white/60 rounded-xl p-5 border border-gray-200">
+                      <h3 className="text-lg font-semibold mb-3 text-gray-900">Client Reviews</h3>
+                      <div className="space-y-3">
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                          <p className="text-sm font-medium text-gray-900">Jane Doe</p>
+                          <p className="text-xs text-gray-600 mt-1">⭐⭐⭐⭐⭐ "Amazing tutor, explains clearly."</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-100">
+                          <p className="text-sm font-medium text-gray-900">John Smith</p>
+                          <p className="text-xs text-gray-600 mt-1">⭐⭐⭐⭐ "Very helpful for my exam prep."</p>
                         </div>
                       </div>
-                      <div>
-                        <p className="font-semibold text-sm text-gray-900">{selectedListing.name}</p>
-                        <div className="flex items-center gap-1 text-xs text-gray-600">
-                          <span className="text-yellow-400">⭐</span>
-                          <span>{selectedListing.rating}</span>
-                          <span>({selectedListing.reviewsCount} reviews)</span>
+                    </section>
+                  </div>
+
+                  {/* Right: Owner Controls */}
+                  <div className="space-y-6">
+                    {/* Provider Info */}
+                    <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-5 border border-gray-200 shadow-sm">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
+                            <img
+                              src={selectedListing.avatar}
+                              className="w-14 h-14 rounded-full object-cover bg-white"
+                              alt="Avatar"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm text-gray-900">{selectedListing.name}</p>
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <span className="text-yellow-400">⭐</span>
+                            <span>{selectedListing.rating}</span>
+                            <span>({selectedListing.reviewsCount} reviews)</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="space-y-3">
-                    <button
-                      className="
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                      <button
+                        className="
                         w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
                         hover:shadow-lg transition-all duration-200 hover:scale-105
                       "
-                      onClick={() => {
-                        setEditListing(true);
-                        setSelectedListing(null); // hide this modal first
-                      }}
-                    >
-                      Edit Listing
-                    </button>
-                    <button
-                      className="
+                        onClick={() => {
+                          setListingToBeUpdated(listing);
+                          setEditListing(true);
+                          setSelectedListing(null); // hide this modal first
+                        }}
+                      >
+                        Edit Listing
+                      </button>
+                      <button
+                        className="
                         w-full px-4 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-xl
                         hover:shadow-lg transition-all duration-200 hover:scale-105
                       "
-                      onClick={() => {
-                        setDeleteListing(true);
-                        setSelectedListing(null);
-                      }}
-                    >
-                      Delete Listing
-                    </button>
+                        onClick={() => {
+                          setDeleteListing(true);
+                          setSelectedListing(null);
+                        }}
+                      >
+                        Delete Listing
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -440,8 +455,12 @@ function MyListings() {
         )}
 
 
-        {editListing && (
-          <ListingEdit listing={listingToBeUpdated} setEditListing={setEditListing} />
+        {editListing && listingToBeUpdated && (
+          <ListingEdit
+            listing={listingToBeUpdated}
+            setEditListing={setEditListing}
+            key={listingToBeUpdated._id || listingToBeUpdated.id}
+          />
         )}
 
 
@@ -496,8 +515,8 @@ function MyListings() {
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                     Create New Service Listing
                   </h2>
-                  <button 
-                    onClick={() => setAddListing(false)} 
+                  <button
+                    onClick={() => setAddListing(false)}
                     className="
                       w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 
                       text-gray-500 hover:text-gray-700 transition-colors duration-200
@@ -515,31 +534,31 @@ function MyListings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Your Name</label>
-                      <input 
-                        name="name" 
-                        type="text" 
-                        required 
+                      <input
+                        name="name"
+                        type="text"
+                        required
                         className="
                           w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
                           focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200
-                        " 
-                        value={newListingToRegister.name} 
-                        onChange={handleChange} 
+                        "
+                        value={newListingToRegister.name}
+                        onChange={handleChange}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Service Title</label>
-                      <input 
-                        name="service" 
-                        type="text" 
-                        required 
+                      <input
+                        name="service"
+                        type="text"
+                        required
                         className="
                           w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
                           focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200
-                        " 
-                        value={newListingToRegister.service} 
-                        onChange={handleChange} 
+                        "
+                        value={newListingToRegister.service}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -547,41 +566,41 @@ function MyListings() {
                   {/* Section: Price */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Rate per Hour ($)</label>
-                    <input 
-                      name="price" 
-                      type="number" 
-                      min="1" 
-                      required 
+                    <input
+                      name="price"
+                      type="number"
+                      min="1"
+                      required
                       className="
                         w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
                         focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200
-                      " 
-                      value={newListingToRegister.price} 
-                      onChange={handleChange} 
+                      "
+                      value={newListingToRegister.price}
+                      onChange={handleChange}
                     />
                   </div>
 
                   {/* Section: Description */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Service Description</label>
-                    <textarea 
-                      name="description" 
-                      rows="4" 
-                      required 
+                    <textarea
+                      name="description"
+                      rows="4"
+                      required
                       className="
                         w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/80 
                         focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-none
-                      " 
-                      placeholder="What do you offer, and who is it for?" 
-                      value={newListingToRegister.description} 
-                      onChange={handleChange} 
+                      "
+                      placeholder="What do you offer, and who is it for?"
+                      value={newListingToRegister.description}
+                      onChange={handleChange}
                     />
                   </div>
 
                   {/* Time Slots Section */}
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
                     <label className="block text-sm font-semibold text-gray-700 mb-3">Available Time Slots</label>
-                    
+
                     <div className="flex gap-2 mb-4">
                       <input
                         type="datetime-local"
@@ -597,12 +616,12 @@ function MyListings() {
                         }}
                       />
 
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="
                           px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
                           hover:shadow-lg transition-all duration-200 hover:scale-105
-                        " 
+                        "
                         onClick={() => {
                           //const value = document.getElementById("date-time-input").value;
                           const updatedTimeSlots = [...timeSlots, timeSlot]
@@ -632,7 +651,7 @@ function MyListings() {
                   {/* Service Options Section */}
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
                     <label className="block text-sm font-semibold text-gray-700 mb-3">Service Options</label>
-                    
+
                     <div className="space-y-3">
                       {/* Map each input on its own row */}
                       {serviceOptions.map((service, index) => (
@@ -719,25 +738,49 @@ function MyListings() {
                       }}
                     />
 
-                    {/* Preview grid (replace src with dynamic preview later) */}
+                    {/* Preview grid - Show selectedImages or placeholders */}
                     <div className="grid grid-cols-3 gap-3 mt-4">
-                      <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
-                        <img
-                          src="https://via.placeholder.com/150"
-                          alt="preview"
-                          className="object-cover w-full h-full rounded-xl"
-                        />
-                      </div>
-                      <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
-                        <img
-                          src="https://via.placeholder.com/150"
-                          alt="preview"
-                          className="object-cover w-full h-full rounded-xl"
-                        />
-                      </div>
-                      <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">Preview</span>
-                      </div>
+                      {selectedImages.length > 0 ? (
+                        // Show actual selected images
+                        selectedImages.map((file, index) => (
+                          <div key={index} className="relative aspect-square overflow-hidden rounded-xl border-2 border-gray-300 bg-gray-50">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`Selected ${index + 1}`}
+                              className="object-cover w-full h-full rounded-xl"
+                            />
+                            <button
+                              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 text-sm font-bold transition-all duration-200"
+                              onClick={() => {
+                                setSelectedImages(prev => prev.filter((_, i) => i !== index));
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        // Show placeholders when no images selected
+                        <>
+                          <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
+                            <img
+                              src="https://via.placeholder.com/150"
+                              alt="preview"
+                              className="object-cover w-full h-full rounded-xl"
+                            />
+                          </div>
+                          <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
+                            <img
+                              src="https://via.placeholder.com/150"
+                              alt="preview"
+                              className="object-cover w-full h-full rounded-xl"
+                            />
+                          </div>
+                          <div className="aspect-square overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
+                            <span className="text-gray-400 text-xs">Preview</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -745,10 +788,10 @@ function MyListings() {
                   <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
-                        <img 
-                          src="https://img.daisyui.com/images/profile/demo/5@94.webp" 
-                          className="w-16 h-16 rounded-full object-cover bg-white" 
-                          alt="Avatar" 
+                        <img
+                          src="https://img.daisyui.com/images/profile/demo/5@94.webp"
+                          className="w-16 h-16 rounded-full object-cover bg-white"
+                          alt="Avatar"
                         />
                       </div>
                     </div>
@@ -760,9 +803,9 @@ function MyListings() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-6 border-t border-gray-200">
-                    <button 
-                      type="button" 
-                      onClick={() => setAddListing(false)} 
+                    <button
+                      type="button"
+                      onClick={() => setAddListing(false)}
                       className="
                         flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 
                         rounded-xl font-medium transition-colors duration-200
@@ -770,11 +813,11 @@ function MyListings() {
                     >
                       Cancel
                     </button>
-                    <button 
+                    <button
                       className="
                         flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white 
                         rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105
-                      " 
+                      "
                       onClick={(e) => {
                         e.preventDefault();
                         setShouldSubmit(true)
@@ -801,11 +844,11 @@ function MyListings() {
                 </div>
                 <h3 className="font-bold text-xl text-gray-900 mb-2">Success!</h3>
                 <p className="text-gray-600 mb-6">Your listing has been added successfully.</p>
-                <button 
+                <button
                   className="
                     w-full px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white 
                     rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105
-                  " 
+                  "
                   onClick={() => {
                     setShowListingSuccess(false);
                     setAddListing(false);
