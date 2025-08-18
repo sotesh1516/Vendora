@@ -4,10 +4,11 @@ export const updateUserBooking = async (bookingUpdateInfo) => {
   try {
     const response = await axios.patch(
       `http://127.0.0.1:8000/api/user/mybookings/${bookingUpdateInfo.bookingId}`,
-      {}, {
+      {},
+      {
         headers: {
-            Authorization: `Bearer ${bookingUpdateInfo.accessToken}`,
-          },
+          Authorization: `Bearer ${bookingUpdateInfo.accessToken}`,
+        },
       }
     );
 
@@ -31,8 +32,8 @@ export const fetchUserBookings = async (userInfo) => {
       "http://127.0.0.1:8000/api/user/mybookings/",
       {
         headers: {
-            Authorization: `Bearer ${userInfo.accessToken}`,
-        }
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
       }
     );
 
@@ -83,9 +84,9 @@ export const fetchUserListings = async (userInfo) => {
     const response = await axios.get(
       "http://127.0.0.1:8000/api/user/mylistings/", // remove fetch
       {
-       headers: {
-        Authorization: `Bearer ${userInfo.accessToken}`,
-       }
+        headers: {
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
       }
     );
 
@@ -109,11 +110,11 @@ export const fetchUserListings = async (userInfo) => {
 export const fetchUserFavorites = async (userInfo) => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/user/myfavorites/`, 
+      `http://127.0.0.1:8000/api/user/myfavorites/`,
       {
         headers: {
-            Authorization: `Bearer ${userInfo.accessToken}`,
-        }
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
       }
     );
 
@@ -135,7 +136,8 @@ export const fetchUserFavorites = async (userInfo) => {
 export const updateUserFavorites = async (favoriteUpdateInfo) => {
   try {
     const response = await axios.put(
-      `http://127.0.0.1:8000/api/favorites/${favoriteUpdateInfo.listingId}`,
+      `http://127.0.0.1:8000/api/user/favorites/${favoriteUpdateInfo.listingId}`,
+      {},
       {
         headers: {
           Authorization: `Bearer ${favoriteUpdateInfo.accessToken}`,
@@ -153,6 +155,15 @@ export const updateUserFavorites = async (favoriteUpdateInfo) => {
     );
     return { error: "Server responded with an error my favorite update" };
   } catch (error) {
+    if (error.response && error.response.status === 401) {
+      console.error("User not authenticated - 401 error");
+      return {
+        error: "Please sign in to add favorites",
+        code: 401,
+        requiresAuth: true,
+      };
+    }
+
     console.error("Error during my favorite update");
     return { error: "My favorite update failed. Please try again" };
   }
@@ -183,11 +194,11 @@ export const checkUserBookingStatusForListing = async (fetchInfo) => {
   try {
     const response = await axios.get(
       `http://127.0.0.1:8000/api/user/bookings/check/listing/${fetchInfo.listingId}`,
-  {
-    headers: {
-      Authorization: `Bearer ${fetchInfo.accessToken}`,
-    },
-  }
+      {
+        headers: {
+          Authorization: `Bearer ${fetchInfo.accessToken}`,
+        },
+      }
     );
 
     if (response.status == 200) {

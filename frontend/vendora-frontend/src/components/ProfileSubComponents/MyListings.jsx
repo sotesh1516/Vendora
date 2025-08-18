@@ -427,7 +427,7 @@ function MyListings() {
                         hover:shadow-lg transition-all duration-200 hover:scale-105
                       "
                         onClick={() => {
-                          setListingToBeUpdated(listing);
+                          setListingToBeUpdated(selectedListing);
                           setEditListing(true);
                           setSelectedListing(null); // hide this modal first
                         }}

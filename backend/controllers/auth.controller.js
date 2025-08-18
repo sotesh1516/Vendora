@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 // const connectDB = require("../models/db");
 const User = require("../models/user.model");
 const { verifyUser } = require("../middlewares/jwt");
@@ -28,6 +28,34 @@ const isValidEmail = (email) => {
  * @param {*} res - Express response object
  * @returns 
  */
+
+const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.body.token
+
+    if (!refreshToken) return res.status(401).json({message: "refresh token does not exist"});
+    //check if the refreshtoken it legit
+    //verify the refreshtoken using jwt.verify
+    const verifiedUser = verifyUser(refreshToken, process.env.JWT_REFRESH_TOKEN);
+
+    if (!verifiedUser) {
+      res.status().json({})
+    }
+
+    const accessToken = generateAccessToken({
+      name: verifiedUser.name,
+      username: verifiedUser.username,
+      email: verifiedUser.email,
+      id: verifiedUser.id,
+    });
+
+    res.status(200).json({accessToken: accessToken});
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error during access token refreshing" });
+  }
+}
 
 const signUp = async (req, res) => {
   try {
@@ -87,23 +115,6 @@ const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10m'});
 };
 
-const renewToken = (req, res) => {
-  const refreshToken = req.body.token;
-
-  if (!refreshToken) return res.status(401).json({message: "refresh token does not exist"});
-  //check if reddis or database still have the refresh token coming in, if not send a 403
-  const verifiedUser = verifyUser(refreshToken, process.env.JWT_REFRESH_TOKEN);
-  //avoid additional info by extracting just user
-  const accessToken = generateAccessToken({
-    name: verifiedUser.name,
-    username: verifiedUser.username,
-    email: verifiedUser.email,
-    id: verifiedUser.id,
-  });
-
-  res.status(200).json({accessToken: accessToken});
-
-};
 
 const signIn = async (req, res) => {
   try {
@@ -161,4 +172,4 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn };
+module.exports = { signUp, signIn, refreshAccessToken };

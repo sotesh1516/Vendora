@@ -33,6 +33,14 @@ export default function Listing() {
 
   const [isRescheduleMode, setIsRescheduleMode] = useState(false);
 
+  const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
+  // restircted user
+
+  const handleSignIn = () => {
+    setShowSignInModal(false);
+    navigate('/signin'); // Adjust this path to your sign-in route
+  };
+
   useEffect(() => {
     const fetchSingleListing = async () => {
       const returnedListing = await fetchListing(id);
@@ -55,9 +63,8 @@ export default function Listing() {
           accessToken: accessToken,
           listingId: listing._id,
         });
-  
-        if (isBooked.booked)
-        {
+
+        if (isBooked.booked) {
           setIsRescheduleMode(true);
         }
       } catch (error) {
@@ -65,8 +72,7 @@ export default function Listing() {
       }
     };
 
-    if (id && listing && listing._id)
-    {
+    if (id && listing && listing._id) {
       console.log("line 52", listing);
       checkBookingStatus();
     }
@@ -171,8 +177,8 @@ export default function Listing() {
         {/* Image Gallery */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
           {(listing.cloudStoredImages.length > 0 ? listing.cloudStoredImages : [1, 2, 3]).map((image, index) => (
-            <div 
-              key={image.public_id || index} 
+            <div
+              key={image.public_id || index}
               className="group relative overflow-hidden rounded-xl cursor-pointer"
               onClick={() => openImageGallery(index)}
             >
@@ -389,8 +395,8 @@ export default function Listing() {
             <div className="flex-1 flex items-center justify-center mb-24">
               <img
                 src={
-                  listing.cloudStoredImages.length > 0 
-                    ? listing.cloudStoredImages[selectedImageIndex]?.url 
+                  listing.cloudStoredImages.length > 0
+                    ? listing.cloudStoredImages[selectedImageIndex]?.url
                     : "https://via.placeholder.com/800x600"
                 }
                 alt={`Gallery image ${selectedImageIndex + 1}`}
