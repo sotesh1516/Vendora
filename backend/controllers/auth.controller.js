@@ -172,4 +172,24 @@ const signIn = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn, refreshAccessToken };
+//this auth check is done for the mvp only
+const whoAmI = async (req, res) => {
+  const verifiedUser = req.user;
+  try {
+    res.status(200).json({
+      authenticated: true,
+      user: {
+        id: verifiedUser.id,
+        email: verifiedUser.email,
+        name: verifiedUser.name,
+        // Add any other safe user fields you want to return
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: "Internal server error" 
+    });
+  }
+};
+
+module.exports = { signUp, signIn, refreshAccessToken, whoAmI };

@@ -4,10 +4,12 @@ import { registerListing } from "../../api/listing"
 import { fetchUserListings, updateUserListingList } from '../../api/user';
 import ListingEdit from './MyListingSubComponents/ListingEdit';
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
+import { whoAmI } from '../../api/auth';
 
 function MyListings() {
 
-
+  const navigate = useNavigate();
   //this should be replaced by database query or an array of listings
   const [listings, setListings] = useState([
     {
@@ -90,6 +92,30 @@ function MyListings() {
 
   const { accessToken } = useAuth();
 
+  const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
+    // restircted user
+
+  // Critical action wrapper
+  const withAuth = async (callback) => {
+    if (!accessToken) {
+      setShowSignInModal(true);
+      return;
+    }
+
+    try {
+      const authCheck = await whoAmI(accessToken);
+      if (!authCheck.authenticated) {
+        setShowSignInModal(true);
+        return;
+      }
+      // User is authenticated, execute the callback
+      callback();
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      setShowSignInModal(true);
+    }
+  };
+
   useEffect(() => {
     const handleSubmission = async () => {
       try {
@@ -168,6 +194,11 @@ function MyListings() {
     setNewListingToRegister({ ...newListingToRegister, [name]: value });
   }
 
+  const handleSignIn = () => {
+    setShowSignInModal(false);
+    navigate('/signin'); // Adjust this path to your sign-in route
+  };
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -187,7 +218,7 @@ function MyListings() {
                   shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400
                 "
                 onClick={() => {
-                  setAddListing(true);
+                  withAuth(() => setAddListing(true));
                 }}
               >
                 + New Listing
@@ -860,6 +891,40 @@ function MyListings() {
             </div>
           </div>
         )}
+
+        {/* Sign In Required Modal */}
+      {showSignInModal && (
+        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
+            <div className="p-8 text-center">
+              {/* Icon */}
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+
+              <h3 className="font-bold text-xl text-gray-900 mb-2">Sign In Required</h3>
+              <p className="text-gray-600 mb-6">Please sign in to add items to your favorites</p>
+
+              <div className="flex gap-3">
+                <button
+                  className="flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
+                  onClick={() => setShowSignInModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+                  onClick={handleSignIn}
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       </div>
     </>
