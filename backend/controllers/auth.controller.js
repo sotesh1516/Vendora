@@ -31,7 +31,7 @@ const isValidEmail = (email) => {
 
 const refreshAccessToken = async (req, res) => {
   try {
-    const refreshToken = req.body.token
+    const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) return res.status(401).json({message: "refresh token does not exist"});
     //check if the refreshtoken it legit
@@ -159,24 +159,43 @@ const signIn = async (req, res) => {
     //Also invalidate a refresh token through a logout route
     //takes in a payload, can be user object, that needs to be serialized
     const accessToken = generateAccessToken(userWithOutPassword);
-    const refreshToken = jwt.sign(userWithOutPassword, process.env.JWT_REFRESH_TOKEN);
+    const refreshToken = jwt.sign(userWithOutPassword, process.env.JWT_REFRESH_TOKEN, { expiresIn: '7d' }); // Long-lived refresh token
 
     //refresh tokens must be saved some where like redis or a database
+    // Set refresh token as HttpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      path: '/'
+    });
+
 
     return res
       .status(200)
-      .json({ accessToken: accessToken, refreshToken: refreshToken, message: "Signed in successfully" });
+      .json({ accessToken: accessToken, message: "Signed in successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 
+const signOut = async (req, res) => {
+  try {
+    const verifiedUser = req.user;
+
+
+  } catch (error) {
+    
+  }
+}
+
 //this auth check is done for the mvp only
 const whoAmI = async (req, res) => {
   const verifiedUser = req.user;
   try {
-    res.status(200).json({
+    return res.status(200).json({
       authenticated: true,
       user: {
         id: verifiedUser.id,
@@ -186,7 +205,7 @@ const whoAmI = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: "Internal server error" 
     });
   }

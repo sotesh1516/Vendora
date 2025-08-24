@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { fetchUserInfo } from "../../api/user";
 
 export default function General() {
   // Example state for profile info
@@ -8,10 +10,13 @@ export default function General() {
     email: "",
   });
 
+  const { accessToken } = useAuth();
+
   // Example: load existing profile info (replace with your logic)
   useEffect(() => {
     // fetch user info from localStorage or API
-    const user = JSON.parse(localStorage.getItem("logged_in_user"));
+    const fetchUser = async () => {
+      const user = await fetchUserInfo({accessToken});
     if (user) {
       setProfile({
         name: user.name || "",
@@ -19,6 +24,8 @@ export default function General() {
         email: user.email || "",
       });
     }
+    };
+    
   }, []);
 
   // handle changes

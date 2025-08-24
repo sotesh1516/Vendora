@@ -1,5 +1,57 @@
 import axios from "axios";
 
+// What happens when you don't do the config below:
+// 1. Browser makes request to backend
+// 2. Browser says: "This is cross-origin, I won't send cookies for security"
+// 3. Your refreshToken cookie stays in the browser, NOT sent to server
+// 4. Server receives request with NO cookies
+// 5. Server: "No refresh token found" → 401 Unauthorized
+axios.defaults.withCredentials = true; // this can be done per request too
+
+export const fetchUserInfo = async (userInfo) => {
+  try {
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/user/me", 
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      console.log("User info successfully fetched", response.status);
+      return response.data;
+    }
+
+    console.error(
+      "An error has occurred during user info fetch",
+      response.status
+    );
+    return { error: "An error has occurred during user info fetch" };
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      console.error("User not authenticated - 401 error");
+      return {
+        error: "Please sign in to access user information",
+        code: 401,
+        requiresAuth: true,
+      };
+    }
+
+    if (error.response && error.response.status === 404) {
+      console.error("User not found - 404 error");
+      return {
+        error: "User not found",
+        code: 404,
+      };
+    }
+
+    console.error("Error during user info fetch", error);
+    return { error: "User info fetch failed. Please try again" };
+  }
+};
+
 export const updateUserBooking = async (bookingUpdateInfo) => {
   try {
     const response = await axios.patch(

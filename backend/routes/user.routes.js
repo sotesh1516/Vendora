@@ -1,9 +1,10 @@
 const express = require("express");
-const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing } = require("../controllers/user.controller");
+const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing, fetchUserInfo } = require("../controllers/user.controller");
 const { authorizeUser } = require("../middlewares/jwt");
 const router = express.Router();
 
 //change the fetch POST method to get with fetchInfo passed through req.query..
+router.get("/me", authorizeUser, fetchUserInfo);
 router.patch("/mybookings/:bookingId", authorizeUser, updateUserBookingList);
 router.patch("/mylistings/:listingId", authorizeUser, updateUserListingList);
 router.get("/mybookings/", authorizeUser, fetchUserBookingList);

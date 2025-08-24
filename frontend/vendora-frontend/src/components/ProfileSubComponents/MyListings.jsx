@@ -39,7 +39,7 @@ function MyListings() {
   const [selectedListing, setSelectedListing] = useState();
 
   //ste for activating the list adding feature
-  const [addListing, setAddListing] = useState();
+  const [addListing, setAddListing] = useState(false);
 
   //state for activating a modal for navigating listing 
   const [activeTab, setActiveTab] = useState("reviews");
@@ -103,7 +103,7 @@ function MyListings() {
     }
 
     try {
-      const authCheck = await whoAmI(accessToken);
+      const authCheck = await whoAmI({accessToken});
       if (!authCheck.authenticated) {
         setShowSignInModal(true);
         return;
@@ -120,7 +120,7 @@ function MyListings() {
     const handleSubmission = async () => {
       try {
         console.log(newListingToRegister);
-        const response = await registerListing(newListingToRegister);
+        const response = await registerListing(newListingToRegister, accessToken);
         //add the listingId to the user's array
         if (response && response.listing) {
           console.log(response.listing);

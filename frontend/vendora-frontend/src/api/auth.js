@@ -49,7 +49,7 @@ export const signInUser = async (inComingUser) => {
 
 export const whoAmI = async (info) => {
     try {
-        const result = await axios.get('http://127.0.0.1:8000/api/auth/whoami', {
+        const response = await axios.get('http://127.0.0.1:8000/api/auth/whoami', {
             headers: {
                 Authorization: `Bearer ${info.accessToken}`
             }
@@ -63,6 +63,9 @@ export const whoAmI = async (info) => {
             "Server responded with an error during whoami check",
             response.status
           );
+
+          return { error: "Server responded with an error during whoami check" };
+          
     } catch (error) {
         if (error.response && error.response.status === 401) {
             console.error("User not authenticated - 401 error");

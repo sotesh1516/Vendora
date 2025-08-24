@@ -1,6 +1,37 @@
 const Booking = require("../models/booking.model");
 const User = require("../models/user.model");
 
+const fetchUserInfo = async (req, res) => {
+  try {
+    const verifiedUser = req.user; // Comes from your authorization middleware
+
+    // Optional: Get full user data from database if you need more fields
+    const user = await User.findById(verifiedUser.id).select('-password').exec();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({
+      authenticated: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        // Add any other safe user fields you want to return
+        createdAt: user.createdAt,
+        // Don't include sensitive fields like password
+      },
+      message: "User info fetched successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ 
+      error: "Internal server error during user info fetch" 
+    });
+  }
+};
+
 const updateUserBookingList = async (req, res) => {
   try {
     const bookingId = req.params.bookingId;
@@ -335,5 +366,6 @@ module.exports = {
   fetchUserCashAppHandle,
   registerUserVenmoHandle,
   fetchUserVenmoHandle,
-  checkUserBookingForListing
+  checkUserBookingForListing,
+  fetchUserInfo
 };

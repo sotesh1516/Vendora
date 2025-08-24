@@ -28,6 +28,12 @@ async function authorizeUser(req, res, next) {
         req.user = decodedUser;
         next();
     } catch (error) {
+
+        // console.log("Token verification failed:");
+        // console.log("Error message:", error.message);
+        // console.log("Error name:", error.name);
+        // console.log("Full error:", error);
+
         console.log({message: "Token is no longer valid"});
         return res.status(403).json({message: "Token is no longer valid"});
     }

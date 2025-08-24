@@ -1,12 +1,14 @@
 import axios from "axios";
 
+axios.defaults.withCredentials = true; // this can be done per request too
+
 //By default, Node/Express don't magically know how to handle raw files
 //If you try to send a raw file object without any encoding, the browser doesn't knwo what ccontent type
 //to use, and express wouldn't know how to separate it from other form fields like name, email
 //So HTTP instroduces multipart/form-data -> Binary file data + Text fields
 // FormData build a properly structured multipart/form-data to send to the backend
 // NOTE: The backend will automatically detect files and non-files, req.body and req.files
-export const registerListing = async (newListing) => {
+export const registerListing = async (newListing, accessToken) => {
   const multiPartStructuredUserData = new FormData();
 
   multiPartStructuredUserData.append("serviceProvider", newListing.name);
@@ -42,7 +44,13 @@ export const registerListing = async (newListing) => {
   try {
     const result = await axios.post(
       "http://127.0.0.1:8000/api/listings/",
-      multiPartStructuredUserData
+      multiPartStructuredUserData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data', // if sending FormData
+          // Add other headers as needed
+        }
+      }
     );
 
     if (result.status == 200) {
