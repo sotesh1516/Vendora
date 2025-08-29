@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { registerCashApp } from '../../api/user';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 function PaymentInfo() {
   const [cashAppHandle, setCashAppHandle] = useState("");
   const [venmoHandle, setVenmoHandle] = useState("");
+
 
   useEffect(() => {
     //fetch during initial load and update the states
@@ -20,6 +24,7 @@ function PaymentInfo() {
   const handleChange = (e) => {
     e.target.name === "cashApp" ? setCashAppHandle(e.target.value) : setVenmoHandle(e.target.value);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">

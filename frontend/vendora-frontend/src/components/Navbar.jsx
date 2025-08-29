@@ -1,10 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { searchListings } from "../api/listing";
+import { useAuth } from "./contexts/AuthContext";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
+
+  const { accessToken } = useAuth();
+
+  const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
+  // restircted user
+
+  const withAuth = async (callback) => {
+    if (!accessToken) {
+      setShowSignInModal(true);
+      return;
+    }
+
+    try {
+      const authCheck = await whoAmI({ accessToken });
+      if (!authCheck.authenticated) {
+        setShowSignInModal(true);
+        return;
+      }
+      // User is authenticated, execute the callback
+      callback();
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      setShowSignInModal(true);
+    }
+  };
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -13,42 +39,46 @@ export default function Navbar() {
     setSearchQuery(event.target.value);
   };
 
+  const handleSignIn = () => {
+    setShowSignInModal(false);
+    navigate('/signin'); // Adjust this path to your sign-in route
+  };
+
   const [shouldSearch, setShouldSearch] = useState(false);
 
   useEffect(() => {
-          // Only search if there is a valid query
-          if (!searchQuery || searchQuery.trim() === "") {
-              return; // don't trigger search
-          }
-  
-          async function searchRetrieveListings() {
-              try {
-                  const retrievedListings = await searchListings(searchQuery);
-  
-                  if (retrievedListings && retrievedListings.fetchedListings) {
-                      // setListings(retrievedListings.fetchedListings); this is useful if i decide to display the search results on the dashboard
-                      const searchInfo = {
-                          data: retrievedListings.fetchedListings,
-                          searchKeyword: searchQuery,
-                      };
-                      window.localStorage.setItem("search_fetched_listings", JSON.stringify(searchInfo));
-                      navigate("/results");
-                      console.log("success in search fetching");
-                  }
-                  else {
-                      console.log("you know what to do search edition");
-                  }
-  
-              } catch (error) {
-                  console.log(error);
-              }
-          }
-          
-          if (shouldSearch)
-          {
-            searchRetrieveListings();
-          }
-      }, [shouldSearch]);
+    // Only search if there is a valid query
+    if (!searchQuery || searchQuery.trim() === "") {
+      return; // don't trigger search
+    }
+
+    async function searchRetrieveListings() {
+      try {
+        const retrievedListings = await searchListings(searchQuery);
+
+        if (retrievedListings && retrievedListings.fetchedListings) {
+          // setListings(retrievedListings.fetchedListings); this is useful if i decide to display the search results on the dashboard
+          const searchInfo = {
+            data: retrievedListings.fetchedListings,
+            searchKeyword: searchQuery,
+          };
+          window.localStorage.setItem("search_fetched_listings", JSON.stringify(searchInfo));
+          navigate("/results");
+          console.log("success in search fetching");
+        }
+        else {
+          console.log("you know what to do search edition");
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (shouldSearch) {
+      searchRetrieveListings();
+    }
+  }, [shouldSearch]);
 
   return (
     <div className="bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200 px-6 py-4">
@@ -92,7 +122,7 @@ export default function Navbar() {
               </svg>
             </div>
             <button
-              onClick={() => setShouldSearch(true)} 
+              onClick={() => setShouldSearch(true)}
               className="
                 px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-xl
                 hover:shadow-lg transition-all duration-200 hover:scale-105 text-sm
@@ -127,8 +157,6 @@ export default function Navbar() {
                     className="w-9 h-9 rounded-full object-cover bg-white"
                   />
                 </div>
-                {/* Optional online indicator */}
-                {/* <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div> */}
               </div>
               <svg
                 className="w-4 h-4 text-gray-500"
@@ -144,6 +172,7 @@ export default function Navbar() {
                 />
               </svg>
             </div>
+
             <ul
               tabIndex={0}
               className="
@@ -151,68 +180,75 @@ export default function Navbar() {
                 supports-[backdrop-filter]:bg-white/90 border border-gray-200 z-[1000]
               "
             >
-              <li className="mb-1">
-                <div className="flex items-center gap-3 px-3 py-3 border-b border-gray-100 mb-2">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
-                      <img
-                        alt="User avatar"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        className="w-10 h-10 rounded-full object-cover bg-white"
-                      />
+              {accessToken ? (
+                <>
+                  {/* Signed-in view */}
+                  <li className="mb-1">
+                    <div className="flex items-center gap-3 px-3 py-3 border-b border-gray-100 mb-2">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full p-0.5">
+                          <img
+                            alt="User avatar"
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            className="w-10 h-10 rounded-full object-cover bg-white"
+                          />
+                        </div>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900 text-sm">John Doe</p>
+                        <p className="text-xs text-gray-500">john@example.com</p>
+                      </div>
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">John Doe</p>
-                    <p className="text-xs text-gray-500">john@example.com</p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <Link
-                  to="/profile"
-                  className="
-                    flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 
-                    rounded-lg transition-colors duration-200 text-sm
-                  "
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/settings"
-                  className="
-                    flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 
-                    rounded-lg transition-colors duration-200 text-sm
-                  "
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Settings
-                </Link>
-              </li>
-              <li className="mt-2 pt-2 border-t border-gray-100">
-                <button
-                  className="
-                    flex items-center gap-3 px-3 py-2 hover:bg-red-50 hover:text-red-700 
-                    rounded-lg transition-colors duration-200 w-full text-left text-sm text-red-600
-                  "
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  Logout
-                </button>
-              </li>
+                  </li>
+                  <li>
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors duration-200 text-sm"
+                    >
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/settings"
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors duration-200 text-sm"
+                    >
+                      Settings
+                    </Link>
+                  </li>
+                  <li className="mt-2 pt-2 border-t border-gray-100">
+                    <button
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors duration-200 w-full text-left text-sm text-red-600"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  {/* Logged-out view */}
+                  <li>
+                    <Link
+                      to="/signin"
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors duration-200 text-sm"
+                    >
+                      Sign in
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/signup"
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-green-50 hover:text-green-700 rounded-lg transition-colors duration-200 text-sm"
+                    >
+                      Create account
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
+
         </div>
       </div>
     </div>
