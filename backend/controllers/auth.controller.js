@@ -184,7 +184,7 @@ const signIn = async (req, res) => {
 const signOut = async (req, res) => {
   try {
     const verifiedUser = req.user;
-
+    
 
   } catch (error) {
     

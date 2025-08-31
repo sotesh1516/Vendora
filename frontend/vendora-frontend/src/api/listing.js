@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "./refresh";
 
 axios.defaults.withCredentials = true; // this can be done per request too
 
@@ -42,11 +43,11 @@ export const registerListing = async (newListing, accessToken) => {
   }
 
   try {
-    const result = await axios.post(
-      "http://127.0.0.1:8000/api/listings/",
+    const result = await axiosInstance.post(
+      "/listings/",
       multiPartStructuredUserData, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          //Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data', // if sending FormData
           // Add other headers as needed
         }
@@ -72,12 +73,13 @@ export const registerListing = async (newListing, accessToken) => {
 export const retrieveListings = async (userInfo) => {
   try {
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/listings/",
+      "/listings/",
+      //this is the same as axiosInstance.get(`/listings?pageNumber=${userInfo.pageNumber}`);
       {
         params: { pageNumber: userInfo.pageNumber},
-        headers: {
-          Authorization: `Bearer ${userInfo.accessToken}` 
-        }
+        // headers: {
+        //   Authorization: `Bearer ${userInfo.accessToken}` 
+        // }
       }
     );
 

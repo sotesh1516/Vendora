@@ -80,3 +80,15 @@ export const whoAmI = async (info) => {
           return { error: "whoami check failed. Please try again" };
     }
 };
+
+
+
+export const signOut = async () => {
+    try {
+        //make sure that accessToken is useAuth has been set to null
+        //remove/delete the refreshtokn stored inside a cookie
+
+    } catch (error) {
+        
+    }
+};

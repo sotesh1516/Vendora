@@ -400,7 +400,7 @@ export default function Listing() {
                     : "https://via.placeholder.com/800x600"
                 }
                 alt={`Gallery image ${selectedImageIndex + 1}`}
-                className="max-w-full max-h-full object-contain rounded-lg"
+                className="w-[500px] h-auto max-h-[90%] object-contain rounded-lg" //prev max-w-full max-h-full
               />
             </div>
 
