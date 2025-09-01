@@ -45,6 +45,7 @@ axiosInstance.interceptors.response.use(function onFulfilled(response) {
     originalRequest._retry = true
     try {
       const response = await axiosInstance.post("/auth/refresh");
+      console.log(response.data.accessToken);
       setAccesstoken(response.data.accessToken);
       originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
       return axiosInstance(originalRequest);

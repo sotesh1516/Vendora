@@ -123,7 +123,7 @@ export const searchListings = async (query) => {
 
 export const fetchListing = async (id) => {
   try {
-    const response = await axios.get(`/listings/${id}`);
+    const response = await axiosInstance.get(`/listings/${id}`);
 
     if (response.status === 200) {
       return response.data;
