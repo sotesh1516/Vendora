@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 import { setTokenHandler } from "../../api/refresh";
 
 const AuthContext = createContext(null);
@@ -6,7 +6,14 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
 
     const [accessToken, setAccessToken] = useState("");
-    setTokenHandler(accessToken, setAccessToken);
+    
+    useEffect(() => {
+        setTokenHandler(
+          () => accessToken,         // getter: called by Axios before requests
+          (token) => setAccessToken(token) // setter: called by refresh interceptor
+        );
+      }, [accessToken]);
+
     return (
         <AuthContext.Provider value={{accessToken, setAccessToken}}>
             {children}

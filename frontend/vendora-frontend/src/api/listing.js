@@ -1,7 +1,6 @@
 import axios from "axios";
 import axiosInstance from "./refresh";
 
-axios.defaults.withCredentials = true; // this can be done per request too
 
 //By default, Node/Express don't magically know how to handle raw files
 //If you try to send a raw file object without any encoding, the browser doesn't knwo what ccontent type
@@ -72,7 +71,7 @@ export const registerListing = async (newListing, accessToken) => {
 
 export const retrieveListings = async (userInfo) => {
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       "/listings/",
       //this is the same as axiosInstance.get(`/listings?pageNumber=${userInfo.pageNumber}`);
       {
@@ -104,8 +103,8 @@ export const retrieveListings = async (userInfo) => {
 //"lap top" → "lap%20top"
 export const searchListings = async (query) => {
   try {
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/listings/search?query=${encodeURIComponent(
+    const response = await axiosInstance.get(
+      `/listings/search?query=${encodeURIComponent(
         query
       )}`
     );
@@ -124,7 +123,7 @@ export const searchListings = async (query) => {
 
 export const fetchListing = async (id) => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/api/listings/${id}`);
+    const response = await axios.get(`/listings/${id}`);
 
     if (response.status === 200) {
       return response.data;
@@ -165,8 +164,8 @@ export const fetchListing = async (id) => {
 export const editListing = async (updateInfo) => {
   try {
     console.log(updateInfo);
-    const response = await axios.put(
-      `http://127.0.0.1:8000/api/listing/${updateInfo.id}`,
+    const response = await axiosInstance.put(
+      `/listing/${updateInfo.id}`,
       updateInfo.updatedListing
     );
 

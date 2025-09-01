@@ -112,7 +112,7 @@ const signUp = async (req, res) => {
 };
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10m'});
+  return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10s'});
 };
 
 
