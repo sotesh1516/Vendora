@@ -39,7 +39,7 @@ export default function Dashboard() {
     async function getListings() {
         try {
             const response = await retrieveListings({
-                accessToken: accessToken,
+                accessToken: accessToken || null,
                 pageNumber: pageNumber,
             });
             if (response && response.listings) {
@@ -73,6 +73,14 @@ export default function Dashboard() {
             getListings();
         }
     }, [pageNumber]);
+
+    useEffect(() => {
+        // reset listings and page number when auth state changes
+        setListings([]);
+        setPageNumber(0);
+      
+        getListings();
+      }, [accessToken]);
 
     return (
         <>
