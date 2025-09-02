@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { searchListings } from "../api/listing";
 import { useAuth } from "./contexts/AuthContext";
+import { signOut } from "../api/auth";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
 
-  const { accessToken } = useAuth();
+  const { accessToken, setAccessToken } = useAuth();
 
   const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
   // restircted user
@@ -79,6 +80,21 @@ export default function Navbar() {
       searchRetrieveListings();
     }
   }, [shouldSearch]);
+
+  const handleSignOut = async () => {
+    try {
+      const result = await signOut({ accessToken });
+
+      if (result.success) {
+        setAccessToken(""); // clear in-memory token
+        navigate("/dashboard"); // redirect to sign-in
+      } else {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error("Unexpected sign out error:", error);
+    }
+  };
 
   return (
     <div className="bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200 px-6 py-4">
@@ -218,7 +234,8 @@ export default function Navbar() {
                     </Link>
                   </li>
                   <li className="mt-2 pt-2 border-t border-gray-100">
-                    <button
+                    <button 
+                      onClick={handleSignOut}
                       className="flex items-center gap-3 px-3 py-2 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors duration-200 w-full text-left text-sm text-red-600"
                     >
                       Logout

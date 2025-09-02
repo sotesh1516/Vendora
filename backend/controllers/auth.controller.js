@@ -112,7 +112,7 @@ const signUp = async (req, res) => {
 };
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10s'});
+  return jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {expiresIn: '10m'});
 };
 
 
@@ -185,9 +185,19 @@ const signOut = async (req, res) => {
   try {
     const verifiedUser = req.user;
     
+    //clear refreshToken
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return res.status(200).json({ message: "Signed out successfully" });
 
   } catch (error) {
-    
+    console.log(error)
+    return res.status(500).json({ error: "Internal server error during sign out"})
   }
 }
 
@@ -211,4 +221,4 @@ const whoAmI = async (req, res) => {
   }
 };
 
-module.exports = { signUp, signIn, refreshAccessToken, whoAmI };
+module.exports = { signUp, signIn, signOut, refreshAccessToken, whoAmI };

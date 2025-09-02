@@ -83,12 +83,33 @@ export const whoAmI = async (info) => {
 
 
 
-export const signOut = async () => {
+export const signOut = async (info) => {
     try {
         //make sure that accessToken is useAuth has been set to null
         //remove/delete the refreshtokn stored inside a cookie
+        const response = await axios.post('http://127.0.0.1:8000/api/auth/signout', {
+            headers: {
+                Authorization: `Bearer ${info.accessToken}`
+            },
+            withCredentials: true,
+        })
 
+        if (response.status === 200) {
+            console.log("User signed out successfully");
+            return { success: true };
+          }
     } catch (error) {
-        
+        if (error.response && error.response.status === 401) {
+            console.error("User not authenticated - 401 error");
+            return {
+              error: "You need to sign in to sign out",
+              code: 401,
+              requiresAuth: true,
+            };
+          }
+      
+          console.error("Error during sign out");
+          return { error: "sign out failed. Please try again" };
+    
     }
 };
