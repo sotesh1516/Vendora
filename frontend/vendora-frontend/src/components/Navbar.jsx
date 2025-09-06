@@ -3,12 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { searchListings } from "../api/listing";
 import { useAuth } from "./contexts/AuthContext";
 import { signOut } from "../api/auth";
+import { fetchUserInfo } from "../api/user";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
 
   const { accessToken, setAccessToken } = useAuth();
+  const [ user, setUser ] = useState({
+    name: "",
+    email: "",
+  });
 
   const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
   // restircted user
@@ -81,13 +86,32 @@ export default function Navbar() {
     }
   }, [shouldSearch]);
 
+  useEffect(() => {
+    const fetchSignedInUser = async () => {
+      try {
+        const signedUser = await fetchUserInfo({accessToken: accessToken});
+
+        if (signedUser && signedUser.user)
+        {
+          setUser({...user, name: signedUser.user.name,
+            email: signedUser.user.email, });
+        }
+      } catch (error) {
+        console.log("Error occured during user info fetch in the navbar", error);
+      }
+      
+    };
+
+    fetchSignedInUser();
+  }, []);
+
   const handleSignOut = async () => {
     try {
       const result = await signOut({ accessToken });
 
       if (result.success) {
         setAccessToken(""); // clear in-memory token
-        navigate("/dashboard"); // redirect to sign-in
+        navigate("/signin"); // redirect to sign-in
       } else {
         console.error(result.error);
       }
@@ -212,8 +236,8 @@ export default function Navbar() {
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 text-sm">John Doe</p>
-                        <p className="text-xs text-gray-500">john@example.com</p>
+                        <p className="font-semibold text-gray-900 text-sm">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
                       </div>
                     </div>
                   </li>

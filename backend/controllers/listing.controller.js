@@ -76,7 +76,10 @@ const createListing = async (req, res) => {
 
     //handle image upload
     for (const image of images) {
-      const uploadResult = await cloudinary.uploader.upload(image.path);
+      const uploadResult = await cloudinary.uploader.upload(image.path, {
+        folder: `listings/`,   // creates virtual folder
+        public_id: "listings",         
+      });
       structuredNewListing.cloudStoredImages.push(uploadResult);
     }
 

@@ -8,6 +8,8 @@ import Listing from './components/DashboardSubComponents/Listing';
 import { AuthProvider } from './components/contexts/AuthContext';
 import Settings from './components/Settings';
 import SearchResults from './components/SearchResults';
+import ProtectedRoute from './components/ProtectedRoute';
+import ManageService from './components/ProfileSubComponents/MyListingSubComponents/ManageService';
 
 
 
@@ -20,10 +22,15 @@ function App() {
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/signin" element={<SignIn/>}/>
       <Route path="/dashboard" element={<Dashboard/>}/>
-      <Route path='/profile' element={<Profile/>}/>
       <Route path='/listing/:id' element={<Listing/>}/>
-      <Route path='/settings' element={<Settings/>}/>
       <Route path='/results' element={<SearchResults/>}/>
+
+      {/* protected routes */}
+      <Route element={<ProtectedRoute />}>
+      <Route path='/profile' element={<Profile/>}/>
+      <Route path='/settings' element={<Settings/>}/>
+      <Route path='/manage/:id' element={<ManageService/>}/>
+      </Route>
     </Routes>
     </AuthProvider>
     </>

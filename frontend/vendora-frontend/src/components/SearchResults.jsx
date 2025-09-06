@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function SearchResults() {
   const navigate = useNavigate();
-  
+
   const [searchResults, setSearchResults] = useState([]);
   const [keyword, setKeyword] = useState("");
-  
+
   //initially when Search Result component mounts this comes in handy
   useEffect(() => {
     const searchFetchedListingsFromDashboard = JSON.parse(localStorage.getItem("search_fetched_listings"));
@@ -19,7 +19,7 @@ export default function SearchResults() {
   return (
     <>
       <Navbar />
-      
+
       {/* Header */}
       <div className="border-b border-gray-200 bg-white/90 backdrop-blur-md supports-[backdrop-filter]:bg-white/70 sticky top-0 z-30">
         <div className="px-6 py-6">
@@ -54,7 +54,7 @@ export default function SearchResults() {
           >
             {/* Hover gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 via-blue-50/20 to-blue-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-            
+
             <div className="relative z-10 flex gap-6">
               {/* Enhanced Thumbnail */}
               <div className="flex-shrink-0">
@@ -64,11 +64,11 @@ export default function SearchResults() {
                     alt={listing.serviceName}
                     className="w-24 h-24 rounded-2xl object-cover ring-4 ring-gray-100 group-hover:ring-blue-200 transition-all duration-300"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-3 border-white rounded-full shadow-sm" />
+                  {/* Hover overlay */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
-              
+
               {/* Content */}
               <div className="flex flex-col justify-between flex-1 min-w-0">
                 <div className="space-y-3">
@@ -83,12 +83,12 @@ export default function SearchResults() {
                       {listing.serviceProvider}
                     </p>
                   </div>
-                  
+
                   <p className="text-gray-700 leading-relaxed line-clamp-2 text-sm">
                     {listing.description}
                   </p>
                 </div>
-                
+
                 {/* Stats */}
                 <div className="flex items-center gap-6 pt-4 border-t border-gray-100 group-hover:border-blue-200 transition-colors duration-300">
                   <div className="flex items-center gap-2">
@@ -102,17 +102,16 @@ export default function SearchResults() {
                       <span className="text-sm text-gray-500">/hour</span>
                     </div>
                   </div>
-                  
+
                   <div className="w-px h-8 bg-gray-200 group-hover:bg-blue-200 transition-colors duration-300" />
-                  
+
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <svg
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(listing.rating) ? 'text-yellow-400' : 'text-gray-200'
-                          }`}
+                          className={`w-4 h-4 ${i < Math.floor(listing.rating) ? 'text-yellow-400' : 'text-gray-200'
+                            }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -125,7 +124,7 @@ export default function SearchResults() {
                       <span className="text-gray-500">({listing.reviewsCount} reviews)</span>
                     </div>
                   </div>
-                  
+
                   <div className="ml-auto">
                     <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full group-hover:bg-blue-50 group-hover:text-blue-600 transition-all duration-300">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

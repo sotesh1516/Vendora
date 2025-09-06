@@ -355,6 +355,18 @@ const checkUserBookingForListing = async (req, res) => {
   }
 };
 
+const fetchBookingsSpecificToAListing = async (req, res) => {
+  try {
+    const verifiedUser = req.user;
+    const listingId = req.params.listingId;
+
+    
+
+  } catch (error) {
+    
+  }
+};
+
 module.exports = {
   updateUserBookingList,
   fetchUserBookingList,

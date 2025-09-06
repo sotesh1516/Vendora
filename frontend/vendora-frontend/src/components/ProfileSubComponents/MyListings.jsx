@@ -93,7 +93,7 @@ function MyListings() {
   const { accessToken } = useAuth();
 
   const [showSignInModal, setShowSignInModal] = useState(false);// reroute user to sign in if there is an engagement with a
-    // restircted user
+  // restircted user
 
   // Critical action wrapper
   const withAuth = async (callback) => {
@@ -103,7 +103,7 @@ function MyListings() {
     }
 
     try {
-      const authCheck = await whoAmI({accessToken});
+      const authCheck = await whoAmI({ accessToken });
       if (!authCheck.authenticated) {
         setShowSignInModal(true);
         return;
@@ -242,6 +242,22 @@ function MyListings() {
                   p-6 flex flex-col overflow-hidden
                 "
               >
+                {/* Manage Badge */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/manage/${listing._id}`);
+                  }}
+                  className="
+    absolute top-4 right-4 
+    bg-gradient-to-r from-blue-500 to-indigo-500
+    text-white text-xs font-semibold px-3 py-1 
+    rounded-full shadow-md backdrop-blur-sm
+    hover:shadow-lg hover:scale-105 transition-all cursor-pointer
+  "
+                >
+                  Manage
+                </button>
                 {/* Listing card header */}
                 <div className="flex items-center gap-4 mb-4">
                   {/* Avatar with gradient ring */}
@@ -893,38 +909,38 @@ function MyListings() {
         )}
 
         {/* Sign In Required Modal */}
-      {showSignInModal && (
-        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
-            <div className="p-8 text-center">
-              {/* Icon */}
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
+        {showSignInModal && (
+          <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
+              <div className="p-8 text-center">
+                {/* Icon */}
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
 
-              <h3 className="font-bold text-xl text-gray-900 mb-2">Sign In Required</h3>
-              <p className="text-gray-600 mb-6">Please sign in to add items to your favorites</p>
+                <h3 className="font-bold text-xl text-gray-900 mb-2">Sign In Required</h3>
+                <p className="text-gray-600 mb-6">Please sign in to add items to your favorites</p>
 
-              <div className="flex gap-3">
-                <button
-                  className="flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
-                  onClick={() => setShowSignInModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
-                  onClick={handleSignIn}
-                >
-                  Sign In
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    className="flex-1 px-4 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
+                    onClick={() => setShowSignInModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+                    onClick={handleSignIn}
+                  >
+                    Sign In
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       </div>
     </>
