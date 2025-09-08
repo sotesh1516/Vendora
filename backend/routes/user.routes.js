@@ -1,5 +1,5 @@
 const express = require("express");
-const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing, fetchUserInfo } = require("../controllers/user.controller");
+const { updateUserBookingList, updateUserListingList, fetchUserBookingList, fetchUserListingList, fetchUserFavoriteList, updateUserFavoriteList, registerUserCashAppHandle, registerUserVenmoHandle, fetchUserCashAppHandle, fetchUserVenmoHandle, checkUserBookingForListing, fetchUserInfo, fetchBookingsSpecificToAListing } = require("../controllers/user.controller");
 const { authorizeUser } = require("../middlewares/jwt");
 const router = express.Router();
 
@@ -16,5 +16,6 @@ router.post("/paymentinfo/venmo/:id", registerUserVenmoHandle);
 router.get("/paymentinfo/cashapp/:id", fetchUserCashAppHandle);
 router.get("/paymentinfo/venmo/:id", fetchUserVenmoHandle);
 router.get("/bookings/check/listing/:listingId", authorizeUser, checkUserBookingForListing);
+router.get("/mylistings/:id/bookings", authorizeUser, fetchBookingsSpecificToAListing);
 
 module.exports = router;

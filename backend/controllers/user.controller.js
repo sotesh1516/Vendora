@@ -360,10 +360,21 @@ const fetchBookingsSpecificToAListing = async (req, res) => {
     const verifiedUser = req.user;
     const listingId = req.params.listingId;
 
-    
+    const bookings = await Booking.find({listingId: listingId}).exec();
+
+    if (!bookings || bookings.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No bookings found for the specified listing" });
+    }
+
+    return res.status(200).json({ bookings });
+
 
   } catch (error) {
-    
+    return res
+      .status(500)
+      .json({ error: "Internal server error while retrieving booking specific to the given listing" });
   }
 };
 
@@ -379,5 +390,6 @@ module.exports = {
   registerUserVenmoHandle,
   fetchUserVenmoHandle,
   checkUserBookingForListing,
-  fetchUserInfo
+  fetchUserInfo,
+  fetchBookingsSpecificToAListing
 };
