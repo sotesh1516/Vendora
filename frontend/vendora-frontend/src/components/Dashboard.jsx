@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import ListingCard from "./DashboardSubComponents/ListingCard";
@@ -21,6 +21,8 @@ export default function Dashboard() {
     const [showFilterBar, setShowFilterBar] = useState(false);
 
     const { accessToken } = useAuth();
+    const prevAccessTokenRef = useRef(accessToken);  //keep track of the prev state of accesstoken
+
 
     //just incase we need it
     const [searchQueryInfo, setSearchQueryInfo] = useState(JSON.parse(localStorage.getItem("search_fetched_listings")).searchKeyword);
@@ -76,11 +78,19 @@ export default function Dashboard() {
 
     useEffect(() => {
         // reset listings and page number when auth state changes
-        setListings([]);
-        setPageNumber(0);
-      
-        getListings();
+        if (prevAccessTokenRef && prevAccessTokenRef.length > 0 && !accessToken)
+        {
+            setListings([]);
+            setPageNumber(0);
+            console.log("fetched because of authorization change");
+            getListings();
+        }
       }, [accessToken]);
+
+    // update the ref after each render so it always holds the last value
+    useEffect(() => {
+        prevAccessTokenRef.current = accessToken;
+    }, [accessToken]);
 
     return (
         <>

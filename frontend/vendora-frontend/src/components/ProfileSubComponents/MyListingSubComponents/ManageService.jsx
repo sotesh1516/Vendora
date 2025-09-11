@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { whoAmI } from '../../../api/auth';
+import { fetchBookingsBasedOnAListing } from '../../../api/user';
 
 function ManageService() {
-    const { listingId } = useParams();
+    const { id } = useParams();
+    console.log(id)
     const navigate = useNavigate();
     const { accessToken } = useAuth();
 
@@ -14,7 +16,7 @@ function ManageService() {
 
     // Mock data - replace with actual API calls
     const [serviceData, setServiceData] = useState({
-        id: listingId,
+        id: id,
         title: "Math Tutoring",
         description: "Offering help with calculus, linear algebra, and statistics.",
         price: 15,
@@ -23,44 +25,32 @@ function ManageService() {
         isActive: true
     });
 
-    const [bookings, setBookings] = useState([
-        {
-            id: 1,
-            clientName: "Sarah Johnson",
-            clientAvatar: "https://img.daisyui.com/images/profile/demo/2@94.webp",
-            service: "Calculus Help",
-            dateTime: "2025-09-10T14:00:00",
-            duration: 2,
-            status: "pending", // pending, confirmed, completed, cancelled
-            price: 30,
-            clientEmail: "sarah.j@email.com",
-            notes: "Struggling with derivatives and limits"
-        },
-        {
-            id: 2,
-            clientName: "Mike Chen",
-            clientAvatar: "https://img.daisyui.com/images/profile/demo/3@94.webp",
-            service: "Statistics Review",
-            dateTime: "2025-09-12T16:30:00",
-            duration: 1.5,
-            status: "confirmed",
-            price: 22.50,
-            clientEmail: "mike.chen@email.com",
-            notes: "Exam preparation for probability theory"
-        },
-        {
-            id: 3,
-            clientName: "Emma Davis",
-            clientAvatar: "https://img.daisyui.com/images/profile/demo/4@94.webp",
-            service: "Linear Algebra",
-            dateTime: "2025-09-08T10:00:00",
-            duration: 2,
-            status: "completed",
-            price: 30,
-            clientEmail: "emma.davis@email.com",
-            notes: "Matrix operations and vector spaces"
-        }
-    ]);
+    const [bookings, setBookings] = useState([]);
+
+    useEffect(() => {
+        const loadBookings = async () => {
+            if (!accessToken) return;
+    
+            try {
+                const data = await fetchBookingsBasedOnAListing({
+                    id,
+                    accessToken,
+                });
+    
+                if (data.error) {
+                    console.error("Failed to fetch bookings:", data.error);
+                    return;
+                }
+    
+                setBookings(data.bookings || []);
+                console.log(data.bookings);
+            } catch (err) {
+                console.error("Unexpected error while fetching bookings:", err);
+            }
+        };
+    
+        loadBookings();
+    }, [id, accessToken]);
 
     const [analytics, setAnalytics] = useState({
         totalBookings: 15,
@@ -213,6 +203,8 @@ function ManageService() {
                         </div>
 
                         {/* Bookings List */}
+                        {/* customerId(client) is the an actual user object*/}
+                        {/* listingId is populated by an actual object in the backend*/}
                         <div className="space-y-4">
                             <h2 className="text-xl font-semibold text-gray-900">Recent Bookings</h2>
                             {bookings.map((booking) => (
@@ -221,13 +213,13 @@ function ManageService() {
                                         <div className="flex items-center gap-4">
                                             <img
                                                 src={booking.clientAvatar}
-                                                alt={booking.clientName}
+                                                alt={booking.customerId.name}
                                                 className="w-12 h-12 rounded-full object-cover"
                                             />
                                             <div>
-                                                <h3 className="font-semibold text-gray-900">{booking.clientName}</h3>
-                                                <p className="text-sm text-gray-600">{booking.clientEmail}</p>
-                                                <p className="text-sm text-blue-600 font-medium">{booking.service}</p>
+                                                <h3 className="font-semibold text-gray-900">{booking.customerId.name}</h3>
+                                                <p className="text-sm text-gray-600">test@vt.edu</p>
+                                                <p className="text-sm text-blue-600 font-medium">{booking.listingId.serviceName}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -240,7 +232,7 @@ function ManageService() {
                                     <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                                         <div>
                                             <p className="text-gray-600">Date & Time</p>
-                                            <p className="font-medium">{formatDateTime(booking.dateTime)}</p>
+                                            <p className="font-medium">{formatDateTime(booking.timeSlot)}</p>
                                         </div>
                                         <div>
                                             <p className="text-gray-600">Duration & Price</p>

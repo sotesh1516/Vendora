@@ -360,7 +360,7 @@ const fetchBookingsSpecificToAListing = async (req, res) => {
     const verifiedUser = req.user;
     const listingId = req.params.listingId;
 
-    const bookings = await Booking.find({listingId: listingId}).exec();
+    const bookings = await Booking.find({listingId: listingId}).populate("customerId", "name email").populate("listingId").exec();
 
     if (!bookings || bookings.length === 0) {
       return res

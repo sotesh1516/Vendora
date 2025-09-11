@@ -16,6 +16,6 @@ router.post("/paymentinfo/venmo/:id", registerUserVenmoHandle);
 router.get("/paymentinfo/cashapp/:id", fetchUserCashAppHandle);
 router.get("/paymentinfo/venmo/:id", fetchUserVenmoHandle);
 router.get("/bookings/check/listing/:listingId", authorizeUser, checkUserBookingForListing);
-router.get("/mylistings/:id/bookings", authorizeUser, fetchBookingsSpecificToAListing);
+router.get("/listings/:id/bookings", authorizeUser, fetchBookingsSpecificToAListing);
 
 module.exports = router;

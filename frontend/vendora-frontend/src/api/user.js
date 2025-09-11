@@ -273,3 +273,35 @@ export const checkUserBookingStatusForListing = async (fetchInfo) => {
     };
   }
 };
+
+export const fetchBookingsBasedOnAListing = async (fetchInfo) => {
+  try {
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/user/listings/${fetchInfo.id}/bookings`,
+      {
+        headers: {
+          Authorization: `Bearer ${fetchInfo.accessToken}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    console.error(
+      "Server responded with an error during bookings fetch for listing",
+      response.status
+    );
+    return {
+      error: "Server responded with an error during bookings fetch for listing",
+    };
+  } catch (error) {
+    console.error("Error during bookings fetch for listing:", error);
+    return {
+      error: "Fetching bookings for listing failed. Please try again",
+    };
+  }
+};
+
+
