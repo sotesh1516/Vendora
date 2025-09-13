@@ -126,15 +126,15 @@ function MyListings() {
           console.log(response.listing);
           setShowListingSuccess(true);
           const infoToBeUpdated = {
-            accesstoken: accessToken,
+            accessToken: accessToken,
             listingId: response.listing._id,  //when doing the same exact thing on booking i did id and it worked but here i have to use _id which makes sense since i am not modifying the database response
           };
 
           //console.log(infoToBeUpdated);
           const updateResponse = await updateUserListingList(infoToBeUpdated);
 
-          console.log("listing added to database");
           if (updateResponse && updateResponse.updatedUser) {
+            console.log("listing added to mylisting");
             console.log(updateResponse.updatedUser);
           }
 
@@ -159,6 +159,7 @@ function MyListings() {
       const check = await fetchUserListings(fetchParams);
 
       if (check && check.user) {
+        // console.log(check.user.myListings);
         setListings(check.user.myListings);
       }
     };

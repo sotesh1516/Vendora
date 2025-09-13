@@ -100,7 +100,9 @@ export default function Listing() {
           bookingId: registeredBooking.booking._id,
         };
         const check = await updateUserBooking(infoToBeUpdated);
-        if (check && check.updatedUser) return check.updatedUser;
+        if (check && check.updatedUser) {
+          return check.updatedUser;
+        }
       }
     } catch (error) {
       console.error('Error during booking', error);

@@ -30,7 +30,6 @@ function ManageService() {
     useEffect(() => {
         const loadBookings = async () => {
             if (!accessToken) return;
-    
             try {
                 const data = await fetchBookingsBasedOnAListing({
                     id,

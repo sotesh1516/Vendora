@@ -359,7 +359,7 @@ const fetchBookingsSpecificToAListing = async (req, res) => {
   try {
     const verifiedUser = req.user;
     const listingId = req.params.listingId;
-
+    console.log(listingId);
     const bookings = await Booking.find({listingId: listingId}).populate("customerId", "name email").populate("listingId").exec();
 
     if (!bookings || bookings.length === 0) {
@@ -367,7 +367,7 @@ const fetchBookingsSpecificToAListing = async (req, res) => {
         .status(404)
         .json({ message: "No bookings found for the specified listing" });
     }
-
+    console.log(bookings);
     return res.status(200).json({ bookings });
 
 
