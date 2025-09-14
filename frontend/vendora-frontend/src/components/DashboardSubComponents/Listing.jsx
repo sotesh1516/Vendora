@@ -27,7 +27,7 @@ export default function Listing() {
     customerId: "",
     customerSummary: '',
     timeSlot: selectedTimeSlot,
-    status: 'booked',
+    status: 'pending',
     accessToken: accessToken,
   });
 

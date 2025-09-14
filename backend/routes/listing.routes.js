@@ -1,5 +1,5 @@
 const express = require("express");
-const { createListing, fetchListings, fetchListingsAndSetFavorites, searchListings, fetchListing, editListing } = require("../controllers/listing.controller");
+const { createListing, fetchListings, fetchListingsAndSetFavorites, searchListings, fetchListing, editListing, deleteListing } = require("../controllers/listing.controller");
 const router = express.Router();
 const multer  = require('multer')
 const upload = multer({dest: 'uploads/'});
@@ -14,5 +14,6 @@ router.get("/", optionalAuthorizeUser, fetchListingsAndSetFavorites);
 router.get("/search", searchListings)
 router.get("/:id", fetchListing); // single fetch using url params
 router.put("/:id", editListing);
+router.delete("/:id", authorizeUser, deleteListing);
 
 module.exports = router;

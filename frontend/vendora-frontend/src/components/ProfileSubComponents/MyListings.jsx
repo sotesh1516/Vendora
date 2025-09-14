@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../../index.css"
-import { registerListing } from "../../api/listing"
+import { registerListing, deleteListingAPI} from "../../api/listing"
 import { fetchUserListings, updateUserListingList } from '../../api/user';
 import ListingEdit from './MyListingSubComponents/ListingEdit';
 import { useAuth } from "../contexts/AuthContext";
@@ -200,6 +200,34 @@ function MyListings() {
     navigate('/signin'); // Adjust this path to your sign-in route
   };
 
+  // Add this state to track which listing is being deleted
+const [listingToDelete, setListingToDelete] = useState(null);
+
+// Add this function before your return statement
+const handleDelete = async (listingId) => {
+  try {
+    const result = await deleteListingAPI(listingId, accessToken);
+    
+    if (result.error) {
+      // Handle error - you might want to show a toast notification here
+      console.error("Delete failed:", result.message);
+      alert(`Error: ${result.message}`);
+    } else {
+      // Success - remove from local state
+      setListings((prev) => prev.filter((listing) => listing._id !== listingId));
+      setDeleteListing(false);
+      setListingToDelete(null);
+      
+      // Optional: Show success message
+      console.log("Listing deleted successfully");
+      // You could add a success toast here
+    }
+  } catch (error) {
+    console.error("Delete failed:", error);
+    alert("An unexpected error occurred while deleting the listing.");
+  }
+};
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -314,6 +342,7 @@ function MyListings() {
                     "
                     onClick={(e) => {
                       e.stopPropagation();
+                      setListingToDelete(listing); // Set which listing to delete
                       setDeleteListing(true);
                     }}
                   >
@@ -534,15 +563,9 @@ function MyListings() {
                       rounded-xl font-medium hover:shadow-lg transition-all duration-200
                     "
                     onClick={() => {
-                      // Perform delete logic here
-                      console.log("Listing deleted");
-
-                      // Optionally remove the listing from state
-                      setListings((prev) =>
-                        prev.filter((l) => l.id !== listing.id)
-                      );
-
-                      setDeleteListing(false);
+                      if (listingToDelete) {
+                        handleDelete(listingToDelete._id || listingToDelete.id);
+                      }
                     }}
                   >
                     Delete

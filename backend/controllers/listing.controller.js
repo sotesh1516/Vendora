@@ -276,6 +276,50 @@ const searchListings = async (req, res) => {
   }
 };
 
+const deleteListing = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ error: "Listing ID is required" });
+    }
+
+    // Check if listing exists before attempting to delete
+    const existingListing = await Listing.findById(id);
+    if (!existingListing) {
+      return res.status(404).json({ 
+        error: "Listing not found" 
+      });
+    }
+
+    // Delete the listing
+    const deletedListing = await Listing.findByIdAndDelete(id);
+
+    // Optional: Delete associated images from Cloudinary
+    if (deletedListing.cloudStoredImages && deletedListing.cloudStoredImages.length > 0) {
+      for (const image of deletedListing.cloudStoredImages) {
+        try {
+          await cloudinary.uploader.destroy(image.public_id);
+        } catch (imageError) {
+          console.log("Error deleting image from cloudinary:", imageError);
+          // Continue with listing deletion even if image deletion fails
+        }
+      }
+    }
+
+    return res.status(200).json({
+      message: "Listing has been successfully deleted",
+      deletedListing: deletedListing
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ 
+      error: "Internal server error during listing deletion" 
+    });
+  }
+};
+
 module.exports = {
   createListing,
   editListing,
@@ -283,4 +327,5 @@ module.exports = {
   fetchListings,
   fetchListingsAndSetFavorites,
   searchListings,
+  deleteListing,
 };

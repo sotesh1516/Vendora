@@ -204,3 +204,49 @@ export const editListing = async (updateInfo) => {
     };
   }
 };
+
+export const deleteListingAPI = async (listingId, accessToken) => {
+  try {
+    const response = await axiosInstance.delete(`/listings/${listingId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+
+    if (response.status === 200) {
+      console.log("Listing has been successfully deleted:", response.data);
+      return response.data;
+    } else if (response.status === 404) {
+      return {
+        error: true,
+        message: "Listing not found.",
+      };
+    } else if (response.status === 401) {
+      return {
+        error: true,
+        message: "Unauthorized. Please log in again.",
+      };
+    } else if (response.status === 403) {
+      return {
+        error: true,
+        message: "Forbidden. You don't have permission to delete this listing.",
+      };
+    } else if (response.status === 500) {
+      return {
+        error: true,
+        message: "Server error. Please try again later.",
+      };
+    } else {
+      return {
+        error: true,
+        message: `Unexpected error: ${response.status}`,
+      };
+    }
+  } catch (error) {
+    console.error("Error during the listing deletion process", error);
+    return {
+      error: error,
+      message: "Listing deletion failed. Please try again",
+    };
+  }
+};

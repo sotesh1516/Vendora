@@ -235,11 +235,11 @@ function ManageService() {
                                         </div>
                                         <div>
                                             <p className="text-gray-600">Duration & Price</p>
-                                            <p className="font-medium">{booking.duration}h • ${booking.price}</p>
+                                            <p className="font-medium">{booking.duration}h • ${booking.listingId.ratePerHr}</p>
                                         </div>
                                         <div>
                                             <p className="text-gray-600">Notes</p>
-                                            <p className="font-medium text-gray-700">{booking.notes}</p>
+                                            <p className="font-medium text-gray-700">{booking.customerSummary}</p>
                                         </div>
                                     </div>
 
@@ -247,13 +247,13 @@ function ManageService() {
                                     {booking.status === 'pending' && (
                                         <div className="mt-4 flex gap-3">
                                             <button
-      onClick={() => handleBookingAction(booking.id, 'confirmed')}
+      onClick={() => handleBookingAction(booking._id, 'confirmed')}
       className="px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 text-sm"
     >
       Confirm
     </button>
     <button
-      onClick={() => handleBookingAction(booking.id, 'cancelled')}
+      onClick={() => handleBookingAction(booking._id, 'cancelled')}
       className="px-4 py-2 bg-gradient-to-r from-rose-400 to-red-500 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 text-sm"
     >
       Decline
